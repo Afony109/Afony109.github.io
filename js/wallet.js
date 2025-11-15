@@ -117,6 +117,12 @@ export async function showWalletSelector() {
         detectedWallets.forEach((wallet, index) => {
             const icon = wallet.info.icon || '🦊';
 
+            // Debug logging
+            console.log('[WALLET] Processing wallet:', wallet.info.name);
+            console.log('[WALLET] Icon type:', typeof icon);
+            console.log('[WALLET] Icon length:', icon?.length);
+            console.log('[WALLET] Icon starts with:', icon?.substring(0, 30));
+
             const walletOption = document.createElement('div');
             walletOption.className = 'wallet-option';
             walletOption.dataset.walletIndex = index;
@@ -125,11 +131,14 @@ export async function showWalletSelector() {
             walletIconDiv.className = 'wallet-icon';
 
             // Check if icon is a valid data URL or http(s) URL
+            // Support all data: URLs, not just data:image/
             const isImageUrl = typeof icon === 'string' && icon.length > 20 && (
-                icon.startsWith('data:image/') ||
+                icon.startsWith('data:') ||
                 icon.startsWith('http://') ||
                 icon.startsWith('https://')
             );
+
+            console.log('[WALLET]', wallet.info.name, '- isImageUrl:', isImageUrl);
 
             if (isImageUrl) {
                 const img = document.createElement('img');
