@@ -505,14 +505,18 @@
         }
 
         .wallet-icon {
-            font-size: 2em;
-            width: 48px;
-            height: 48px;
-            flex-shrink: 0;
-            overflow: hidden;
+            flex: 0 0 56px;
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        .wallet-icon img,
+        .wallet-icon svg {
+            display: block;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
         }
 
         .wallet-name {
