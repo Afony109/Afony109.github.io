@@ -5,7 +5,7 @@
 
 import { CONFIG, getCurrentTier, formatNumber } from './config.js';
 import { showNotification, showLoading, showLockedState, formatTokenAmount, formatUSD, createPoolBadge, createProgressBar, getErrorMessage, createInfoBanner } from './ui.js';
-import { getContracts, getUserBalances, getUserStakingInfo, getPoolStats, getArubPrice, checkUsdtAllowance, checkArubAllowance, approveUsdt, approveArub } from './contracts.js';
+import { getContracts, getUserBalances, getUserStakingInfo, getPoolStats, getArubPrice, checkUsdtAllowance, checkArubAllowance, approveUsdt, approveArub, getDetailedStats } from './contracts.js';
 import { getCurrentRate } from './trading.js';
 
 /**
@@ -49,21 +49,24 @@ export async function updateStakingUI(userAddress) {
     showLoading(stakingInterface, 'Завантаження даних стейкінгу...');
 
     try {
-        // Fetch all required data
+        // Fetch all required data (including detailed stats for accurate TVL)
         const [
             { usdtBalance, arubBalance },
             stakingInfo,
             poolStats,
-            arubPrice
+            arubPrice,
+            detailedStats
         ] = await Promise.all([
             getUserBalances(userAddress),
             getUserStakingInfo(userAddress),
             getPoolStats(),
-            getArubPrice()
+            getArubPrice(),
+            getDetailedStats()
         ]);
 
-        // Calculate tier information
-        const totalStakedValueInUsd = parseFloat(ethers.utils.formatUnits(poolStats.totalStaked, CONFIG.DECIMALS.ARUB)) * arubPrice;
+        // Calculate tier information using BOTH pools (USDT + ARUB)
+        // This ensures consistent APY calculation across the entire site
+        const totalStakedValueInUsd = detailedStats.totalStakedUsdt + (detailedStats.totalStakedArub * arubPrice);
         const tierInfo = getCurrentTier(totalStakedValueInUsd);
 
         // Calculate progress to next tier
