@@ -160,6 +160,14 @@ async function updateGlobalStats() {
             totalRewards: document.getElementById('totalRewards')
         };
 
+        // Elements for staking.html (separate staking page)
+        const stakingElements = {
+            totalTvl: document.getElementById('totalTvl'),
+            currentApy: document.getElementById('currentApy'),
+            totalStakers: document.getElementById('totalStakers'),
+            arubPrice: document.getElementById('arubPrice')
+        };
+
         // Update main stats
         if (elements.globalTvl) {
             elements.globalTvl.textContent = formatUSD(tvlUsd);
@@ -175,6 +183,23 @@ async function updateGlobalStats() {
 
         if (elements.globalArubPrice) {
             elements.globalArubPrice.textContent = `${arubPrice.toFixed(2)} USDT`;
+        }
+
+        // Mirror stats to staking.html if these elements exist
+        if (stakingElements.totalTvl) {
+            stakingElements.totalTvl.textContent = formatUSD(tvlUsd);
+        }
+
+        if (stakingElements.currentApy) {
+            stakingElements.currentApy.textContent = `${(tierInfo.apy / 100).toFixed(1)}%`;
+        }
+
+        if (stakingElements.totalStakers) {
+            stakingElements.totalStakers.textContent = poolStats.totalStakers.toLocaleString();
+        }
+
+        if (stakingElements.arubPrice) {
+            stakingElements.arubPrice.textContent = `${arubPrice.toFixed(2)} USDT`;
         }
 
         // Update token stats
@@ -219,9 +244,23 @@ async function updateGlobalStats() {
             totalRewards: document.getElementById('totalRewards')
         };
 
+        // Elements for staking.html (fallback values)
+        const stakingElements = {
+            totalTvl: document.getElementById('totalTvl'),
+            currentApy: document.getElementById('currentApy'),
+            totalStakers: document.getElementById('totalStakers'),
+            arubPrice: document.getElementById('arubPrice')
+        };
+
         if (elements.globalTvl) elements.globalTvl.textContent = '$0';
         if (elements.globalApy) elements.globalApy.textContent = '24%';
         if (elements.globalArubPrice) elements.globalArubPrice.textContent = '81.22 USDT';
+
+        // Mirror fallbacks to staking.html elements
+        if (stakingElements.totalTvl) stakingElements.totalTvl.textContent = '$0';
+        if (stakingElements.currentApy) stakingElements.currentApy.textContent = '24%';
+        if (stakingElements.totalStakers) stakingElements.totalStakers.textContent = '0';
+        if (stakingElements.arubPrice) stakingElements.arubPrice.textContent = '81.22 USDT';
         if (elements.globalStakers) elements.globalStakers.textContent = '0';
         if (elements.totalSupplyArub) elements.totalSupplyArub.textContent = '0 ARUB';
         if (elements.totalStakedArub) elements.totalStakedArub.textContent = '0 ARUB';
