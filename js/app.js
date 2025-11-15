@@ -226,39 +226,69 @@ async function updateGlobalStats() {
             if (el) el.textContent = val;
         };
 
-        // HERO top section
+        // безопасно получаем количество стейкеров
+        const stakersCount =
+            poolStats && typeof poolStats.totalStakers === "number"
+                ? poolStats.totalStakers
+                : 0;
+        const stakersText = stakersCount.toLocaleString("en-US");
+
+        // HERO сверху
         setText("dashHeroPrice", "$" + arubPrice.toFixed(2));
-        setText("dashHeroStakers", detailedStats.totalStakers.toString());
+        setText("dashHeroStakers", stakersText);
         setText("dashHeroApy", (tierInfo.apy / 100).toFixed(1) + "% річних");
 
-        // MAIN CARDS
+        // MAIN CARDS (нижний дашборд)
         setText("dashTotalStakedUsd", formatUSD(tvlUsd));
-        setText("dashTotalStakedTokens",
+        setText(
+            "dashTotalStakedTokens",
             formatTokenAmount(detailedStats.totalStakedArub) + " ARUB"
         );
 
-        setText("dashTotalSupplyTokens",
+        // total supply в токенах
+        setText(
+            "dashTotalSupplyTokens",
             formatTokenAmount(totalSupply) + " ARUB"
         );
-        setText("dashTotalSupplyUsd", formatUSD(totalSupply * arubPrice));
 
-        setText("dashStakersCount", detailedStats.totalStakers.toString());
-        setText("dashPriceUsd", "$" + arubPrice.toFixed(4));
-
-        // price source badges
-        if (document.getElementById("dashPriceSourceBadge")) {
-            document.getElementById("dashPriceSourceBadge").textContent =
-                "Джерело: " + (detailedStats.priceSource ?? "DexScreener");
+        // total supply в USD (totalSupply — BigNumber, переводим в число)
+        let totalSupplyTokensNum = 0;
+        try {
+            totalSupplyTokensNum = parseFloat(
+                ethers.utils.formatUnits(totalSupply, CONFIG.DECIMALS.ARUB)
+            );
+        } catch (e) {
+            console.warn("[APP] Cannot parse totalSupply to number", e);
+        }
+        if (totalSupplyTokensNum) {
+            setText(
+                "dashTotalSupplyUsd",
+                formatUSD(totalSupplyTokensNum * arubPrice)
+            );
         }
 
-        if (document.getElementById("dashPriceHint")) {
-            document.getElementById("dashPriceHint").textContent =
-                detailedStats.priceSource === "DexScreener"
+        // количество стейкеров и цена
+        setText("dashStakersCount", stakersText);
+        setText("dashPriceUsd", "$" + arubPrice.toFixed(4));
+
+        // источник цены
+        const priceSource =
+            (detailedStats && detailedStats.priceSource) || "DexScreener";
+
+        const badgeEl = document.getElementById("dashPriceSourceBadge");
+        if (badgeEl) {
+            badgeEl.textContent = "Джерело: " + priceSource;
+        }
+
+        const hintEl = document.getElementById("dashPriceHint");
+        if (hintEl) {
+            hintEl.textContent =
+                priceSource === "DexScreener"
                     ? "Ціна напряму з DexScreener (DEX пара ARUB)"
                     : "Резерв: курс USD/RUB (1 ARUB = USD/RUB)";
         }
 
-        // loading → done
+        // статус загрузки
         const grid = document.getElementById("dashStatsGrid");
         const loading = document.getElementById("dashLoadingText");
 
