@@ -3,20 +3,20 @@
    =================================== */
 
 :root {
-    /* Primary Colors (Ukraine Flag) */
-    --primary: #0057B7;
-    --secondary: #0057B7;
-    --accent: #FFD700;
-    --ukraine-blue: #0057B7;
-    --ukraine-yellow: #FFD700;
+    /* Primary Colors - Modern Blue Scheme */
+    --primary: #4a90e2;
+    --secondary: #357abd;
+    --accent: #60a5fa;
+    --ukraine-blue: #4a90e2;
+    --ukraine-yellow: #60a5fa;
 
-    /* Neutral Colors - Темніший дизайн як на скріншоті */
-    --dark: #0a0e1a;
-    --dark-secondary: #0f1419;
-    --gray: #9ca3af;
-    --gray-light: #6b7280;
-    --card-bg: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(10, 14, 26, 0.95));
-    --card-bg-hover: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(10, 14, 26, 1));
+    /* Neutral Colors - Dark Blue Theme */
+    --dark: #0f1628;
+    --dark-secondary: #1a1f3a;
+    --gray: #8b94a8;
+    --gray-light: #a0a8b8;
+    --card-bg: rgba(255, 255, 255, 0.03);
+    --card-bg-hover: rgba(255, 255, 255, 0.05);
 
     /* Status Colors */
     --red: #ef4444;
@@ -30,21 +30,25 @@
     --spacing-xl: 40px;
     --spacing-2xl: 56px;
 
-    /* Border Radius - Більше закруглення */
-    --radius-sm: 10px;
-    --radius-md: 14px;
-    --radius-lg: 18px;
-    --radius-xl: 24px;
-    --radius-full: 999px;
+    /* Border Radius - Modern Medium Roundness */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 15px;
+    --radius-xl: 20px;
+    --radius-full: 50%;
 
     /* Transitions */
     --transition-fast: 0.2s ease;
     --transition-normal: 0.3s ease;
     --transition-slow: 0.5s ease;
 
-    /* Shadows - М'якші та глибші тіні */
-    --shadow-sm: 0 2px 8px rgba(0,0,0,0.6);
-    --shadow-md: 0 4px 16px rgba(0,0,0,0.7);
-    --shadow-lg: 0 8px 32px rgba(0,0,0,0.8);
-    --shadow-xl: 0 16px 48px rgba(0,0,0,0.9);
+    /* Shadows - Blue Glow Shadows */
+    --shadow-sm: 0 2px 8px rgba(74, 144, 226, 0.1);
+    --shadow-md: 0 4px 15px rgba(74, 144, 226, 0.15);
+    --shadow-lg: 0 8px 20px rgba(74, 144, 226, 0.2);
+    --shadow-xl: 0 12px 30px rgba(74, 144, 226, 0.25);
+
+    /* Border Colors */
+    --border-light: rgba(255, 255, 255, 0.1);
+    --border-medium: rgba(255, 255, 255, 0.15);
 }

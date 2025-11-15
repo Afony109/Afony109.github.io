@@ -17,16 +17,16 @@
 
 .dashboard-panel {
     background: var(--card-bg);
-    border-radius: var(--radius-xl);
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: var(--shadow-lg);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-light);
+    box-shadow: none;
     padding: var(--spacing-md) var(--spacing-md);
     position: relative;
     overflow: hidden;
 }
 
 .dashboard-panel-alt {
-    background: rgba(10, 14, 26, 0.7);
+    background: rgba(0, 0, 0, 0.2);
 }
 
 .dashboard-hero-pill {
@@ -138,13 +138,13 @@
 }
 
 .dashboard-stat-card {
-    background: rgba(10, 14, 26, 0.8);
-    border-radius: var(--radius-lg);
-    border: 1px solid rgba(255,255,255,0.12);
+    background: var(--card-bg);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-light);
     padding: var(--spacing-md) var(--spacing-md) var(--spacing-sm);
     position: relative;
     overflow: hidden;
-    box-shadow: var(--shadow-md);
+    box-shadow: none;
 }
 
 .dashboard-stat-label {
