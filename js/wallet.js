@@ -126,7 +126,7 @@ export async function showWalletSelector() {
 
             // Check if icon is a valid data URL or http(s) URL
             const isImageUrl = typeof icon === 'string' && icon.length > 20 && (
-                (icon.startsWith('data:image/') && icon.includes('base64')) ||
+                icon.startsWith('data:image/') ||
                 icon.startsWith('http://') ||
                 icon.startsWith('https://')
             );
@@ -135,10 +135,6 @@ export async function showWalletSelector() {
                 const img = document.createElement('img');
                 img.src = icon;
                 img.alt = wallet.info.name;
-                img.style.width = '48px';
-                img.style.height = '48px';
-                img.style.borderRadius = '8px';
-                img.style.objectFit = 'contain';
 
                 // Fallback if image fails to load
                 img.onerror = () => {
@@ -152,6 +148,7 @@ export async function showWalletSelector() {
 
                 walletIconDiv.appendChild(img);
             } else {
+                // If icon is emoji or other text
                 const span = document.createElement('span');
                 span.style.fontSize = '2em';
                 span.textContent = icon;
