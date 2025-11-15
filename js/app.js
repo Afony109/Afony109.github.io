@@ -220,6 +220,51 @@ async function updateGlobalStats() {
             elements.totalRewards.textContent = formatTokenAmount(rewardsArub) + ' ARUB';
         }
 
+        // === NEW DASHBOARD (index.html) integration ===
+        const setText = (id, val) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = val;
+        };
+
+        // HERO top section
+        setText("dashHeroPrice", "$" + arubPrice.toFixed(2));
+        setText("dashHeroStakers", detailedStats.totalStakers.toString());
+        setText("dashHeroApy", (tierInfo.apy / 100).toFixed(1) + "% річних");
+
+        // MAIN CARDS
+        setText("dashTotalStakedUsd", formatUSD(tvlUsd));
+        setText("dashTotalStakedTokens",
+            formatTokenAmount(detailedStats.totalStakedArub) + " ARUB"
+        );
+
+        setText("dashTotalSupplyTokens",
+            formatTokenAmount(totalSupply) + " ARUB"
+        );
+        setText("dashTotalSupplyUsd", formatUSD(totalSupply * arubPrice));
+
+        setText("dashStakersCount", detailedStats.totalStakers.toString());
+        setText("dashPriceUsd", "$" + arubPrice.toFixed(4));
+
+        // price source badges
+        if (document.getElementById("dashPriceSourceBadge")) {
+            document.getElementById("dashPriceSourceBadge").textContent =
+                "Джерело: " + (detailedStats.priceSource ?? "DexScreener");
+        }
+
+        if (document.getElementById("dashPriceHint")) {
+            document.getElementById("dashPriceHint").textContent =
+                detailedStats.priceSource === "DexScreener"
+                    ? "Ціна напряму з DexScreener (DEX пара ARUB)"
+                    : "Резерв: курс USD/RUB (1 ARUB = USD/RUB)";
+        }
+
+        // loading → done
+        const grid = document.getElementById("dashStatsGrid");
+        const loading = document.getElementById("dashLoadingText");
+
+        if (loading) loading.textContent = "Дані успішно оновлено.";
+        if (grid) grid.style.display = "grid";
+
         console.log('[APP] ✅ Global stats updated successfully!');
         console.log('[APP] 📊 TVL:', formatUSD(tvlUsd));
         console.log('[APP] 📈 APY:', `${(tierInfo.apy / 100).toFixed(1)}%`);
@@ -266,6 +311,13 @@ async function updateGlobalStats() {
         if (elements.totalStakedArub) elements.totalStakedArub.textContent = '0 ARUB';
         if (elements.totalStakedUsdt) elements.totalStakedUsdt.textContent = '0 USDT';
         if (elements.totalRewards) elements.totalRewards.textContent = '0 ARUB';
+
+        // === NEW DASHBOARD (index.html) error handling ===
+        const loading = document.getElementById("dashLoadingText");
+        if (loading) {
+            loading.textContent = "Помилка завантаження даних. Спробуємо ще раз...";
+        }
+        // Don't hide the grid on error, keep it visible with placeholders
     }
 }
 
