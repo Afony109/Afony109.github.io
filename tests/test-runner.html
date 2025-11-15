@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 ANTI RUB - Automated Test Suite</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            color: #fff;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #ffd700;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .run-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .run-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .clear-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .clear-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+        }
+
+        #console {
+            background: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 400px;
+            max-height: 600px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .log-entry {
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 4px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .log-info {
+            color: #4fc3f7;
+        }
+
+        .log-success {
+            color: #66bb6a;
+            background: rgba(102, 187, 106, 0.1);
+        }
+
+        .log-error {
+            color: #ef5350;
+            background: rgba(239, 83, 80, 0.1);
+        }
+
+        .log-warning {
+            color: #ffb74d;
+            background: rgba(255, 183, 77, 0.1);
+        }
+
+        .test-summary {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            display: none;
+        }
+
+        .test-summary.show {
+            display: block;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            font-size: 18px;
+        }
+
+        .icon {
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><span class="icon">🧪</span> ANTI RUB – Automated Test Suite</h1>
+        
+        <div class="controls">
+            <button class="run-btn" onclick="runTests()">
+                <span class="icon">▶</span> Run Tests
+            </button>
+            <button class="clear-btn" onclick="clearConsole()">
+                <span class="icon">🗑</span> Clear Console
+            </button>
+        </div>
+
+        <div id="console"></div>
+        <div id="summary" class="test-summary"></div>
+    </div>
+
+    <script>
+        let testsPassed = 0;
+        let testsFailed = 0;
+
+        function log(message, type = 'info') {
+            const console = document.getElementById('console');
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            
+            const icons = {
+                info: '🚀',
+                success: '✅',
+                error: '❌',
+                warning: '⚠️'
+            };
+            
+            entry.textContent = `${icons[type]} ${message}`;
+            console.appendChild(entry);
+            console.scrollTop = console.scrollHeight;
+        }
+
+        function clearConsole() {
+            document.getElementById('console').innerHTML = '';
+            document.getElementById('summary').classList.remove('show');
+            testsPassed = 0;
+            testsFailed = 0;
+        }
+
+        function showSummary() {
+            const summary = document.getElementById('summary');
+            const total = testsPassed + testsFailed;
+            const passRate = total > 0 ? ((testsPassed / total) * 100).toFixed(1) : 0;
+            
+            summary.innerHTML = `
+                <h2>📊 Test Summary</h2>
+                <div class="summary-item">
+                    <span>Total Tests:</span>
+                    <strong>${total}</strong>
+                </div>
+                <div class="summary-item">
+                    <span>✅ Passed:</span>
+                    <strong style="color: #66bb6a">${testsPassed}</strong>
+                </div>
+                <div class="summary-item">
+                    <span>❌ Failed:</span>
+                    <strong style="color: #ef5350">${testsFailed}</strong>
+                </div>
+                <div class="summary-item">
+                    <span>Pass Rate:</span>
+                    <strong style="color: ${passRate >= 80 ? '#66bb6a' : '#ffb74d'}">${passRate}%</strong>
+                </div>
+            `;
+            summary.classList.add('show');
+        }
+
+        async function runTests() {
+            clearConsole();
+            log('Starting test execution...', 'info');
+            
+            try {
+                // Test 1: Check if essential files exist
+                await testFileExists('/index-new.html', 'Main page');
+                await testFileExists('/trade.html', 'Trading page');
+                await testFileExists('/staking.html', 'Staking page');
+                await testFileExists('/faucet.html', 'Faucet page');
+                
+                // Test 2: Check CSS files
+                await testFileExists('/css/styles.css', 'Main styles');
+                await testFileExists('/css/variables.css', 'CSS variables');
+                
+                // Test 3: Check JS files
+                await testFileExists('/js/app.js', 'Main app script');
+                await testFileExists('/js/config.js', 'Configuration script');
+                await testFileExists('/js/wallet.js', 'Wallet integration');
+                await testFileExists('/js/contracts.js', 'Contract interactions');
+                
+                // Test 4: Contract addresses validation
+                testContractAddress('0x4e6175f449b04e20437b2A2AD8221884Bda38f39', 'MockUSDT');
+                testContractAddress('0xe4A39E3D2C64C2D3a1d9c7C6B9eB63db55277b71', 'ARUB Token');
+                testContractAddress('0x5360400F8B80382017AEE6e4C09c8a935526757B', 'Staking Contract');
+                
+                log('All tests completed!', 'info');
+                showSummary();
+                
+            } catch (error) {
+                log(`Test execution error: ${error.message}`, 'error');
+                testsFailed++;
+                showSummary();
+            }
+        }
+
+        async function testFileExists(path, name) {
+            try {
+                const response = await fetch(path);
+                if (response.ok) {
+                    log(`${name}: File exists ✓`, 'success');
+                    testsPassed++;
+                } else {
+                    log(`${name}: File not found (${response.status})`, 'error');
+                    testsFailed++;
+                }
+            } catch (error) {
+                log(`${name}: Failed to check (${error.message})`, 'error');
+                testsFailed++;
+            }
+        }
+
+        function testContractAddress(address, name) {
+            const pattern = /^0x[a-fA-F0-9]{40}$/;
+            if (pattern.test(address)) {
+                log(`${name}: Valid address format ✓`, 'success');
+                testsPassed++;
+            } else {
+                log(`${name}: Invalid address format`, 'error');
+                testsFailed++;
+            }
+        }
+
+        // Auto-run tests on page load (optional)
+        // window.addEventListener('load', runTests);
+    </script>
+</body>
+</html>

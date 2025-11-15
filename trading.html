@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Торгівля - ANTI RUB 🇺🇦</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='50' fill='%230057B7'/><rect y='50' width='100' height='50' fill='%23FFD700'/><text x='50' y='60' font-size='50' text-anchor='middle' fill='white' font-weight='bold'>₴</text></svg>">
+
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- CSS Modules -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/ai-support.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+<!-- Animated Background -->
+<div class="bg-animated"></div>
+
+<!-- Ukraine Banner -->
+<div class="ukraine-banner" id="ukraine-banner">
+    <div class="ukraine-banner-text">
+        <span class="ukraine-flag">🇺🇦</span>
+        <span>Ми за мир у вільній та цілісній Україні!</span>
+        <span class="ukraine-flag">🇺🇦</span>
+    </div>
+</div>
+
+<!-- Navigation -->
+<nav>
+    <div class="logo">
+        <div class="logo-icon">₽</div>
+        <div class="logo-text">ANTI RUB</div>
+    </div>
+
+    <div class="nav-links">
+        <a href="index-new.html" class="nav-link">🏠 Головна</a>
+        <a href="trading.html" class="nav-link active">💰 Торгівля</a>
+        <a href="staking.html" class="nav-link">🔒 Стейкінг</a>
+        <a href="faucet.html" class="nav-link">💧 Faucet</a>
+    </div>
+
+    <div class="nav-right">
+        <div class="lang-switcher">
+            <button class="lang-btn active">🇺🇦 UA</button>
+            <button class="lang-btn">🇬🇧 EN</button>
+        </div>
+
+        <div class="wallet-dropdown">
+            <button class="connect-btn" id="connectBtn">Підключити гаманець</button>
+
+            <button class="wallet-avatar-btn" id="walletMenuToggle" hidden>🧑‍💻</button>
+
+            <div class="wallet-menu" id="walletMenu">
+                <div class="wallet-menu-address" id="walletMenuAddress">—</div>
+                <button class="wallet-menu-item" id="walletViewOnExplorer">🔗 Відкрити в Etherscan</button>
+                <button class="wallet-menu-item wallet-menu-item-danger" id="walletDisconnect">🚪 Відключити гаманець</button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <h1 class="page-title">💰 Купівля та продаж ARUB</h1>
+        <p class="page-subtitle">
+            Торгуйте токенами <strong>ANTI RUB (ARUB)</strong> за поточним курсом USD/RUB!<br>
+            Чим слабший рубль, тим дорожчий токен ARUB. Заробляйте на падінні російської валюти 📉
+        </p>
+    </div>
+</section>
+
+<!-- Price & Stats -->
+<section class="stats-section">
+    <div class="container stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">💵</div>
+            <div class="stat-value" id="arubPriceDisplay">81.22 USDT</div>
+            <div class="stat-label">Ціна ARUB</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">📊</div>
+            <div class="stat-value" id="usdRubRate">~81.22</div>
+            <div class="stat-label">Курс USD/RUB</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">📈</div>
+            <div class="stat-value" id="buyFeeDisplay">0.5%</div>
+            <div class="stat-label">Комісія купівлі</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">📉</div>
+            <div class="stat-value" id="sellFeeDisplay">1%</div>
+            <div class="stat-label">Комісія продажу</div>
+        </div>
+    </div>
+</section>
+
+<!-- Info Banner -->
+<section class="container" style="margin-top: 40px;">
+    <div class="info-card">
+        <div class="info-card-header">
+            <div class="info-card-icon">💡</div>
+            <h3>Як працює ціноутворення?</h3>
+        </div>
+        <div class="info-card-body">
+            <p style="color: var(--gray); margin-bottom: 20px; line-height: 1.8;">
+                Ціна токена ARUB прив'язана до курсу <strong style="color: white;">USD/RUB</strong>.
+                Коли російський рубль падає відносно долара, ціна ARUB автоматично зростає!
+            </p>
+            <div class="info-row">
+                <span class="info-label">Механізм:</span>
+                <span class="info-value">1 ARUB ≈ USD/RUB курс</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Купівля:</span>
+                <span class="info-value">Використовує функцію mint() з комісією 0.5%</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Продаж:</span>
+                <span class="info-value">Використовує функцію burn() з комісією 1%</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Trading Interface -->
+<section class="staking-section">
+    <div class="container">
+        <h2 class="section-title">💱 Торгівля токенами</h2>
+
+        <div id="tradingInterface" class="staking-card fade-in-up">
+            <div style="text-align: center; padding: 60px; color: var(--gray);">
+                <div style="font-size: 3em; margin-bottom: 20px;">🔒</div>
+                <p style="font-size: 1.3em;">Підключіть гаманець для торгівлі токенами</p>
+                <button class="btn-primary" style="margin-top: 30px;" onclick="document.getElementById('connectBtn').click()">
+                    Підключити гаманець
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Fee Explanation -->
+<section class="container" style="margin: 60px auto;">
+    <div class="warning-banner" style="background: linear-gradient(135deg, rgba(0,87,183,0.15), rgba(255,215,0,0.1)); border-color: var(--ukraine-yellow);">
+        <div class="warning-icon">⚠️</div>
+        <div class="warning-content">
+            <h3 class="warning-title" style="color: var(--ukraine-yellow);">Важлива інформація про комісії</h3>
+            <ul style="margin-top: 15px; padding-left: 20px; line-height: 2; color: white;">
+                <li><strong>Комісія купівлі (0.5%)</strong> — віднімається з суми USDT перед покупкою ARUB</li>
+                <li><strong>Комісія продажу (1%)</strong> — віднімається з суми USDT після продажу ARUB</li>
+                <li><strong>Gas fees</strong> — потрібен Sepolia ETH для оплати транзакцій</li>
+                <li><strong>Мінімальна сума</strong> — рекомендуємо торгувати від 10 USDT для оптимізації gas</li>
+                <li><strong>Ціна динамічна</strong> — змінюється разом із курсом USD/RUB</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- How to Trade -->
+<section class="container" style="margin: 60px auto;">
+    <h2 class="section-title">❓ Як торгувати?</h2>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 40px; margin-top: 40px;">
+        <!-- Buy Instructions -->
+        <div class="info-card">
+            <div class="info-card-header">
+                <div class="info-card-icon">💰</div>
+                <h3 style="color: #10b981;">Купівля ARUB</h3>
+            </div>
+            <div class="info-card-body">
+                <div class="instruction-steps">
+                    <div class="instruction-step">
+                        <div class="step-number" style="background: linear-gradient(135deg, #10b981, #059669);">1</div>
+                        <div class="step-content">
+                            <h4>Підключіть гаманець</h4>
+                            <p>Переконайтеся, що у вас є USDT та Sepolia ETH для gas.</p>
+                        </div>
+                    </div>
+                    <div class="instruction-step">
+                        <div class="step-number" style="background: linear-gradient(135deg, #10b981, #059669);">2</div>
+                        <div class="step-content">
+                            <h4>Введіть суму USDT</h4>
+                            <p>Виберіть, скільки USDT хочете обміняти на ARUB.</p>
+                        </div>
+                    </div>
+                    <div class="instruction-step">
+                        <div class="step-number" style="background: linear-gradient(135deg, #10b981, #059669);">3</div>
+                        <div class="step-content">
+                            <h4>Перевірте розрахунок</h4>
+                            <p>Система покаже, скільки ARUB ви отримаєте після комісії 0.5%.</p>
+                        </div>
+                    </div>
+                    <div class="instruction-step">
+                        <div class="step-number" style="background: linear-gradient(135deg, #10b981, #059669);">4</div>
+                        <div class="step-content">
+                            <h4>Підтвердіть транзакцію</h4>
+                            <p>Approve USDT (перший раз) та підтвердіть купівлю в гаманці.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sell Instructions -->
+        <div class="info-card">
+            <div class="info-card-header">
+                <div class="info-card-icon">💸</div>
+                <h3 style="color: #ef4444;">Продаж ARUB</h3>
+            </div>
+            <div class="info-card-body">
+                <div class="instruction-steps">
+                    <div class="instruction-step">
+                        <div class="step-number" style="background: linear-gradient(135deg, #ef4444, #dc2626);">1</div>
+                        <div class="step-content">
+                            <h4>Підключіть гаманець</h4>
+                            <p>Переконайтеся, що у вас є ARUB та Sepolia ETH для gas.</p>
+                        </div>
+                    </div>
+                    <div class="instruction-step">
+                        <div class="step-number" style="background: linear-gradient(135deg, #ef4444, #dc2626);">2</div>
+                        <div class="step-content">
+                            <h4>Введіть суму ARUB</h4>
+                            <p>Виберіть, скільки ARUB хочете обміняти на USDT.</p>
+                        </div>
+                    </div>
+                    <div class="instruction-step">
+                        <div class="step-number" style="background: linear-gradient(135deg, #ef4444, #dc2626);">3</div>
+                        <div class="step-content">
+                            <h4>Перевірте розрахунок</h4>
+                            <p>Система покаже, скільки USDT ви отримаєте після комісії 1%.</p>
+                        </div>
+                    </div>
+                    <div class="instruction-step">
+                        <div class="step-number" style="background: linear-gradient(135deg, #ef4444, #dc2626);">4</div>
+                        <div class="step-content">
+                            <h4>Підтвердіть транзакцію</h4>
+                            <p>Approve ARUB (перший раз) та підтвердіть продаж у гаманці.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Example Calculations -->
+<section class="container" style="margin: 60px auto 100px;">
+    <h2 class="section-title">🧮 Приклади розрахунків</h2>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 40px;">
+        <!-- Buy Example -->
+        <div class="next-step-card" style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(5,150,105,0.05)); border-color: #10b981;">
+            <div class="next-step-icon">💰</div>
+            <h3 style="color: #10b981;">Приклад купівлі</h3>
+            <div style="text-align: left; margin-top: 20px;">
+                <div class="info-row">
+                    <span class="info-label">Ви витрачаєте:</span>
+                    <span class="info-value">1,000 USDT</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Комісія (0.5%):</span>
+                    <span class="info-value">-5 USDT</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">До обміну:</span>
+                    <span class="info-value">995 USDT</span>
+                </div>
+                <div class="info-row" style="border-top: 2px solid #10b981; margin-top: 10px; padding-top: 10px;">
+                    <span class="info-label" style="font-weight: 700;">Ви отримаєте:</span>
+                    <span class="info-value" style="font-size: 1.2em; color: #10b981;">~12.25 ARUB</span>
+                </div>
+                <p style="color: var(--gray); font-size: 0.9em; margin-top: 10px; text-align: center;">
+                    *При ціні 81.22 USDT за ARUB
+                </p>
+            </div>
+        </div>
+
+        <!-- Sell Example -->
+        <div class="next-step-card" style="background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(220,38,38,0.05)); border-color: #ef4444;">
+            <div class="next-step-icon">💸</div>
+            <h3 style="color: #ef4444;">Приклад продажу</h3>
+            <div style="text-align: left; margin-top: 20px;">
+                <div class="info-row">
+                    <span class="info-label">Ви продаєте:</span>
+                    <span class="info-value">10 ARUB</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Ціна за ARUB:</span>
+                    <span class="info-value">81.22 USDT</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">До комісії:</span>
+                    <span class="info-value">812.2 USDT</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Комісія (1%):</span>
+                    <span class="info-value">-8.12 USDT</span>
+                </div>
+                <div class="info-row" style="border-top: 2px solid #ef4444; margin-top: 10px; padding-top: 10px;">
+                    <span class="info-label" style="font-weight: 700;">Ви отримаєте:</span>
+                    <span class="info-value" style="font-size: 1.2em; color: #ef4444;">~804.08 USDT</span>
+                </div>
+                <p style="color: var(--gray); font-size: 0.9em; margin-top: 10px; text-align: center;">
+                    *При ціні 81.22 USDT за ARUB
+                </p>
+            </div>
+        </div>
+
+        <!-- Profit Example -->
+        <div class="next-step-card" style="background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(0,87,183,0.05)); border-color: var(--ukraine-yellow);">
+            <div class="next-step-icon">📈</div>
+            <h3 style="color: var(--ukraine-yellow);">Потенційний прибуток</h3>
+            <div style="text-align: left; margin-top: 20px;">
+                <div class="info-row">
+                    <span class="info-label">Купили по:</span>
+                    <span class="info-value">80 USDT/ARUB</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Курс зріс до:</span>
+                    <span class="info-value" style="color: #10b981;">90 USDT/ARUB</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Зростання:</span>
+                    <span class="info-value" style="color: #10b981;">+12.5%</span>
+                </div>
+                <div class="info-row" style="border-top: 2px solid var(--ukraine-yellow); margin-top: 10px; padding-top: 10px;">
+                    <span class="info-label" style="font-weight: 700;">Ваш прибуток:</span>
+                    <span class="info-value" style="font-size: 1.2em; color: #10b981;">+100 USDT</span>
+                </div>
+                <p style="color: var(--gray); font-size: 0.9em; margin-top: 10px; text-align: center;">
+                    *З врахуванням комісій на 10 ARUB
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h4>ANTI RUB</h4>
+            <p>Заробляємо на падінні рубля 🇺🇦</p>
+        </div>
+        <div class="footer-section">
+            <h4>Посилання</h4>
+            <ul class="footer-links">
+                <li><a href="index-new.html">Головна</a></li>
+                <li><a href="trading.html">Торгівля</a></li>
+                <li><a href="staking.html">Стейкінг</a></li>
+                <li><a href="faucet.html">Faucet</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>Контракти</h4>
+            <ul class="footer-links">
+                <li><a href="https://sepolia.etherscan.io/address/0xe4A39E3D2C64C2D3a1d9c7C6B9eB63db55277b71" target="_blank">ARUB Token ↗</a></li>
+                <li><a href="https://sepolia.etherscan.io/address/0x5360400F8B80382017AEE6e4C09c8a935526757B" target="_blank">Staking Contract ↗</a></li>
+                <li><a href="https://sepolia.etherscan.io/address/0x4e6175f449b04e20437b2A2AD8221884Bda38f39" target="_blank">USDT Contract ↗</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        🇺🇦 Slava Ukraini! • Sepolia Testnet • Version 2.0
+    </div>
+</footer>
+
+<!-- JavaScript Module -->
+<script type="module" src="js/app.js"></script>
+
+</body>
+</html>

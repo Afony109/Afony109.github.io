@@ -1,0 +1,127 @@
+/* ===================================
+   Responsive Styles (Mobile-First)
+   =================================== */
+
+@media (max-width: 1000px) {
+    .dashboard-charts {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .dashboard-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    /* Navigation */
+    nav {
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+
+    /* Hero */
+    .hero {
+        padding: 140px var(--spacing-md) var(--spacing-2xl);
+    }
+
+    .hero-title {
+        font-size: 2.5em;
+    }
+
+    .hero-subtitle {
+        font-size: 1.2em;
+    }
+
+    /* Sections */
+    .section-title {
+        font-size: 2em;
+    }
+
+    .staking-section {
+        padding: var(--spacing-2xl) var(--spacing-md);
+    }
+
+    /* Grids */
+    .staking-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* AI Support Widget */
+    .ai-support-chat {
+        width: calc(100vw - 40px);
+        right: var(--spacing-md);
+        bottom: 110px;
+    }
+
+    .ai-support-widget {
+        bottom: var(--spacing-md);
+        right: var(--spacing-md);
+    }
+
+    .ai-support-button {
+        width: 65px;
+        height: 65px;
+    }
+
+    /* Dashboard */
+    .dashboard-hero-title {
+        font-size: 20px;
+    }
+
+    .dashboard-hero-sub {
+        font-size: 12px;
+    }
+
+    .dashboard-hero-metrics {
+        flex-direction: column;
+    }
+
+    .dashboard-hero-metric {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: 2em;
+    }
+
+    .hero-subtitle {
+        font-size: 1em;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        padding: var(--spacing-sm) var(--spacing-lg);
+        font-size: 1em;
+    }
+
+    .logo-text {
+        font-size: 1.4em;
+    }
+
+    .logo-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.5em;
+    }
+
+    .section-title {
+        font-size: 1.8em;
+    }
+
+    .card-title {
+        font-size: 1.4em;
+    }
+
+    .card-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.6em;
+    }
+}

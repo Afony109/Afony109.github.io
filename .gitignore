@@ -1,0 +1,27 @@
+# Игнорируемые файлы
+
+# Node modules
+node_modules/
+
+# Logs
+*.log
+logs/
+
+# OS файлы
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Временные файлы
+*.tmp
+*.temp
+~*
+
+# Скриншоты в Downloads
+Downloads/

@@ -1,0 +1,50 @@
+/* ===================================
+   CSS Variables (Design Tokens)
+   =================================== */
+
+:root {
+    /* Primary Colors (Ukraine Flag) */
+    --primary: #0057B7;
+    --secondary: #0057B7;
+    --accent: #FFD700;
+    --ukraine-blue: #0057B7;
+    --ukraine-yellow: #FFD700;
+
+    /* Neutral Colors - Темніший дизайн як на скріншоті */
+    --dark: #0a0e1a;
+    --dark-secondary: #0f1419;
+    --gray: #9ca3af;
+    --gray-light: #6b7280;
+    --card-bg: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(10, 14, 26, 0.95));
+    --card-bg-hover: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(10, 14, 26, 1));
+
+    /* Status Colors */
+    --red: #ef4444;
+    --green: #10b981;
+
+    /* Spacing - Більше простору */
+    --spacing-xs: 8px;
+    --spacing-sm: 12px;
+    --spacing-md: 20px;
+    --spacing-lg: 28px;
+    --spacing-xl: 40px;
+    --spacing-2xl: 56px;
+
+    /* Border Radius - Більше закруглення */
+    --radius-sm: 10px;
+    --radius-md: 14px;
+    --radius-lg: 18px;
+    --radius-xl: 24px;
+    --radius-full: 999px;
+
+    /* Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+
+    /* Shadows - М'якші та глибші тіні */
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.6);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.7);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.8);
+    --shadow-xl: 0 16px 48px rgba(0,0,0,0.9);
+}

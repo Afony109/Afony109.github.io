@@ -1,0 +1,174 @@
+/* ===================================
+   Base Styles & Layout
+   =================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: radial-gradient(ellipse at top, #0a1628 0%, #050911 50%, #000000 100%);
+    color: #fff;
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+/* Animated Background */
+.bg-animated {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: radial-gradient(circle at 20% 50%, rgba(0, 87, 183, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 215, 0, 0.05) 0%, transparent 50%);
+    opacity: 1;
+}
+
+/* Ukraine Banner */
+.ukraine-banner {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: linear-gradient(90deg, var(--ukraine-blue) 0%, var(--ukraine-blue) 50%, var(--ukraine-yellow) 50%, var(--ukraine-yellow) 100%);
+    padding: 15px 20px;
+    text-align: center;
+    z-index: 2000;
+    box-shadow: var(--shadow-sm);
+}
+
+.ukraine-banner-text {
+    color: white;
+    font-weight: 700;
+    font-size: 1.2em;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    letter-spacing: 0.5px;
+}
+
+.ukraine-flag {
+    font-size: 1.8em;
+    animation: wave 2s ease-in-out infinite;
+}
+
+@keyframes wave {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-10deg); }
+    75% { transform: rotate(10deg); }
+}
+
+/* Navigation */
+nav {
+    position: fixed;
+    top: 60px;
+    width: 100%;
+    padding: var(--spacing-md) var(--spacing-2xl);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    background: rgba(10, 14, 26, 0.96);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0,87,183,0.3);
+    box-shadow: var(--shadow-md);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.logo-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--ukraine-blue), var(--ukraine-yellow));
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8em;
+    font-weight: bold;
+    box-shadow: var(--shadow-md);
+}
+
+.logo-text {
+    font-size: 1.8em;
+    font-weight: bold;
+    background: linear-gradient(45deg, var(--ukraine-blue), var(--ukraine-yellow));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.nav-right {
+    display: flex;
+    gap: var(--spacing-md);
+    align-items: center;
+}
+
+/* Hero Section */
+.hero {
+    padding: 180px var(--spacing-2xl) 100px;
+    text-align: center;
+    position: relative;
+}
+
+.hero-title {
+    font-size: 4em;
+    font-weight: 800;
+    margin-bottom: var(--spacing-lg);
+    background: linear-gradient(45deg, var(--ukraine-blue), var(--ukraine-yellow));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1.2;
+}
+
+.hero-subtitle {
+    font-size: 1.5em;
+    color: var(--gray);
+    margin-bottom: var(--spacing-2xl);
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Sections */
+.stats-section {
+    padding: var(--spacing-2xl) var(--spacing-2xl);
+    background: rgba(0,87,183,0.05);
+    border-top: 1px solid rgba(0,87,183,0.2);
+    border-bottom: 1px solid rgba(0,87,183,0.2);
+}
+
+.staking-section {
+    padding: 100px var(--spacing-2xl);
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 3em;
+    margin-bottom: var(--spacing-2xl);
+    background: linear-gradient(45deg, var(--ukraine-blue), var(--ukraine-yellow));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
