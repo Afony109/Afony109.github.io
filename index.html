@@ -3,51 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANTI RUB - Redirecting...</title>
-    <meta http-equiv="refresh" content="0; url=index-new.html">
+    <title>ANTI RUB - Стейкінг ARUB та USDT 🇺🇦</title>
+
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='50' fill='%230057B7'/><rect y='50' width='100' height='50' fill='%23FFD700'/><text x='50' y='60' font-size='50' text-anchor='middle' fill='white' font-weight='bold'>₴</text></svg>">
-    <script>
-        // Instant redirect
-        window.location.href = 'index-new.html';
-    </script>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(180deg, #0057B7 0%, #0a0a0a 50%, #FFD700 100%);
-            color: white;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            text-align: center;
-        }
-        .loader {
-            font-size: 2em;
-            font-weight: bold;
-        }
-        .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid #FFD700;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/ai-support.css">
+    <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
-    <div>
-        <div class="loader">🇺🇦 ANTI RUB</div>
-        <div class="spinner"></div>
-        <p>Redirecting to main page...</p>
-        <p><a href="index-new.html" style="color: #FFD700;">Click here if not redirected</a></p>
+
+<div class="bg-animated"></div>
+
+<div class="ukraine-banner" id="ukraine-banner">
+    <div class="ukraine-banner-text">
+        <span class="ukraine-flag">🇺🇦</span>
+        <span>Ми за мир у вільній та цілісній Україні!</span>
+        <span class="ukraine-flag">🇺🇦</span>
     </div>
+</div>
+
+<nav>
+    <div class="logo">
+        <div class="logo-icon">₽</div>
+        <div class="logo-text">ANTI RUB</div>
+    </div>
+
+    <div class="nav-links">
+        <a href="index-new.html" class="nav-link active">🏠 Головна</a>
+        <a href="trading.html" class="nav-link">💰 Торгівля</a>
+        <a href="staking.html" class="nav-link">🔒 Стейкінг</a>
+        <a href="faucet.html" class="nav-link">💧 Faucet</a>
+    </div>
+
+    <div class="nav-right">
+        <div class="lang-switcher">
+            <button class="lang-btn active">🇺🇦 UA</button>
+            <button class="lang-btn">🇬🇧 EN</button>
+        </div>
+
+        <div class="wallet-dropdown">
+            <button class="connect-btn" id="connectBtn">Підключити гаманець</button>
+
+            <button class="wallet-avatar-btn" id="walletMenuToggle" hidden>🧑‍💻</button>
+
+            <div class="wallet-menu" id="walletMenu">
+                <div class="wallet-menu-address" id="walletMenuAddress">—</div>
+                <button class="wallet-menu-item" id="walletViewOnExplorer">🔗 Відкрити в Etherscan</button>
+                <button class="wallet-menu-item wallet-menu-item-danger" id="walletDisconnect">🚪 Відключити гаманець</button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="container">
+        <h1 class="hero-title">Заробляємо на падінні рубля</h1>
+        <p class="hero-subtitle">
+            Купуйте та стейкайте токен ANTI RUB (ARUB).  
+            Чим слабший рубль — тим дорожчий ARUB 📈
+        </p>
+
+        <div class="hero-buttons">
+            <a href="trading.html" class="btn-primary">💰 Купити ARUB</a>
+            <a href="staking.html" class="btn-primary">🔒 Стейкінг</a>
+            <a href="#add-token-guide" class="btn-secondary">🦊 Додати токени</a>
+            <a href="faucet.html" class="btn-secondary">💧 Тестові USDT</a>
+        </div>
+    </div>
+</section>
+
+<section class="stats-section">
+    <div class="container stats-grid">
+
+        <div class="stat-card fade-in-up">
+            <div class="stat-icon">📊</div>
+            <div class="stat-value" id="globalTvl">$0</div>
+            <div class="stat-label">TVL</div>
+        </div>
+
+        <div class="stat-card fade-in-up">
+            <div class="stat-icon">📈</div>
+            <div class="stat-value" id="globalApy">24%</div>
+            <div class="stat-label">Поточний APY</div>
+        </div>
+
+        <div class="stat-card fade-in-up">
+            <div class="stat-icon">👥</div>
+            <div class="stat-value" id="globalStakers">0</div>
+            <div class="stat-label">Стейкерів</div>
+        </div>
+
+        <div class="stat-card fade-in-up">
+            <div class="stat-icon">🪙</div>
+            <div class="stat-value" id="globalPrice">81.22 USDT</div>
+            <div class="stat-label">Ціна ARUB</div>
+        </div>
+
+    </div>
+</section>
+
+<section id="add-token-guide" class="staking-section">
+    <div class="container">
+        <h2 class="section-title">Додайте ARUB та USDT</h2>
+        <p class="page-subtitle">Щоб бачити токени в MetaMask</p>
+
+        <div class="staking-grid mt-40">
+
+            <div class="staking-card fade-in-up">
+                <div class="card-header">
+                    <div class="card-icon">🪙</div>
+                    <div>
+                        <div class="card-title">ARUB Token <span class="pool-badge arub">ARUB</span></div>
+                        <div class="stat-label">Антируб — токен проти падіння рубля</div>
+                    </div>
+                </div>
+                <button onclick="addTokenToWallet('ARUB')" class="action-btn">🦊 Додати ARUB</button>
+            </div>
+
+            <div class="staking-card fade-in-up">
+                <div class="card-header">
+                    <div class="card-icon">💵</div>
+                    <div>
+                        <div class="card-title">MockUSDT <span class="pool-badge usdt">Testnet</span></div>
+                        <div class="stat-label">Тестовий USDT для Sepolia</div>
+                    </div>
+                </div>
+                <button onclick="addTokenToWallet('USDT')" class="action-btn">🦊 Додати USDT</button>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<section class="staking-section" id="trading">
+    <div class="container">
+        <h2 class="section-title">Торгівля ARUB</h2>
+
+        <div id="tradingInterface" class="staking-card fade-in-up">
+            <div style="text-align:center; padding:50px;">
+                <div class="stat-icon" style="font-size:3em;">🔒</div>
+                <p>Підключіть гаманець для торгівлі</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="staking-section" id="faucet">
+    <div class="container">
+        <h2 class="section-title">Тестові USDT</h2>
+
+        <div id="faucetInterface" class="staking-card fade-in-up">
+            <div style="text-align:center; padding:50px;">
+                <div class="stat-icon" style="font-size:3em;">🔒</div>
+                <p>Підключіть гаманець для faucet</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="staking-section" id="staking">
+    <div class="container">
+        <h2 class="section-title">Стейкінг</h2>
+
+        <div id="stakingInterface" class="staking-card fade-in-up">
+            <div style="text-align:center; padding:50px;">
+                <div class="stat-icon" style="font-size:3em;">🔒</div>
+                <p>Підключіть гаманець для стейкінгу</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="footer-content">
+
+        <div class="footer-section">
+            <h4>ANTI RUB</h4>
+            <p>Проєкт проти падіння російського рубля 🇺🇦</p>
+        </div>
+
+        <div class="footer-section">
+            <h4>Навігація</h4>
+            <ul class="footer-links">
+                <li><a href="index-new.html">Головна</a></li>
+                <li><a href="trading.html">Торгівля</a></li>
+                <li><a href="staking.html">Стейкінг</a></li>
+                <li><a href="faucet.html">Faucet</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section">
+            <h4>Контракти</h4>
+            <ul class="footer-links">
+                <li><a href="https://sepolia.etherscan.io/address/0xe4A39E3D2C64C2D3a1d9c7C6B9eB63db55277b71" target="_blank">ARUB Token</a></li>
+                <li><a href="https://sepolia.etherscan.io/address/0x5360400F8B80382017AEE6e4C09c8a935526757B" target="_blank">Staking Contract</a></li>
+                <li><a href="https://sepolia.etherscan.io/address/0x4e6175f449b04e20437b2A2AD8221884Bda38f39" target="_blank">USDT Contract</a></li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        🇺🇦 Slava Ukraini! • Sepolia Testnet • Version 2.0
+    </div>
+</footer>
+
+<script type="module" src="js/app.js"></script>
 </body>
 </html>
