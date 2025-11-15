@@ -251,20 +251,17 @@ async function updateGlobalStats() {
             formatTokenAmount(totalSupply) + " ARUB"
         );
 
-        // total supply в USD (totalSupply — BigNumber, переводим в число)
+        // totalSupply уже число или строка → просто парсим
         let totalSupplyTokensNum = 0;
         try {
-            totalSupplyTokensNum = parseFloat(
-                ethers.utils.formatUnits(totalSupply, CONFIG.DECIMALS.ARUB)
-            );
+            totalSupplyTokensNum = parseFloat(totalSupply);
         } catch (e) {
-            console.warn("[APP] Cannot parse totalSupply to number", e);
+            console.warn("[APP] Cannot parse totalSupply", e);
         }
-        if (totalSupplyTokensNum) {
-            setText(
-                "dashTotalSupplyUsd",
-                formatUSD(totalSupplyTokensNum * arubPrice)
-            );
+
+        // если число корректное → показываем
+        if (!isNaN(totalSupplyTokensNum) && totalSupplyTokensNum > 0) {
+            setText("dashTotalSupplyUsd", formatUSD(totalSupplyTokensNum * arubPrice));
         }
 
         // количество стейкеров и цена
