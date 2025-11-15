@@ -241,3 +241,105 @@
     width: 100% !important;
     height: 220px !important;
 }
+
+/* ==== ЕДИНЫЙ СТИЛЬ ДЛЯ ВСЕХ СЕКЦИЙ САЙТА (как дашборд) ==== */
+
+.page-section {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.page-panel {
+    background: var(--card-bg);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-light);
+    box-shadow: none;
+    padding: 26px 24px 26px;
+    position: relative;
+    overflow: hidden;
+}
+
+.page-panel-alt {
+    background: rgba(0,0,0,0.2);
+}
+
+.page-section-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.page-section-subtitle {
+    font-size: 14px;
+    color: var(--gray);
+    max-width: 720px;
+    margin-bottom: 24px;
+}
+
+.page-panel-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 18px;
+}
+
+.page-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.2);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #ddd;
+    margin-bottom: 10px;
+    background: rgba(0,0,0,0.2);
+}
+
+/* карточки внутри новых секций — те же, что в дашборде */
+
+.page-card {
+    background: var(--card-bg);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-light);
+    padding: 18px 18px 16px;
+}
+
+.page-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.page-card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, var(--ukraine-blue), var(--ukraine-yellow));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+
+.page-card-title {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.page-card-text {
+    font-size: 13px;
+    color: var(--gray);
+}
+
+/* немного адаптивности */
+
+@media (max-width: 768px) {
+    .page-section {
+        margin: 30px auto;
+        padding: 0 16px;
+    }
+}
