@@ -134,7 +134,7 @@ async function updateGlobalStats() {
     console.log('[APP] 🔄 Updating global statistics...');
 
     try {
-        // Get all data in parallel from blockchain
+        // 1. Получаем данные с блокчейна
         const [poolStats, arubPrice, totalSupply, detailedStats] = await Promise.all([
             getPoolStats(),
             getArubPrice(),
@@ -142,13 +142,14 @@ async function updateGlobalStats() {
             getDetailedStats()
         ]);
 
-        // Calculate TVL in USD (both USDT and ARUB pools)
-        const tvlUsd = (detailedStats.totalStakedUsdt) + (detailedStats.totalStakedArub * arubPrice);
+        // 2. TVL в USD (USDT + ARUB)
+        const tvlUsd = detailedStats.totalStakedUsdt + detailedStats.totalStakedArub * arubPrice;
 
-        // Get current tier info
+        // 3. Текущий tier (APY)
         const tierInfo = getCurrentTier(tvlUsd);
 
-        // Update DOM elements
+        // --- СТАРЫЙ UI / другие страницы (как у тебя было) ---
+
         const elements = {
             globalTvl: document.getElementById('globalTvl'),
             globalApy: document.getElementById('globalApy'),
@@ -160,7 +161,6 @@ async function updateGlobalStats() {
             totalRewards: document.getElementById('totalRewards')
         };
 
-        // Elements for staking.html (separate staking page)
         const stakingElements = {
             totalTvl: document.getElementById('totalTvl'),
             currentApy: document.getElementById('currentApy'),
@@ -168,7 +168,7 @@ async function updateGlobalStats() {
             arubPrice: document.getElementById('arubPrice')
         };
 
-        // Update main stats
+        // Обновляем блоки, которые уже были в твоём UI
         if (elements.globalTvl) {
             elements.globalTvl.textContent = formatUSD(tvlUsd);
         }
@@ -185,7 +185,6 @@ async function updateGlobalStats() {
             elements.globalArubPrice.textContent = `${arubPrice.toFixed(2)} USDT`;
         }
 
-        // Mirror stats to staking.html if these elements exist
         if (stakingElements.totalTvl) {
             stakingElements.totalTvl.textContent = formatUSD(tvlUsd);
         }
@@ -202,7 +201,6 @@ async function updateGlobalStats() {
             stakingElements.arubPrice.textContent = `${arubPrice.toFixed(2)} USDT`;
         }
 
-        // Update token stats
         if (elements.totalSupplyArub) {
             elements.totalSupplyArub.textContent = formatTokenAmount(totalSupply) + ' ARUB';
         }
@@ -215,83 +213,76 @@ async function updateGlobalStats() {
             elements.totalStakedUsdt.textContent = formatTokenAmount(detailedStats.totalStakedUsdt) + ' USDT';
         }
 
-        if (elements.totalRewards) {
-            const rewardsArub = parseFloat(ethers.utils.formatUnits(poolStats.totalRewardsDistributed, CONFIG.DECIMALS.ARUB));
+        if (elements.totalRewards && poolStats.totalRewardsDistributed) {
+            const rewardsArub = parseFloat(
+                ethers.utils.formatUnits(poolStats.totalRewardsDistributed, CONFIG.DECIMALS.ARUB)
+            );
             elements.totalRewards.textContent = formatTokenAmount(rewardsArub) + ' ARUB';
         }
 
-        // === NEW DASHBOARD (index.html) integration ===
+        // --- НОВЫЙ DASHBOARD, КАК В index (42).html) ---
+
         const setText = (id, val) => {
             const el = document.getElementById(id);
             if (el) el.textContent = val;
         };
 
-        // безопасно получаем количество стейкеров
-        const stakersCount =
-            poolStats && typeof poolStats.totalStakers === "number"
-                ? poolStats.totalStakers
-                : 0;
-        const stakersText = stakersCount.toLocaleString("en-US");
+        // Число стейкеров
+        const stakersCount = typeof poolStats.totalStakers === 'number'
+            ? poolStats.totalStakers
+            : 0;
+        const stakersText = stakersCount.toLocaleString('en-US');
 
-        // HERO сверху
-        setText("dashHeroPrice", "$" + arubPrice.toFixed(2));
-        setText("dashHeroStakers", stakersText);
-        setText("dashHeroApy", (tierInfo.apy / 100).toFixed(1) + "% річних");
+        // Данные для карточек (используем твои уже отформатированные числа)
+        const stakedTokens = detailedStats.totalStakedArub;
+        const stakedUsd = stakedTokens * arubPrice;
 
-        // MAIN CARDS (нижний дашборд)
-        setText("dashTotalStakedUsd", formatUSD(tvlUsd));
+        const supplyTokens = totalSupply;
+        const supplyUsd = supplyTokens * arubPrice;
+
+        // HERO
+        setText('dashHeroPrice', '$' + arubPrice.toFixed(2));
+        setText('dashHeroStakers', stakersText);
+        setText('dashHeroApy', (tierInfo.apy / 100).toFixed(1) + '% річних');
+
+        // Нижние карточки
+        setText('dashTotalStakedUsd', formatUSD(stakedUsd));
         setText(
-            "dashTotalStakedTokens",
-            formatTokenAmount(detailedStats.totalStakedArub) + " ARUB"
+            'dashTotalStakedTokens',
+            formatTokenAmount(stakedTokens) + ' ARUB'
         );
 
-        // total supply в токенах
         setText(
-            "dashTotalSupplyTokens",
-            formatTokenAmount(totalSupply) + " ARUB"
+            'dashTotalSupplyTokens',
+            formatTokenAmount(supplyTokens) + ' ARUB'
         );
 
-        // totalSupply уже число или строка → просто парсим
-        let totalSupplyTokensNum = 0;
-        try {
-            totalSupplyTokensNum = parseFloat(totalSupply);
-        } catch (e) {
-            console.warn("[APP] Cannot parse totalSupply", e);
+        // тут БЕЗ BigNumber — totalSupply уже число
+        if (!isNaN(supplyUsd) && supplyUsd > 0) {
+            setText('dashTotalSupplyUsd', formatUSD(supplyUsd));
         }
 
-        // если число корректное → показываем
-        if (!isNaN(totalSupplyTokensNum) && totalSupplyTokensNum > 0) {
-            setText("dashTotalSupplyUsd", formatUSD(totalSupplyTokensNum * arubPrice));
-        }
+        setText('dashStakersCount', stakersText);
+        setText('dashPriceUsd', '$' + arubPrice.toFixed(4));
 
-        // количество стейкеров и цена
-        setText("dashStakersCount", stakersText);
-        setText("dashPriceUsd", "$" + arubPrice.toFixed(4));
-
-        // источник цены
+        // источник цены (как в index 42)
         const priceSource =
-            (detailedStats && detailedStats.priceSource) || "DexScreener";
+            (detailedStats && detailedStats.priceSource) || 'DexScreener';
 
-        const badgeEl = document.getElementById("dashPriceSourceBadge");
-        if (badgeEl) {
-            badgeEl.textContent = "Джерело: " + priceSource;
-        }
-
-        const hintEl = document.getElementById("dashPriceHint");
-        if (hintEl) {
-            hintEl.textContent =
-                priceSource === "DexScreener"
-                    ? "Ціна напряму з DexScreener (DEX пара ARUB)"
-                    : "Резерв: курс USD/RUB (1 ARUB = USD/RUB)";
-        }
+        setText('dashPriceSourceBadge', 'Джерело: ' + priceSource);
+        const hint =
+            priceSource === 'DexScreener'
+                ? 'Ціна напряму з DexScreener (DEX пара ARUB)'
+                : 'Резерв: курс USD/RUB (1 ARUB = USD/RUB)';
+        setText('dashPriceHint', hint);
 
         // статус загрузки
-        const grid = document.getElementById("dashStatsGrid");
-        const loading = document.getElementById("dashLoadingText");
+        const loading = document.getElementById('dashLoadingText');
+        const grid = document.getElementById('dashStatsGrid');
+        if (loading) loading.textContent = 'Дані успішно оновлено.';
+        if (grid) grid.style.display = 'grid';
 
-        if (loading) loading.textContent = "Дані успішно оновлено.";
-        if (grid) grid.style.display = "grid";
-
+        // Логи для дебага
         console.log('[APP] ✅ Global stats updated successfully!');
         console.log('[APP] 📊 TVL:', formatUSD(tvlUsd));
         console.log('[APP] 📈 APY:', `${(tierInfo.apy / 100).toFixed(1)}%`);
@@ -304,7 +295,7 @@ async function updateGlobalStats() {
     } catch (error) {
         console.error('[APP] ❌ Error updating global stats:', error);
 
-        // Set fallback values with error indicator
+        // в случае ошибки оставляем твой fallback (можно ничего не менять)
         const elements = {
             globalTvl: document.getElementById('globalTvl'),
             globalApy: document.getElementById('globalApy'),
@@ -316,35 +307,10 @@ async function updateGlobalStats() {
             totalRewards: document.getElementById('totalRewards')
         };
 
-        // Elements for staking.html (fallback values)
-        const stakingElements = {
-            totalTvl: document.getElementById('totalTvl'),
-            currentApy: document.getElementById('currentApy'),
-            totalStakers: document.getElementById('totalStakers'),
-            arubPrice: document.getElementById('arubPrice')
-        };
-
-        if (elements.globalTvl) elements.globalTvl.textContent = '$0';
-        if (elements.globalApy) elements.globalApy.textContent = '20.0%';
-        if (elements.globalArubPrice) elements.globalArubPrice.textContent = '81.22 USDT';
-
-        // Mirror fallbacks to staking.html elements
-        if (stakingElements.totalTvl) stakingElements.totalTvl.textContent = '$0';
-        if (stakingElements.currentApy) stakingElements.currentApy.textContent = '20.0%';
-        if (stakingElements.totalStakers) stakingElements.totalStakers.textContent = '0';
-        if (stakingElements.arubPrice) stakingElements.arubPrice.textContent = '81.22 USDT';
-        if (elements.globalStakers) elements.globalStakers.textContent = '0';
-        if (elements.totalSupplyArub) elements.totalSupplyArub.textContent = '0 ARUB';
-        if (elements.totalStakedArub) elements.totalStakedArub.textContent = '0 ARUB';
-        if (elements.totalStakedUsdt) elements.totalStakedUsdt.textContent = '0 USDT';
-        if (elements.totalRewards) elements.totalRewards.textContent = '0 ARUB';
-
-        // === NEW DASHBOARD (index.html) error handling ===
-        const loading = document.getElementById("dashLoadingText");
-        if (loading) {
-            loading.textContent = "Помилка завантаження даних. Спробуємо ще раз...";
-        }
-        // Don't hide the grid on error, keep it visible with placeholders
+        if (elements.globalTvl) elements.globalTvl.textContent = '—';
+        if (elements.globalApy) elements.globalApy.textContent = '—';
+        if (elements.globalArubPrice) elements.globalArubPrice.textContent = '—';
+        if (elements.globalStakers) elements.globalStakers.textContent = '—';
     }
 }
 
