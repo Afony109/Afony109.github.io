@@ -253,12 +253,12 @@ async function updateGlobalStats() {
         };
 
         if (elements.globalTvl) elements.globalTvl.textContent = '$0';
-        if (elements.globalApy) elements.globalApy.textContent = '24%';
+        if (elements.globalApy) elements.globalApy.textContent = '20.0%';
         if (elements.globalArubPrice) elements.globalArubPrice.textContent = '81.22 USDT';
 
         // Mirror fallbacks to staking.html elements
         if (stakingElements.totalTvl) stakingElements.totalTvl.textContent = '$0';
-        if (stakingElements.currentApy) stakingElements.currentApy.textContent = '24%';
+        if (stakingElements.currentApy) stakingElements.currentApy.textContent = '20.0%';
         if (stakingElements.totalStakers) stakingElements.totalStakers.textContent = '0';
         if (stakingElements.arubPrice) stakingElements.arubPrice.textContent = '81.22 USDT';
         if (elements.globalStakers) elements.globalStakers.textContent = '0';
