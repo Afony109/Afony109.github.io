@@ -115,14 +115,6 @@ export async function showWalletSelector() {
 
         // Add detected EIP-6963 wallets
         detectedWallets.forEach((wallet, index) => {
-            const icon = wallet.info.icon || '🦊';
-
-            // Debug logging
-            console.log('[WALLET] Processing wallet:', wallet.info.name);
-            console.log('[WALLET] Icon type:', typeof icon);
-            console.log('[WALLET] Icon length:', icon?.length);
-            console.log('[WALLET] Icon starts with:', icon?.substring(0, 30));
-
             const walletOption = document.createElement('div');
             walletOption.className = 'wallet-option';
             walletOption.dataset.walletIndex = index;
@@ -130,20 +122,23 @@ export async function showWalletSelector() {
             const walletIconDiv = document.createElement('div');
             walletIconDiv.className = 'wallet-icon';
 
-            // Check if icon is a valid data URL or http(s) URL
-            // Support all data: URLs, not just data:image/
-            const isImageUrl = typeof icon === 'string' && icon.length > 20 && (
-                icon.startsWith('data:') ||
-                icon.startsWith('http://') ||
-                icon.startsWith('https://')
-            );
+            // Гарантируем строку без пробелов по краям
+            const iconStr = String(wallet.info.icon || '🦊').trim();
 
-            console.log('[WALLET]', wallet.info.name, '- isImageUrl:', isImageUrl);
+            // Универсальная проверка, что это картинка
+            const isImageUrl =
+                iconStr.startsWith('data:') ||
+                iconStr.startsWith('http://') ||
+                iconStr.startsWith('https://');
+
+            console.log('[WALLET]', wallet.info.name, '- icon:', iconStr.substring(0, 30), '- isImageUrl:', isImageUrl);
+
+            // НИЧЕГО не пишем в textContent до проверки!
 
             if (isImageUrl) {
                 const img = document.createElement('img');
-                img.src = icon;
-                img.alt = wallet.info.name;
+                img.src = iconStr;
+                img.alt = wallet.info.name || 'Wallet icon';
 
                 // Fallback if image fails to load
                 img.onerror = () => {
@@ -157,10 +152,10 @@ export async function showWalletSelector() {
 
                 walletIconDiv.appendChild(img);
             } else {
-                // If icon is emoji or other text
+                // Это emoji или короткий текст
                 const span = document.createElement('span');
                 span.style.fontSize = '2em';
-                span.textContent = icon;
+                span.textContent = iconStr;
                 walletIconDiv.appendChild(span);
             }
 
