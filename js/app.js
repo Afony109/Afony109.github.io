@@ -22,6 +22,104 @@ import {
     setMaxUnstakeArub
 } from './staking-actions.js';
 
+// === DASHBOARD CHARTS STATE (TVL + Price) ===
+let stakedChart = null;
+let priceChart = null;
+const chartLabels = [];
+const chartStakedHistory = [];
+const chartPriceHistory = [];
+
+function updateDashboardCharts(tvlUsd, priceUsd) {
+    if (typeof Chart === 'undefined') {
+        console.warn('[APP] Chart.js is not loaded, skip charts');
+        return;
+    }
+
+    const label = new Date().toLocaleTimeString('uk-UA', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
+
+    chartLabels.push(label);
+    chartStakedHistory.push(tvlUsd);
+    chartPriceHistory.push(priceUsd);
+
+    if (chartLabels.length > 50) {
+        chartLabels.shift();
+        chartStakedHistory.shift();
+        chartPriceHistory.shift();
+    }
+
+    const stakedCanvas = document.getElementById('dashStakedChart');
+    const priceCanvas = document.getElementById('dashPriceChart');
+    if (!stakedCanvas || !priceCanvas) {
+        return; // графики не на этой странице
+    }
+
+    // TVL chart
+    if (!stakedChart) {
+        stakedChart = new Chart(stakedCanvas.getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    label: 'TVL, USD',
+                    data: chartStakedHistory,
+                    fill: true,
+                    tension: 0.35
+                }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { display: false },
+                    y: {
+                        ticks: {
+                            callback: v => '$' + v.toLocaleString('en-US')
+                        }
+                    }
+                }
+            }
+        });
+    } else {
+        stakedChart.data.labels = chartLabels;
+        stakedChart.data.datasets[0].data = chartStakedHistory;
+        stakedChart.update('none');
+    }
+
+    // Price chart
+    if (!priceChart) {
+        priceChart = new Chart(priceCanvas.getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    label: 'Ціна ARUB, USD',
+                    data: chartPriceHistory,
+                    fill: false,
+                    tension: 0.35
+                }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { display: false },
+                    y: {
+                        ticks: {
+                            callback: v => '$' + v.toFixed(3)
+                        }
+                    }
+                }
+            }
+        });
+    } else {
+        priceChart.data.labels = chartLabels;
+        priceChart.data.datasets[0].data = chartPriceHistory;
+        priceChart.update('none');
+    }
+}
+
 /**
  * Initialize the application
  */
@@ -291,6 +389,9 @@ async function updateGlobalStats() {
         console.log('[APP] 💎 Total Supply:', formatTokenAmount(totalSupply), 'ARUB');
         console.log('[APP] 🔒 Staked ARUB:', formatTokenAmount(detailedStats.totalStakedArub), 'ARUB');
         console.log('[APP] 💵 Staked USDT:', formatTokenAmount(detailedStats.totalStakedUsdt), 'USDT');
+
+        // Обновляем графики TVL + Price
+        updateDashboardCharts(tvlUsd, arubPrice);
 
     } catch (error) {
         console.error('[APP] ❌ Error updating global stats:', error);
