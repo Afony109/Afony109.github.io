@@ -238,16 +238,30 @@
             font-weight: 600;
         }
 
-        .lang-btn .ua-letters {
-            background: linear-gradient(180deg, var(--ukraine-blue) 0%, var(--ukraine-yellow) 100%);
+        .ua-letters-big,
+        .ua-letters-small {
+            font-weight: 800;
+            background: linear-gradient(180deg, #0057B7, #FFD700);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-weight: 700;
+            filter: none;
+            opacity: 1;
+        }
+
+        .ua-letters-big {
+            font-size: 0.95em;
+        }
+
+        .ua-letters-small {
+            font-size: 0.70em;
+            display: block;
+            line-height: 1;
+            margin-top: -2px;
         }
 
         .connect-btn {
-            padding: 8px 18px;
-            font-size: 0.85em;
+            padding: 6px 14px;
+            font-size: 0.82em;
             border-radius: 10px;
             background: linear-gradient(135deg, var(--ukraine-blue), var(--ukraine-yellow));
             border: none;
@@ -255,12 +269,12 @@
             font-weight: 600;
             cursor: pointer;
             transition: .25s;
-            height: 38px;
+            height: 34px;
             display: flex;
             align-items: center;
             justify-content: center;
             white-space: nowrap;
-            min-width: 120px;
+            min-width: 90px;
             box-shadow: 0 3px 10px rgba(74, 144, 226, 0.35);
         }
 
@@ -1146,10 +1160,12 @@
     <div class="nav-right">
         <div class="lang-switcher">
             <button class="lang-btn active">
-                🇺🇦 <span class="ua-letters">UA</span>
+                <span class="ua-letters-big">UA</span>
+                <span class="ua-letters-small">UA</span>
             </button>
+
             <button class="lang-btn">
-                🇬🇧 EN
+                <span class="en-letters-big">EN</span>
             </button>
         </div>
         <button class="connect-btn" id="connectBtn">Підключити гаманець</button>
