@@ -25,14 +25,15 @@ body {
 }
 
 /* Animated Background */
+/* Изменён с position: fixed на absolute — фиксит белые вспышки при скролле */
 .bg-animated {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 100vh;       /* достаточно на высоту экрана */
     z-index: -1;
-    background-color: transparent;
+    pointer-events: none;
     background: linear-gradient(180deg, #4a90e2 0%, rgba(74, 144, 226, 0.2) 50%, rgba(96, 165, 250, 0.1) 100%);
     opacity: 0.08;
 }
