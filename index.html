@@ -153,35 +153,33 @@
 
         .main-nav-link {
             padding: 10px 22px;
-            border-radius: 12px;
+            border-radius: 14px;
             font-size: 0.95em;
             font-weight: 600;
+
+            color: #e9eefc;
             text-decoration: none;
             white-space: nowrap;
+            transition: 0.25s ease;
 
-            color: #dfe7ff;
-            transition: 0.22s ease;
+            /* Полированный пластик */
+            background: linear-gradient(180deg, #151d29 0%, #0a0f18 100%);
+            border: 1px solid rgba(255,255,255,0.06);
 
-            background: linear-gradient(145deg, #0b1224, #101a33);
-            border: 1px solid rgba(90,140,255,0.25);
-
-            /* Объём */
+            /* Глянец сверху */
             box-shadow:
-                inset 0 2px 5px rgba(255,255,255,0.06),
-                0 3px 12px rgba(0,0,0,0.65),
-                0 0 12px rgba(70,130,255,0.15);
+                inset 0 1px 0 rgba(255,255,255,0.08),
+                inset 0 -1px 0 rgba(0,0,0,0.4),
+                0 4px 12px rgba(0,0,0,0.55);
         }
 
         .main-nav-link:hover {
-            color: white;
-
-            background: linear-gradient(145deg, #152544, #1f3670);
-
-            /* Неоновое свечение */
+            background: linear-gradient(180deg, #1f2b3d 0%, #0e1520 100%);
             box-shadow:
-                inset 0 1px 2px rgba(255,255,255,0.08),
-                0 5px 18px rgba(70,130,255,0.45),
-                0 0 16px rgba(70,130,255,0.75);
+                inset 0 1px 0 rgba(255,255,255,0.12),
+                inset 0 -1px 0 rgba(0,0,0,0.5),
+                0 6px 18px rgba(70,80,120,0.35);
+            color: white;
         }
 
         .nav-right {
