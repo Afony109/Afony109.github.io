@@ -3,26 +3,19 @@
    =================================== */
 
 :root {
-    /* Primary Colors - Modern Blue Scheme */
     --primary: #4a90e2;
     --secondary: #357abd;
     --accent: #60a5fa;
-    --ukraine-blue: #4a90e2;
-    --ukraine-yellow: #ffd700;  /* <-- настоящий жёлтый */
-
-    /* Neutral Colors - Dark Blue Theme */
     --dark: #0f1628;
-    --dark-secondary: #1a1f3a;
     --gray: #8b94a8;
-    --gray-light: #a0a8b8;
-    --card-bg: rgba(255, 255, 255, 0.03);
-    --card-bg-hover: rgba(255, 255, 255, 0.05);
-
-    /* Status Colors */
     --red: #ef4444;
-    --green: #10b981;
+    --card-bg: rgba(255,255,255,0.03);
 
-    /* Spacing - Більше простору */
+    /* СИНИЙ + ЖЁЛТЫЙ */
+    --ukraine-blue: #4a90e2;
+    --ukraine-yellow: #ffd700; /* БЫЛО #60a5fa — это НЕ ЖЁЛТЫЙ, а голубой */
+
+    /* Spacing */
     --spacing-xs: 8px;
     --spacing-sm: 12px;
     --spacing-md: 20px;
@@ -30,7 +23,7 @@
     --spacing-xl: 40px;
     --spacing-2xl: 56px;
 
-    /* Border Radius - Modern Medium Roundness */
+    /* Border Radius */
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 15px;
@@ -42,7 +35,7 @@
     --transition-normal: 0.3s ease;
     --transition-slow: 0.5s ease;
 
-    /* Shadows - Blue Glow Shadows */
+    /* Shadows */
     --shadow-sm: 0 2px 8px rgba(74, 144, 226, 0.1);
     --shadow-md: 0 4px 15px rgba(74, 144, 226, 0.15);
     --shadow-lg: 0 8px 20px rgba(74, 144, 226, 0.2);
@@ -51,4 +44,10 @@
     /* Border Colors */
     --border-light: rgba(255, 255, 255, 0.1);
     --border-medium: rgba(255, 255, 255, 0.15);
+
+    /* Status Colors */
+    --green: #10b981;
+    --dark-secondary: #1a1f3a;
+    --gray-light: #a0a8b8;
+    --card-bg-hover: rgba(255, 255, 255, 0.05);
 }
