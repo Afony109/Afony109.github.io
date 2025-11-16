@@ -76,17 +76,21 @@ body {
 /* Navigation */
 nav {
     position: fixed;
-    top: 60px;
+    top: 0;
     width: 100%;
-    padding: var(--spacing-md) 20px var(--spacing-md) var(--spacing-2xl);
+    padding-left: calc((100vw - 1200px) / 2 + 20px);
+    padding-right: calc((100vw - 1200px) / 2 + 20px);
+    padding-top: 20px;
+    padding-bottom: 20px;
+
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     z-index: 1000;
-    background: rgba(15, 22, 40, 0.95);
+    background: rgba(15,22,40,0.95);
     backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border-light);
-    box-shadow: none;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
 .logo {
