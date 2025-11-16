@@ -112,12 +112,11 @@ nav {
     box-shadow: var(--shadow-md);
 }
 
+/* убиваем старый градиент, который перекрывал цвета */
 .logo-text {
-    font-size: 1.8em;
-    font-weight: bold;
-    background: linear-gradient(45deg, var(--ukraine-blue), var(--ukraine-yellow));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    -webkit-text-fill-color: initial !important;
     display: flex;
     flex-direction: column;
     line-height: 1;
