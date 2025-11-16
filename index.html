@@ -139,6 +139,39 @@
             -webkit-text-fill-color: transparent;
         }
 
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 18px;
+            align-items: center;
+        }
+
+        .main-nav-link {
+            padding: 8px 16px;
+            border-radius: 999px;
+            font-size: 0.95em;
+            font-weight: 600;
+            color: var(--gray);
+            text-decoration: none;
+            transition: all 0.25s;
+            border: 1px solid rgba(255,255,255,0.14);
+            background: rgba(255,255,255,0.04);
+            backdrop-filter: blur(10px);
+            white-space: nowrap;
+        }
+
+        .main-nav-link:hover {
+            color: #ffffff;
+            border-color: var(--ukraine-blue);
+            background: rgba(0,87,183,0.35);
+            box-shadow: 0 0 16px rgba(0,87,183,0.45);
+        }
+
         .nav-right {
             display: flex;
             gap: 20px;
@@ -598,6 +631,10 @@
                 padding: 15px 20px;
             }
 
+            .main-nav {
+                display: none;
+            }
+
             .hero {
                 padding: 140px 20px 60px;
             }
@@ -952,6 +989,30 @@
             font-size: 2.5em;
             margin-bottom: 10px;
         }
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .faq-item {
+            background: rgba(0,0,0,0.72);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.12);
+            padding: 14px 16px;
+        }
+
+        .faq-question {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .faq-answer {
+            font-size: 13px;
+            color: var(--gray);
+            line-height: 1.6;
+        }
         .footer {
             background: rgba(10, 14, 26, 0.7);
             border-top: 1px solid rgba(0,87,183,0.3);
@@ -1012,10 +1073,22 @@
 </div>
 
 <nav>
-    <div class="logo">
-        <div class="logo-icon">₽</div>
-        <div class="logo-text">ANTI RUB</div>
+    <div class="nav-left">
+        <div class="logo">
+            <div class="logo-icon">₽</div>
+            <div class="logo-text">ANTI RUB</div>
+        </div>
+
+        <div class="main-nav">
+            <a href="#trading" class="main-nav-link">Купити</a>
+            <a href="#trading" class="main-nav-link">Продати</a>
+            <a href="#staking" class="main-nav-link">Стейкінг</a>
+            <a href="#stats" class="main-nav-link">Статистика</a>
+            <a href="#docs" class="main-nav-link">Документація</a>
+            <a href="#faq" class="main-nav-link">Питання</a>
+        </div>
     </div>
+
     <div class="nav-right">
         <div class="lang-switcher">
             <button class="lang-btn active">🇺🇦 UA</button>
@@ -1026,7 +1099,7 @@
 </nav>
 
 <!-- ANTI RUB SOLID DASHBOARD (новий дизайн зверху сторінки) -->
-<section class="dashboard-section" id="antirub-dashboard">
+<section class="dashboard-section" id="stats">
     <div class="dashboard-grid">
         <div class="dashboard-panel">
             <div class="dashboard-hero-ring"></div>
@@ -1235,6 +1308,133 @@
                     <p>Підключіть гаманець для стейкінгу</p>
                 </div>
             </div>
+        </div>
+    </div>
+</section>
+
+<section class="staking-section" id="docs">
+    <div class="page-section">
+        <div class="page-panel">
+            <div class="page-pill">
+                📚 <span>Документація</span>
+            </div>
+            <h2 class="page-section-title">Документація ANTI RUB</h2>
+            <p class="page-section-subtitle">
+                Тут зібрані основні посилання та пояснення: як працює токен, стейкінг,
+                ризики та юридичні моменти. Ви можете змінити/доповнити текст під свій проєкт.
+            </p>
+
+            <div class="page-panel-grid">
+
+                <div class="page-card">
+                    <div class="page-card-header">
+                        <div class="page-card-icon">📄</div>
+                        <div>
+                            <div class="page-card-title">Whitepaper / концепція</div>
+                            <div class="page-card-text">
+                                Опис ідеї ANTI RUB, економіка токена, логіка стейкінгу та джерела доходу.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="page-card-text">
+                        <strong>Приклад:</strong> додайте посилання на PDF або окрему сторінку з детальним описом
+                        (whitepaper, litepaper тощо).
+                    </div>
+                </div>
+
+                <div class="page-card">
+                    <div class="page-card-header">
+                        <div class="page-card-icon">🧮</div>
+                        <div>
+                            <div class="page-card-title">Модель APY та рівні</div>
+                            <div class="page-card-text">
+                                Як рахується APY, що таке рівні (tiers) і чому від загального стейку залежить дохідність.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="page-card-text">
+                        Коротко опишіть формулу, приклади розрахунків та обмеження. Можна дати посилання на GitHub
+                        з кодом контрактів.
+                    </div>
+                </div>
+
+                <div class="page-card">
+                    <div class="page-card-header">
+                        <div class="page-card-icon">⚖️</div>
+                        <div>
+                            <div class="page-card-title">Ризики та дисклеймер</div>
+                            <div class="page-card-text">
+                                Стандартне попередження про ризики, волатильність та відсутність гарантій прибутку.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="page-card-text">
+                        Напишіть чесний дисклеймер: це не фінансова порада, користувач сам несе відповідальність
+                        за свої рішення. Можна винести на окрему сторінку Terms of Use.
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="staking-section" id="faq">
+    <div class="page-section">
+        <div class="page-panel page-panel-alt">
+            <div class="page-pill">
+                ❓ <span>Питання</span>
+            </div>
+            <h2 class="page-section-title">Часті запитання (FAQ)</h2>
+            <p class="page-section-subtitle">
+                Якщо ви тільки знайомитеся з ANTI RUB, почніть з цих питань. Текст можна змінити під свою аудиторію.
+            </p>
+
+            <div class="faq-list">
+
+                <div class="faq-item">
+                    <div class="faq-question">Що таке ANTI RUB (ARUB)?</div>
+                    <div class="faq-answer">
+                        Це токен, прив'язаний до ідеї «заробляти на падінні рубля». Ви можете купувати ARUB,
+                        стейкати його або використовувати як інструмент для тестування механік DeFi у мережі Sepolia.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">Чи потрібні реальні гроші для тесту?</div>
+                    <div class="faq-answer">
+                        Ні. На цій версії працює тестнет Sepolia. Ви можете отримати тестові USDT через Faucet
+                        та взаємодіяти з контрактами без реальних коштів (але мережевий gas у вигляді Sepolia ETH все ж потрібен).
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">Як працює стейкінг ARUB та USDT?</div>
+                    <div class="faq-answer">
+                        Ви можете застейкати або USDT, або ARUB в окремі пули. Винагороди нараховуються в ARUB за поточним APY,
+                        який залежить від загальної суми застейканих активів у доларах. Деталі — у розділі «Стейкінг».
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">Чи можна втратити гроші?</div>
+                    <div class="faq-answer">
+                        Так, будь-які криптоактиви несуть ризики: волатильність цін, помилки смарт-контрактів,
+                        ризики мережі. Використовуйте тільки ту суму, яку готові втратити, і обов'язково читайте дисклеймер.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">Де подивитися код контрактів?</div>
+                    <div class="faq-answer">
+                        Посилання на контракти є у футері та в розділі «Статистика». Ви можете перевірити їх на
+                        Etherscan та (за бажанням) прив'язати репозиторій GitHub.
+                    </div>
+                </div>
+
+            </div>
+
         </div>
     </div>
 </section>
