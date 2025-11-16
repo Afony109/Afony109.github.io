@@ -10,11 +10,15 @@
 
 html {
     scroll-behavior: smooth;
+    /* ВАЖНО: красим сам корень документа, чтобы нигде не было белого */
+    background: #050816;
+    background-image: linear-gradient(135deg, #1a1f3a 0%, #0f1628 100%);
 }
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #1a1f3a 0%, #0f1628 100%);
+    /* фон уже на html, здесь делаем прозрачным, чтобы не конфликтовать */
+    background: transparent;
     color: #e0e6ed;
     overflow-x: hidden;
     line-height: 1.6;
@@ -28,6 +32,7 @@ body {
     width: 100%;
     height: 100%;
     z-index: -1;
+    background-color: transparent;
     background: linear-gradient(180deg, #4a90e2 0%, rgba(74, 144, 226, 0.2) 50%, rgba(96, 165, 250, 0.1) 100%);
     opacity: 0.08;
 }
@@ -170,15 +175,4 @@ nav {
     background: linear-gradient(45deg, var(--ukraine-blue), var(--ukraine-yellow));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-}
-
-/* ===================================
-   Fixed Background - Prevent White Flash
-   =================================== */
-html, body {
-    min-height: 100%;
-    background-color: #050816 !important;
-    background-image: linear-gradient(135deg, #1a1f3a 0%, #0f1628 100%);
-    background-attachment: fixed;
-    color: #e0e6ed;
 }
