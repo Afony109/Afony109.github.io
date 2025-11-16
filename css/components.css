@@ -40,10 +40,20 @@
 }
 
 .connect-btn {
-    padding: var(--spacing-sm) var(--spacing-lg);
+    padding: 8px 16px !important; /* было больше – уменьшаем */
+    font-size: 0.85em !important;
+    border-radius: 10px;
+
+    /* фиксируем высоту — чтобы не прыгала */
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    white-space: nowrap; /* чтобы текст не растягивал кнопку */
+
     background: linear-gradient(135deg, var(--ukraine-blue), var(--ukraine-yellow));
     border: none;
-    border-radius: var(--radius-sm);
     color: white;
     font-weight: 600;
     cursor: pointer;
