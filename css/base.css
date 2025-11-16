@@ -120,6 +120,8 @@ nav {
     display: flex;
     gap: var(--spacing-md);
     align-items: center;
+    margin-left: auto;
+    padding-right: 0;
 }
 
 /* Hero Section */
