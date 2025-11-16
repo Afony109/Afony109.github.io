@@ -238,6 +238,13 @@
             font-weight: 600;
         }
 
+        .lang-btn .ua-letters {
+            background: linear-gradient(180deg, var(--ukraine-blue) 0%, var(--ukraine-yellow) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
         .connect-btn {
             padding: 8px 18px;
             font-size: 0.85em;
@@ -1138,8 +1145,12 @@
 
     <div class="nav-right">
         <div class="lang-switcher">
-            <button class="lang-btn active">🇺🇦 UA</button>
-            <button class="lang-btn">🇬🇧 EN</button>
+            <button class="lang-btn active">
+                🇺🇦 <span class="ua-letters">UA</span>
+            </button>
+            <button class="lang-btn">
+                🇬🇧 EN
+            </button>
         </div>
         <button class="connect-btn" id="connectBtn">Підключити гаманець</button>
     </div>
