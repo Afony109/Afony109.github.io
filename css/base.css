@@ -118,6 +118,26 @@ nav {
     background: linear-gradient(45deg, var(--ukraine-blue), var(--ukraine-yellow));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+}
+
+/* ANTI — синий */
+.logo-text-top {
+    font-size: 1.25em;
+    font-weight: 700;
+    color: var(--ukraine-blue); /* синий */
+    letter-spacing: 0.06em;
+}
+
+/* RUB — жёлтый */
+.logo-text-bottom {
+    font-size: 1.1em;
+    font-weight: 700;
+    color: var(--ukraine-yellow); /* жёлтый */
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
 }
 
 .nav-right {
