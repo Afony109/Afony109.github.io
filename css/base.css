@@ -78,7 +78,7 @@ nav {
     position: fixed;
     top: 60px;
     width: 100%;
-    padding: var(--spacing-md) var(--spacing-2xl);
+    padding: var(--spacing-md) 20px var(--spacing-md) var(--spacing-2xl);
     display: flex;
     justify-content: space-between;
     align-items: center;
