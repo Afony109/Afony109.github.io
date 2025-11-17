@@ -1228,7 +1228,7 @@
             <a href="#trading" class="main-nav-link">Купити</a>
             <a href="#trading" class="main-nav-link">Продати</a>
             <a href="#staking" class="main-nav-link">Стейкінг</a>
-            <a href="#stats" class="main-nav-link">Статистика</a>
+            <a href="#stats-section" class="main-nav-link">Статистика</a>
             <a href="#docs" class="main-nav-link">Документація</a>
             <a href="#faq" class="main-nav-link">Питання</a>
         </div>
@@ -1257,7 +1257,7 @@
 </nav>
 
 <!-- ANTI RUB SOLID DASHBOARD -->
-<section class="dashboard-section" id="stats">
+<section class="dashboard-section" id="stats-section">
     <div class="dashboard-grid">
         <div class="dashboard-panel">
             <div class="dashboard-hero-ring"></div>
@@ -1698,6 +1698,19 @@
     window.addEventListener("load", () => {
         document.body.classList.add("page-ready");
     });
+</script>
+
+<script>
+document.querySelector('a[href="#stats-section"]').addEventListener('click', function (e) {
+    e.preventDefault();
+    const block = document.getElementById('stats-section');
+    const top = block.getBoundingClientRect().top + window.pageYOffset - 100; // отступ под фиксированную шапку
+
+    window.scrollTo({
+        top: top,
+        behavior: 'smooth'
+    });
+});
 </script>
 </body>
 </html>
