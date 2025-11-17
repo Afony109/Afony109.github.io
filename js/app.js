@@ -451,6 +451,7 @@ function setupScrollAnimations() {
 // Wallet functions
 window.connectWallet = connectWallet;
 window.disconnectWallet = disconnectWallet;
+window.addTokenToWallet = addTokenToWallet;
 window.addArubToMetaMask = () => addTokenToWallet('ARUB');
 window.addUsdtToMetaMask = () => addTokenToWallet('USDT');
 window.copyTokenAddress = () => copyToClipboard(CONFIG.TOKEN_ADDRESS, '✅ Адресу токена скопійовано!');
