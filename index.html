@@ -211,7 +211,7 @@
             display: flex;
             align-items: center;
             gap: 14px;
-            margin-left: auto;
+            margin-left: 20px;
             margin-right: 12px;
         }
 
@@ -267,13 +267,15 @@
         }
 
         .connect-btn {
-            padding: 8px 14px;
+            width: 175px !important;
+            height: 42px;
+            padding: 0;
             font-size: 0.85em;
             border-radius: 14px;
             font-weight: 600;
             white-space: nowrap;
-            height: 38px;
-            min-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
 
             /* стиль как у карточек стейкинга */
             border: 1px solid rgba(255,255,255,0.16);
