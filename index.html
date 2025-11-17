@@ -1135,46 +1135,46 @@
             color: var(--gray);
         }
 
-        /* Wallet menu dropdown */
-        .wallet-menu {
+        /* Wallet button area */
+        .wallet-button-area {
             position: relative;
+            display: inline-block;
         }
 
-        .wallet-menu-dropdown {
+        .wallet-dropdown {
             position: absolute;
             right: 0;
             top: calc(100% + 6px);
-            min-width: 190px;
-
-            background: rgba(7, 11, 22, 0.98);
-            border-radius: 14px;
+            background: rgba(15, 22, 40, 0.98);
             border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 14px;
             box-shadow: 0 14px 30px rgba(0,0,0,0.7);
-
-            padding: 6px;
             display: none;
-            z-index: 1200;
+            min-width: 180px;
+            padding: 6px;
+            z-index: 9999;
         }
 
-        .wallet-menu-dropdown.open {
+        /* Показывается только если кнопка в состоянии connected И держим курсор */
+        .wallet-button-area.connected:hover .wallet-dropdown {
             display: block;
         }
 
-        .wallet-menu-dropdown button {
+        .wallet-dropdown button {
             width: 100%;
-            padding: 8px 10px;
-            border-radius: 10px;
+            padding: 10px 14px;
             background: transparent;
             border: none;
             color: #e9eefc;
-            font-size: 0.85em;
             text-align: left;
             cursor: pointer;
+            border-radius: 10px;
             transition: 0.2s ease;
+            font-size: 0.85em;
         }
 
-        .wallet-menu-dropdown button:hover {
-            background: rgba(255,255,255,0.06);
+        .wallet-dropdown button:hover {
+            background: rgba(255,255,255,0.05);
             color: #ff6b6b;
         }
     </style>
@@ -1223,13 +1223,11 @@
             </button>
         </div>
 
-        <div class="wallet-menu">
-            <button class="connect-btn" id="connectBtn">Підключити гаманець</button>
+        <div class="wallet-button-area">
+            <button id="connectBtn" class="connect-btn">Підключити гаманець</button>
 
-            <div class="wallet-menu-dropdown" id="walletDropdown">
-                <button type="button" id="walletDisconnectBtn">
-                    Відключити гаманець
-                </button>
+            <div class="wallet-dropdown" id="walletDropdown">
+                <button id="disconnectWalletBtn">Відключити гаманець</button>
             </div>
         </div>
     </div>
@@ -1611,67 +1609,34 @@
 </footer>
 
 <script>
-    const connectBtn          = document.getElementById('connectBtn');
-    const walletDropdown      = document.getElementById('walletDropdown');
-    const walletDisconnectBtn = document.getElementById('walletDisconnectBtn');
+    const connectBtn = document.getElementById("connectBtn");
+    const dropdown = document.getElementById("walletDropdown");
+    const disconnectBtn = document.getElementById("disconnectWalletBtn");
+    const walletArea = document.querySelector(".wallet-button-area");
 
-    let isWalletConnected = false;
-    let currentWalletAddress = null;
-
-    function shortenAddress(addr) {
-        if (!addr) return '';
-        return addr.slice(0, 6) + '...' + addr.slice(-4);
-    }
-
-    // Эти функции будет вызывать wallet.js
-    window.onWalletConnected = function (address) {
-        isWalletConnected    = true;
-        currentWalletAddress = address;
-        connectBtn.textContent = shortenAddress(address);
-        connectBtn.classList.add('connected');
-        walletDropdown.classList.remove('open');
+    // Вызывается из wallet.js
+    window.onWalletConnected = function(address) {
+        connectBtn.textContent = address.slice(0,6) + "..." + address.slice(-4);
+        walletArea.classList.add("connected");
     };
 
-    window.onWalletDisconnected = function () {
-        isWalletConnected    = false;
-        currentWalletAddress = null;
-        connectBtn.textContent = 'Підключити гаманець';
-        connectBtn.classList.remove('connected');
-        walletDropdown.classList.remove('open');
+    // Вызывается из wallet.js
+    window.onWalletDisconnected = function() {
+        connectBtn.textContent = "Підключити гаманець";
+        walletArea.classList.remove("connected");
     };
 
-    // Клик по кнопке в шапке
-    connectBtn.addEventListener('click', () => {
-        if (!isWalletConnected) {
-            // вызывaем уже существующую функцию подключения
-            if (window.connectWallet) {
-                window.connectWallet();
-            }
-        } else {
-            // просто открыть / закрыть меню
-            walletDropdown.classList.toggle('open');
+    // Кнопка — запуск подключения
+    connectBtn.addEventListener("click", () => {
+        if (!walletArea.classList.contains("connected")) {
+            if (window.connectWallet) window.connectWallet();
         }
     });
 
-    // Кнопка "Відключити гаманець" в меню
-    walletDisconnectBtn.addEventListener('click', () => {
-        walletDropdown.classList.remove('open');
-
-        // если в wallet.js есть реальное disconnect — вызываем
-        if (window.disconnectWallet) {
-            window.disconnectWallet();
-        }
-
-        // на всякий случай обновляем UI
+    // Отключение
+    disconnectBtn.addEventListener("click", () => {
+        if (window.disconnectWallet) window.disconnectWallet();
         window.onWalletDisconnected();
-    });
-
-    // Закрываем меню при клике вне
-    document.addEventListener('click', (e) => {
-        if (!walletDropdown) return;
-        if (!walletDropdown.contains(e.target) && !connectBtn.contains(e.target)) {
-            walletDropdown.classList.remove('open');
-        }
     });
 </script>
 

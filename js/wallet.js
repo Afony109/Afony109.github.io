@@ -35,48 +35,6 @@ export function initWalletModule() {
         connectBtn.addEventListener('click', connectWallet);
     }
 
-    // Элементы меню кошелька
-    const walletMenuToggle = document.getElementById('walletMenuToggle');
-    const walletDisconnectBtn = document.getElementById('walletDisconnect');
-    const walletViewOnExplorerBtn = document.getElementById('walletViewOnExplorer');
-
-    // Кнопка-аватар открывает/закрывает меню
-    if (walletMenuToggle) {
-        walletMenuToggle.addEventListener('click', (e) => {
-            e.stopPropagation();
-            toggleWalletMenu();
-        });
-    }
-
-    // Пункт "Відключити гаманець"
-    if (walletDisconnectBtn) {
-        walletDisconnectBtn.addEventListener('click', async () => {
-            await disconnectWallet();
-            closeWalletMenu();
-        });
-    }
-
-    // Пункт "Відкрити в Etherscan"
-    if (walletViewOnExplorerBtn) {
-        walletViewOnExplorerBtn.addEventListener('click', () => {
-            if (!userAddress) return;
-            const url = getEtherscanLink(userAddress, 'address');
-            window.open(url, '_blank');
-            closeWalletMenu();
-        });
-    }
-
-    // Закрывать меню по клику вне
-    document.addEventListener('click', (e) => {
-        const menu = document.getElementById('walletMenu');
-        const toggle = document.getElementById('walletMenuToggle');
-        if (!menu || !toggle) return;
-
-        if (!menu.contains(e.target) && !toggle.contains(e.target)) {
-            menu.classList.remove('is-open');
-        }
-    });
-
     // Check if already connected
     if (window.ethereum && window.ethereum.selectedAddress) {
         console.log('[WALLET] Already connected:', window.ethereum.selectedAddress);
@@ -401,45 +359,15 @@ function handleChainChanged(chainId) {
     }, 1000);
 }
 
-/**
- * Toggle wallet menu visibility
- */
-function toggleWalletMenu() {
-    const menu = document.getElementById('walletMenu');
-    if (menu) {
-        menu.classList.toggle('is-open');
-    }
-}
-
-/**
- * Close wallet menu
- */
-function closeWalletMenu() {
-    const menu = document.getElementById('walletMenu');
-    if (menu) {
-        menu.classList.remove('is-open');
-    }
-}
 
 /**
  * Update UI to show connected state
  */
 function updateConnectedUI() {
     const connectBtn = document.getElementById('connectBtn');
-    const walletMenuToggle = document.getElementById('walletMenuToggle');
-    const walletMenuAddress = document.getElementById('walletMenuAddress');
 
     if (connectBtn && userAddress) {
         connectBtn.textContent = shortenAddress(userAddress);
-        connectBtn.style.background = 'linear-gradient(45deg, #10b981, #00ff7f)';
-    }
-
-    if (walletMenuToggle) {
-        walletMenuToggle.hidden = false; // показать аватар
-    }
-
-    if (walletMenuAddress && userAddress) {
-        walletMenuAddress.textContent = shortenAddress(userAddress);
     }
 
     // Notify global wallet menu
@@ -471,20 +399,6 @@ export async function disconnectWallet() {
  * Reset wallet state on disconnect
  */
 function resetWalletState() {
-    const walletMenuToggle = document.getElementById('walletMenuToggle');
-    const walletMenuAddress = document.getElementById('walletMenuAddress');
-    const walletMenu = document.getElementById('walletMenu');
-
-    if (walletMenuToggle) {
-        walletMenuToggle.hidden = true;
-    }
-    if (walletMenuAddress) {
-        walletMenuAddress.textContent = '—';
-    }
-    if (walletMenu) {
-        walletMenu.classList.remove('is-open');
-    }
-
     userAddress = null;
     provider = null;
     signer = null;
@@ -497,7 +411,6 @@ function resetWalletState() {
     const connectBtn = document.getElementById('connectBtn');
     if (connectBtn) {
         connectBtn.textContent = 'Підключити гаманець';
-        connectBtn.style.background = '';
     }
 
     // Notify global wallet menu
