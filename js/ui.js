@@ -3,6 +3,9 @@
  * Handles UI updates, notifications, and common UI functions
  */
 
+// Import ethers.js as ES module
+import { ethers } from 'https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.esm.min.js';
+
 import { CONFIG } from './config.js';
 
 /**

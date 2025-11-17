@@ -3,6 +3,9 @@
  * Handles stake, unstake, and claim operations
  */
 
+// Import ethers.js as ES module
+import { ethers } from 'https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.esm.min.js';
+
 import { CONFIG } from './config.js';
 import { showNotification, getErrorMessage } from './ui.js';
 import { getContracts, checkUsdtAllowance, checkArubAllowance, approveUsdt, approveArub } from './contracts.js';

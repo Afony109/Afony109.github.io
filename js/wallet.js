@@ -3,6 +3,9 @@
  * Handles wallet connection, network switching, and EIP-6963 wallet detection
  */
 
+// Import ethers.js as ES module
+import { ethers } from 'https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.esm.min.js';
+
 import { CONFIG, shortenAddress, getEtherscanLink } from './config.js';
 import { showNotification } from './ui.js';
 import { initializeContracts } from './contracts.js';

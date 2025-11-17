@@ -3,6 +3,9 @@
  * Initializes all modules and manages global state
  */
 
+// Import ethers.js as ES module
+import { ethers } from 'https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.esm.min.js';
+
 import { CONFIG, getCurrentTier } from './config.js';
 import { initWalletModule, addTokenToWallet } from './wallet.js';
 import { initTradingModule, buyTokens, sellTokens, setMaxBuy, setMaxSell } from './trading.js';
