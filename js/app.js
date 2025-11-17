@@ -379,7 +379,7 @@ async function updateGlobalStats() {
 
         // статус загрузки
         const loading = document.getElementById('dashLoadingText');
-        const grid = document.getElementById('stats-section');
+        const grid = document.getElementById('stats');
         if (loading) loading.textContent = 'Дані успішно оновлено.';
         if (grid) grid.style.display = 'grid';
 

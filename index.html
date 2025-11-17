@@ -1159,6 +1159,11 @@
             color: var(--gray);
         }
 
+        /* Stats scroll margin */
+        #stats {
+            scroll-margin-top: 90px;
+        }
+
         /* Wallet button area */
         .wallet-button-area {
             position: relative;
@@ -1228,7 +1233,7 @@
             <a href="#trading" class="main-nav-link">Купити</a>
             <a href="#trading" class="main-nav-link">Продати</a>
             <a href="#staking" class="main-nav-link">Стейкінг</a>
-            <a href="#stats-section" class="main-nav-link">Статистика</a>
+            <a href="#stats" class="main-nav-link">Статистика</a>
             <a href="#docs" class="main-nav-link">Документація</a>
             <a href="#faq" class="main-nav-link">Питання</a>
         </div>
@@ -1315,7 +1320,7 @@
         <span id="dashLoadingText">Завантаження даних з блокчейну...</span>
     </div>
 
-    <div class="dashboard-stats-grid" id="stats-section">
+    <div class="dashboard-stats-grid" id="stats">
         <article class="dashboard-stat-card">
             <div class="dashboard-stat-label">💰 Всього застейкано</div>
             <div class="dashboard-stat-value" id="dashTotalStakedUsd">—</div>
@@ -1700,19 +1705,5 @@
     });
 </script>
 
-<script>
-document.querySelector('a[href="#stats-section"]').addEventListener('click', function (e) {
-    e.preventDefault();
-    const block = document.getElementById('stats-section');
-
-    const top = block.getBoundingClientRect().top + window.pageYOffset - 80;
-    // ▲ ставим -80, чтобы карточки были видны полностью и ровно под меню
-
-    window.scrollTo({
-        top: top,
-        behavior: 'smooth'
-    });
-});
-</script>
 </body>
 </html>
