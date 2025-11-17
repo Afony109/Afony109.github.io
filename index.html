@@ -1155,8 +1155,7 @@
             z-index: 9999;
         }
 
-        /* Показывается только если кнопка в состоянии connected И держим курсор */
-        .wallet-button-area.connected:hover .wallet-dropdown {
+        .wallet-dropdown.show {
             display: block;
         }
 
@@ -1610,33 +1609,60 @@
 
 <script>
     const connectBtn = document.getElementById("connectBtn");
+    const walletArea = document.querySelector(".wallet-button-area");
     const dropdown = document.getElementById("walletDropdown");
     const disconnectBtn = document.getElementById("disconnectWalletBtn");
-    const walletArea = document.querySelector(".wallet-button-area");
 
-    // Вызывается из wallet.js
-    window.onWalletConnected = function(address) {
-        connectBtn.textContent = address.slice(0,6) + "..." + address.slice(-4);
-        walletArea.classList.add("connected");
-    };
+    let hideTimer = null;
+    let walletConnected = false;
 
-    // Вызывается из wallet.js
-    window.onWalletDisconnected = function() {
-        connectBtn.textContent = "Підключити гаманець";
-        walletArea.classList.remove("connected");
-    };
+    // Показываем меню
+    function showDropdown() {
+        clearTimeout(hideTimer);
+        dropdown.classList.add("show");
+    }
 
-    // Кнопка — запуск подключения
-    connectBtn.addEventListener("click", () => {
-        if (!walletArea.classList.contains("connected")) {
-            if (window.connectWallet) window.connectWallet();
-        }
+    // С задержкой скрываем
+    function hideDropdown() {
+        hideTimer = setTimeout(() => {
+            dropdown.classList.remove("show");
+        }, 250); // ← можно 200–300мс
+    }
+
+    // Открываем меню при наведении
+    walletArea.addEventListener("mouseenter", () => {
+        if (walletConnected) showDropdown();
+    });
+
+    // Начать закрывать, но с задержкой
+    walletArea.addEventListener("mouseleave", () => {
+        hideDropdown();
     });
 
     // Отключение
     disconnectBtn.addEventListener("click", () => {
         if (window.disconnectWallet) window.disconnectWallet();
         window.onWalletDisconnected();
+    });
+
+    // Внешний вызов из wallet.js при подключении
+    window.onWalletConnected = function(address) {
+        walletConnected = true;
+        connectBtn.textContent = address.slice(0,6) + "..." + address.slice(-4);
+    };
+
+    // Внешний вызов из wallet.js при отключении
+    window.onWalletDisconnected = function() {
+        walletConnected = false;
+        connectBtn.textContent = "Підключити гаманець";
+        dropdown.classList.remove("show");
+    };
+
+    // Клик — только для подключения
+    connectBtn.addEventListener("click", () => {
+        if (!walletConnected) {
+            if (window.connectWallet) window.connectWallet();
+        }
     });
 </script>
 
