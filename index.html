@@ -265,7 +265,7 @@
         }
 
         .connect-btn {
-            padding: 8px 18px;          /* размер оставляем как был */
+            padding: 8px 18px;
             font-size: 0.85em;
             border-radius: 14px;
             font-weight: 600;
@@ -273,30 +273,43 @@
             height: 38px;
             min-width: 120px;
 
-            /* тот же стиль, что и у .dashboard-hero-metric */
+            /* стиль как у карточек стейкинга */
             border: 1px solid rgba(255,255,255,0.16);
-            background: radial-gradient(circle at top left,
-                rgba(0,87,183,0.40),
-                rgba(0,0,0,0.92)
+            background: radial-gradient(
+                circle at top left,
+                rgba(0,87,183,0.45),
+                rgba(0,0,0,0.96)
             );
             color: #e9eefc;
 
+            /* выравнивание и анимация */
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: 0.25s ease;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+            transition: 0.2s ease;
+            box-shadow: 0 10px 24px rgba(0,0,0,0.7);
         }
 
         .connect-btn:hover {
             border-color: rgba(255,255,255,0.35);
-            background: radial-gradient(circle at top left,
-                rgba(96,165,250,0.55),
-                rgba(0,0,0,0.95)
+            background: radial-gradient(
+                circle at top left,
+                rgba(96,165,250,0.65),
+                rgba(0,0,0,0.98)
             );
-            box-shadow: 0 14px 32px rgba(0,0,0,0.85);
+            box-shadow: 0 14px 32px rgba(0,0,0,0.9);
             color: #ffffff;
+        }
+
+        /* когда кошелёк подключен – чуть ярче, но тот же размер */
+        .connect-btn.connected {
+            border-color: rgba(34,197,94,0.7);
+            background: radial-gradient(
+                circle at top left,
+                rgba(34,197,94,0.55),
+                rgba(0,0,0,0.96)
+            );
         }
 
         /* ===== остальной старый стиль ===== */
@@ -1654,12 +1667,14 @@
     window.onWalletConnected = function(address) {
         walletConnected = true;
         connectBtn.textContent = address.slice(0,6) + "..." + address.slice(-4);
+        connectBtn.classList.add("connected");
     };
 
     // Внешний вызов из wallet.js при отключении
     window.onWalletDisconnected = function() {
         walletConnected = false;
         connectBtn.textContent = "Підключити гаманець";
+        connectBtn.classList.remove("connected");
         dropdown.classList.remove("show");
     };
 
