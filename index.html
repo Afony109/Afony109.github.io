@@ -188,22 +188,23 @@
             white-space: nowrap;
             transition: 0.25s ease;
 
-            background: linear-gradient(180deg, #151d29 0%, #0a0f18 100%);
-            border: 1px solid rgba(255,255,255,0.06);
-
-            box-shadow:
-                inset 0 1px 0 rgba(255,255,255,0.08),
-                inset 0 -1px 0 rgba(0,0,0,0.4),
-                0 4px 12px rgba(0,0,0,0.55);
+            /* стиль как у трёх карточек стейкинга */
+            border: 1px solid rgba(255,255,255,0.16);
+            background: radial-gradient(circle at top left,
+                rgba(0,87,183,0.40),
+                rgba(0,0,0,0.92)
+            );
+            box-shadow: 0 10px 25px rgba(0,0,0,0.7);
         }
 
         .main-nav-link:hover {
-            background: linear-gradient(180deg, #1f2b3d 0%, #0e1520 100%);
-            box-shadow:
-                inset 0 1px 0 rgba(255,255,255,0.12),
-                inset 0 -1px 0 rgba(0,0,0,0.5),
-                0 6px 18px rgba(70,80,120,0.35);
-            color: white;
+            border-color: rgba(255,255,255,0.35);
+            background: radial-gradient(circle at top left,
+                rgba(96,165,250,0.55),
+                rgba(0,0,0,0.95)
+            );
+            box-shadow: 0 14px 32px rgba(0,0,0,0.85);
+            color: #ffffff;
         }
 
         .nav-right {
@@ -264,33 +265,37 @@
         }
 
         .connect-btn {
-            padding: 8px 18px;
+            padding: 8px 18px;          /* размер оставляем как был */
             font-size: 0.85em;
             border-radius: 14px;
-
-            /* фон как у .main-nav-link */
-            background: linear-gradient(180deg, #151d29 0%, #0a0f18 100%);
-            border: 1px solid rgba(255,255,255,0.06);
-
-            color: #e9eefc;
             font-weight: 600;
-            cursor: pointer;
-            transition: 0.25s ease;
-
+            white-space: nowrap;
             height: 38px;
+            min-width: 120px;
+
+            /* тот же стиль, что и у .dashboard-hero-metric */
+            border: 1px solid rgba(255,255,255,0.16);
+            background: radial-gradient(circle at top left,
+                rgba(0,87,183,0.40),
+                rgba(0,0,0,0.92)
+            );
+            color: #e9eefc;
+
             display: flex;
             align-items: center;
             justify-content: center;
-            white-space: nowrap;
-            min-width: 120px;   /* ширина как была, НЕ фиксированная */
-            box-shadow:
-                inset 0 1px 0 rgba(255,255,255,0.08),
-                inset 0 -1px 0 rgba(0,0,0,0.4),
-                0 4px 12px rgba(0,0,0,0.55);
+            cursor: pointer;
+            transition: 0.25s ease;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.7);
         }
 
         .connect-btn:hover {
-            background: linear-gradient(180deg, #1f2b3d 0%, #0e1520 100%);
+            border-color: rgba(255,255,255,0.35);
+            background: radial-gradient(circle at top left,
+                rgba(96,165,250,0.55),
+                rgba(0,0,0,0.95)
+            );
+            box-shadow: 0 14px 32px rgba(0,0,0,0.85);
             color: #ffffff;
         }
 
