@@ -264,27 +264,34 @@
         }
 
         .connect-btn {
-            width: 145px;
-            padding: 6px 14px;
-            font-size: 0.82em;
-            border-radius: 10px;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.18);
-            color: white;
+            padding: 8px 18px;
+            font-size: 0.85em;
+            border-radius: 14px;
+
+            /* фон как у .main-nav-link */
+            background: linear-gradient(180deg, #151d29 0%, #0a0f18 100%);
+            border: 1px solid rgba(255,255,255,0.06);
+
+            color: #e9eefc;
             font-weight: 600;
             cursor: pointer;
-            transition: .25s;
-            height: 34px;
+            transition: 0.25s ease;
+
+            height: 38px;
             display: flex;
             align-items: center;
             justify-content: center;
             white-space: nowrap;
+            min-width: 120px;   /* ширина как была, НЕ фиксированная */
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.08),
+                inset 0 -1px 0 rgba(0,0,0,0.4),
+                0 4px 12px rgba(0,0,0,0.55);
         }
 
         .connect-btn:hover {
-            background: rgba(0,0,0,0.65);
-            border-color: rgba(255,255,255,0.25);
-            transform: translateY(-2px);
+            background: linear-gradient(180deg, #1f2b3d 0%, #0e1520 100%);
+            color: #ffffff;
         }
 
         /* ===== остальной старый стиль ===== */
@@ -1127,6 +1134,49 @@
             border-top: 1px solid rgba(0,87,183,0.3);
             color: var(--gray);
         }
+
+        /* Wallet menu dropdown */
+        .wallet-menu {
+            position: relative;
+        }
+
+        .wallet-menu-dropdown {
+            position: absolute;
+            right: 0;
+            top: calc(100% + 6px);
+            min-width: 190px;
+
+            background: rgba(7, 11, 22, 0.98);
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 14px 30px rgba(0,0,0,0.7);
+
+            padding: 6px;
+            display: none;
+            z-index: 1200;
+        }
+
+        .wallet-menu-dropdown.open {
+            display: block;
+        }
+
+        .wallet-menu-dropdown button {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 10px;
+            background: transparent;
+            border: none;
+            color: #e9eefc;
+            font-size: 0.85em;
+            text-align: left;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .wallet-menu-dropdown button:hover {
+            background: rgba(255,255,255,0.06);
+            color: #ff6b6b;
+        }
     </style>
 </head>
 <body>
@@ -1172,7 +1222,16 @@
                 <span class="en-top">EN</span>
             </button>
         </div>
-        <button class="connect-btn" id="connectBtn">Підключити гаманець</button>
+
+        <div class="wallet-menu">
+            <button class="connect-btn" id="connectBtn">Підключити гаманець</button>
+
+            <div class="wallet-menu-dropdown" id="walletDropdown">
+                <button type="button" id="walletDisconnectBtn">
+                    Відключити гаманець
+                </button>
+            </div>
+        </div>
     </div>
 </nav>
 
@@ -1550,6 +1609,71 @@
         🇺🇦 Slava Ukraini! • Sepolia Testnet • Version 2.0
     </div>
 </footer>
+
+<script>
+    const connectBtn          = document.getElementById('connectBtn');
+    const walletDropdown      = document.getElementById('walletDropdown');
+    const walletDisconnectBtn = document.getElementById('walletDisconnectBtn');
+
+    let isWalletConnected = false;
+    let currentWalletAddress = null;
+
+    function shortenAddress(addr) {
+        if (!addr) return '';
+        return addr.slice(0, 6) + '...' + addr.slice(-4);
+    }
+
+    // Эти функции будет вызывать wallet.js
+    window.onWalletConnected = function (address) {
+        isWalletConnected    = true;
+        currentWalletAddress = address;
+        connectBtn.textContent = shortenAddress(address);
+        connectBtn.classList.add('connected');
+        walletDropdown.classList.remove('open');
+    };
+
+    window.onWalletDisconnected = function () {
+        isWalletConnected    = false;
+        currentWalletAddress = null;
+        connectBtn.textContent = 'Підключити гаманець';
+        connectBtn.classList.remove('connected');
+        walletDropdown.classList.remove('open');
+    };
+
+    // Клик по кнопке в шапке
+    connectBtn.addEventListener('click', () => {
+        if (!isWalletConnected) {
+            // вызывaем уже существующую функцию подключения
+            if (window.connectWallet) {
+                window.connectWallet();
+            }
+        } else {
+            // просто открыть / закрыть меню
+            walletDropdown.classList.toggle('open');
+        }
+    });
+
+    // Кнопка "Відключити гаманець" в меню
+    walletDisconnectBtn.addEventListener('click', () => {
+        walletDropdown.classList.remove('open');
+
+        // если в wallet.js есть реальное disconnect — вызываем
+        if (window.disconnectWallet) {
+            window.disconnectWallet();
+        }
+
+        // на всякий случай обновляем UI
+        window.onWalletDisconnected();
+    });
+
+    // Закрываем меню при клике вне
+    document.addEventListener('click', (e) => {
+        if (!walletDropdown) return;
+        if (!walletDropdown.contains(e.target) && !connectBtn.contains(e.target)) {
+            walletDropdown.classList.remove('open');
+        }
+    });
+</script>
 
 <script type="module" src="js/app.js"></script>
 

@@ -7,7 +7,7 @@
 import { ethers } from 'https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.esm.min.js';
 
 import { CONFIG, getCurrentTier } from './config.js';
-import { initWalletModule, addTokenToWallet } from './wallet.js';
+import { initWalletModule, addTokenToWallet, connectWallet, disconnectWallet } from './wallet.js';
 import { initTradingModule, buyTokens, sellTokens, setMaxBuy, setMaxSell } from './trading.js';
 import { initStakingModule } from './staking.js';
 import { initFaucetModule, claimFromFaucet } from './faucet.js';
@@ -449,6 +449,8 @@ function setupScrollAnimations() {
  * Global functions for HTML onclick handlers
  */
 // Wallet functions
+window.connectWallet = connectWallet;
+window.disconnectWallet = disconnectWallet;
 window.addArubToMetaMask = () => addTokenToWallet('ARUB');
 window.addUsdtToMetaMask = () => addTokenToWallet('USDT');
 window.copyTokenAddress = () => copyToClipboard(CONFIG.TOKEN_ADDRESS, '✅ Адресу токена скопійовано!');

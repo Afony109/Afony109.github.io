@@ -441,6 +441,11 @@ function updateConnectedUI() {
     if (walletMenuAddress && userAddress) {
         walletMenuAddress.textContent = shortenAddress(userAddress);
     }
+
+    // Notify global wallet menu
+    if (window.onWalletConnected && userAddress) {
+        window.onWalletConnected(userAddress);
+    }
 }
 
 /**
@@ -493,6 +498,11 @@ function resetWalletState() {
     if (connectBtn) {
         connectBtn.textContent = 'Підключити гаманець';
         connectBtn.style.background = '';
+    }
+
+    // Notify global wallet menu
+    if (window.onWalletDisconnected) {
+        window.onWalletDisconnected();
     }
 
     // Reset UI to disconnected state
