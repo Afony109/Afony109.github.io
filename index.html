@@ -1704,7 +1704,7 @@
 document.querySelector('a[href="#stats-section"]').addEventListener('click', function (e) {
     e.preventDefault();
     const block = document.getElementById('stats-section');
-    const top = block.getBoundingClientRect().top + window.pageYOffset - 50; // отступ под фиксированную шапку
+    const top = block.getBoundingClientRect().top + window.pageYOffset - 30; // отступ под фиксированную шапку
 
     window.scrollTo({
         top: top,
