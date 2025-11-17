@@ -169,23 +169,24 @@ export async function showWalletSelector() {
         modal.appendChild(modalContent);
         document.body.appendChild(modal);
 
-        // Add click handlers
-        modal.querySelectorAll('.wallet-option').forEach(option => {
-            option.addEventListener('click', () => {
-                const walletIndex = option.dataset.walletIndex;
-                const walletType = option.dataset.walletType;
+        // ЕДИНЫЙ обработчик клика по опциям кошельков
+        modalContent.addEventListener('click', (e) => {
+            const option = e.target.closest('.wallet-option');
+            if (!option) return; // кликнули не по опции
 
-                let selectedProvider;
+            const walletIndex = option.dataset.walletIndex;
+            const walletType = option.dataset.walletType;
 
-                if (walletIndex !== undefined) {
-                    selectedProvider = detectedWallets[walletIndex].provider;
-                } else if (walletType === 'ethereum') {
-                    selectedProvider = window.ethereum;
-                }
+            let selectedProvider = null;
 
-                modal.remove();
-                resolve(selectedProvider);
-            });
+            if (walletIndex !== undefined) {
+                selectedProvider = detectedWallets[walletIndex].provider;
+            } else if (walletType === 'ethereum') {
+                selectedProvider = window.ethereum;
+            }
+
+            modal.remove();
+            resolve(selectedProvider);
         });
 
         // Close on background click
