@@ -171,6 +171,9 @@ export async function showWalletSelector() {
 
         // ЕДИНЫЙ обработчик клика по опциям кошельков
         modalContent.addEventListener('click', (e) => {
+            // Игнорируем клики по кнопкам
+            if (e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
+
             const option = e.target.closest('.wallet-option');
             if (!option) return; // кликнули не по опции
 
