@@ -374,36 +374,24 @@ async function updateGlobalStats() {
             apyNoteEl.innerHTML = apyLabel;
         }
 
-        // Нижние карточки
-        setText('dashTotalStakedUsd', formatUSD(stakedUsd));
-        setText(
-            'dashTotalStakedTokens',
-            formatTokenAmount(stakedTokens) + ' ARUB'
-        );
+        // Нижние карточки - новый порядок
 
-        setText(
-            'dashTotalSupplyTokens',
-            formatTokenAmount(supplyTokens) + ' ARUB'
-        );
-
-        // тут БЕЗ BigNumber — totalSupply уже число
+        // 1. Total Supply ARUB
+        setText('arub-supply', formatTokenAmount(supplyTokens) + ' ARUB');
         if (!isNaN(supplyUsd) && supplyUsd > 0) {
-            setText('dashTotalSupplyUsd', formatUSD(supplyUsd));
+            setText('arub-supply-usd', formatUSD(supplyUsd));
         }
 
-        setText('dashStakersCount', stakersText);
-        setText('dashPriceUsd', '$' + arubPrice.toFixed(4));
+        // 2. Staked ARUB
+        const stakedArubTokens = detailedStats.totalStakedArub;
+        const stakedArubUsd = stakedArubTokens * arubPrice;
+        setText('arub-staked', formatTokenAmount(stakedArubTokens) + ' ARUB');
+        setText('arub-staked-usd', '≈ ' + formatUSD(stakedArubUsd));
 
-        // источник цены (как в index 42)
-        const priceSource =
-            (detailedStats && detailedStats.priceSource) || 'DexScreener';
-
-        setText('dashPriceSourceBadge', 'Джерело: ' + priceSource);
-        const hint =
-            priceSource === 'DexScreener'
-                ? 'Ціна напряму з DexScreener (DEX пара ARUB)'
-                : 'Резерв: курс USD/RUB (1 ARUB = USD/RUB)';
-        setText('dashPriceHint', hint);
+        // 3. Staked USDT
+        const stakedUsdtTokens = detailedStats.totalStakedUsdt;
+        setText('usdt-staked', formatTokenAmount(stakedUsdtTokens) + ' USDT');
+        setText('usdt-staked-usd', '≈ ' + formatUSD(stakedUsdtTokens));
 
         // статус загрузки
         const loading = document.getElementById('dashLoadingText');

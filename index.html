@@ -1321,41 +1321,33 @@
     </div>
 
     <div class="dashboard-stats-grid" id="stats">
-        <article class="dashboard-stat-card">
-            <div class="dashboard-stat-label">💰 Всього застейкано</div>
-            <div class="dashboard-stat-value" id="dashTotalStakedUsd">—</div>
-            <div class="dashboard-stat-sub" id="dashTotalStakedTokens">—</div>
-            <div class="dashboard-pill-small" id="apy-note">
-                APY: <strong style="font-weight:600;">16%</strong> для ранніх користувачів
-            </div>
-        </article>
-
+        <!-- 1. Total Supply ARUB -->
         <article class="dashboard-stat-card">
             <div class="dashboard-stat-label">🚀 Випущено ARUB</div>
-            <div class="dashboard-stat-value" id="dashTotalSupplyTokens">—</div>
-            <div class="dashboard-stat-sub" id="dashTotalSupplyUsd">—</div>
+            <div class="dashboard-stat-value" id="arub-supply">—</div>
+            <div class="dashboard-stat-sub" id="arub-supply-usd">—</div>
             <div class="dashboard-pill-small">
                 Decimals: <strong style="font-weight:600;">6</strong>
             </div>
         </article>
 
+        <!-- 2. Staked ARUB -->
         <article class="dashboard-stat-card">
-            <div class="dashboard-stat-label">👥 Кількість стейкерів</div>
-            <div class="dashboard-stat-value" id="dashStakersCount">—</div>
-            <div class="dashboard-stat-sub">Унікальні адреси, які застейкали токени</div>
-            <div class="dashboard-pill-small">
-                Джерело: <span>on-chain getPoolStats()</span>
+            <div class="dashboard-stat-label">💎 Застейкано ARUB</div>
+            <div class="dashboard-stat-value" id="arub-staked">—</div>
+            <div class="dashboard-stat-sub" id="arub-staked-usd">—</div>
+            <div class="dashboard-pill-small" id="apy-note">
+                APY: <strong style="font-weight:600;">16%</strong> річних
             </div>
         </article>
 
+        <!-- 3. Staked USDT -->
         <article class="dashboard-stat-card">
-            <div class="dashboard-stat-label">💵 Ціна 1 ARUB</div>
-            <div class="dashboard-stat-value" id="dashPriceUsd">—</div>
-            <div class="dashboard-stat-sub" id="dashPriceHint">
-                Джерело: DexScreener → резерв USD/RUB
-            </div>
-            <div class="dashboard-pill-small" id="dashPriceSourceBadge">
-                Джерело: —
+            <div class="dashboard-stat-label">💵 Застейкано USDT</div>
+            <div class="dashboard-stat-value" id="usdt-staked">—</div>
+            <div class="dashboard-stat-sub" id="usdt-staked-usd">—</div>
+            <div class="dashboard-pill-small">
+                Стабільний актив
             </div>
         </article>
     </div>
