@@ -344,7 +344,16 @@ async function updateGlobalStats() {
         // HERO
         setText('dashHeroPrice', '$' + arubPrice.toFixed(2));
         setText('dashHeroStakers', stakersText);
-        setText('dashHeroApy', (tierInfo.apy / 100).toFixed(1) + '% річних');
+
+        // APY из контракта
+        const apyText = (tierInfo.apy / 100).toFixed(1) + '%';
+        setText('dashHeroApy', apyText + ' річних');
+
+        // Обновляем жёлтую подпись под «Всього застейкано»
+        const apyNoteEl = document.getElementById('apy-note');
+        if (apyNoteEl) {
+            apyNoteEl.innerHTML = 'APY: <strong style="font-weight:600;">' + apyText + '</strong> для ранніх користувачів';
+        }
 
         // Нижние карточки
         setText('dashTotalStakedUsd', formatUSD(stakedUsd));
