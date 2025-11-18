@@ -1164,6 +1164,49 @@
             scroll-margin-top: 90px;
         }
 
+        /* Tiers list */
+        .tiers-card {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .tiers-title {
+            font-size: 14px;
+            margin-bottom: 12px;
+            color: #e9eefc;
+        }
+
+        .tiers-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 12px 0;
+        }
+
+        .tiers-list li {
+            padding: 6px 0;
+            font-size: 12px;
+            color: var(--gray);
+            transition: opacity 0.3s ease;
+        }
+
+        .tiers-list li b {
+            color: var(--ukraine-yellow);
+        }
+
+        .tier-current {
+            font-size: 13px;
+            padding: 8px 12px;
+            background: rgba(0,87,183,0.15);
+            border-radius: 8px;
+            color: #e9eefc;
+            margin-top: 8px;
+        }
+
+        .tier-current b {
+            color: var(--ukraine-yellow);
+        }
+
         /* Wallet button area */
         .wallet-button-area {
             position: relative;
@@ -1310,6 +1353,22 @@
             <div class="dashboard-chips">
                 <div class="dashboard-pill-small">
                     ℹ️ <span>Перевірте, в якому пулі ви стейкали (USDT чи ARUB) перед зняттям.</span>
+                </div>
+            </div>
+
+            <div class="tiers-card">
+                <h3 class="tiers-title">Рівні стейкінгу (USD)</h3>
+
+                <ul class="tiers-list">
+                    <li id="tier-1">Tier 1: $0 — $100,000 → <b>24% APY</b></li>
+                    <li id="tier-2">Tier 2: $100,000 — $200,000 → <b>20% APY</b></li>
+                    <li id="tier-3">Tier 3: $200,000 — $400,000 → <b>16% APY</b></li>
+                    <li id="tier-4">Tier 4: $400,000 — $800,000 → <b>12% APY</b></li>
+                    <li id="tier-5">Tier 5: >$800,000 → <b>8% APY</b></li>
+                </ul>
+
+                <div id="tier-current" class="tier-current">
+                    Поточний рівень: ...
                 </div>
             </div>
         </aside>

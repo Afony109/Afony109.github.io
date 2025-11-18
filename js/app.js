@@ -229,6 +229,37 @@ function setupGlobalEventListeners() {
 }
 
 /**
+ * Update tier display based on TVL
+ */
+function updateTierUSD(stakedArub, stakedUsdt, priceArub, apy) {
+    const stakedArubUsd = (stakedArub / 1e6) * priceArub;
+    const stakedUsdtUsd = stakedUsdt / 1e6;
+
+    const tvl = stakedArubUsd + stakedUsdtUsd;
+
+    let tier = 1;
+
+    if (tvl < 100000) tier = 1;
+    else if (tvl < 200000) tier = 2;
+    else if (tvl < 400000) tier = 3;
+    else if (tvl < 800000) tier = 4;
+    else tier = 5;
+
+    const tierCurrentEl = document.getElementById('tier-current');
+    if (tierCurrentEl) {
+        tierCurrentEl.innerHTML =
+            `Поточний TVL: <b>$${tvl.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0})}</b> → Tier ${tier} (<b>${apy}%</b>)`;
+    }
+
+    for (let i = 1; i <= 5; i++) {
+        const el = document.getElementById(`tier-${i}`);
+        if (el) {
+            el.style.opacity = (i === tier) ? "1" : "0.45";
+        }
+    }
+}
+
+/**
  * Update global statistics
  */
 async function updateGlobalStats() {
@@ -392,6 +423,14 @@ async function updateGlobalStats() {
         const stakedUsdtTokens = detailedStats.totalStakedUsdt;
         setText('usdt-staked', formatTokenAmount(stakedUsdtTokens) + ' USDT');
         setText('usdt-staked-usd', '≈ ' + formatUSD(stakedUsdtTokens));
+
+        // Обновляем тиры на основе TVL
+        updateTierUSD(
+            stakedArubTokens * 1e6, // конвертируем обратно в raw
+            stakedUsdtTokens * 1e6, // конвертируем обратно в raw
+            arubPrice,
+            apyPercent
+        );
 
         // статус загрузки
         const loading = document.getElementById('dashLoadingText');
