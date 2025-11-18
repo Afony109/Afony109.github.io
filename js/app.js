@@ -248,7 +248,7 @@ function updateTierUSD(stakedArub, stakedUsdt, priceArub, apy) {
     const tierCurrentEl = document.getElementById('tier-current');
     if (tierCurrentEl) {
         tierCurrentEl.innerHTML =
-            `Поточний TVL: <b>$${tvl.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0})}</b> → Tier ${tier} (<b>${apy}%</b>)`;
+            `Поточний рівень: <b>Tier ${tier}</b> (<b>${apy}%</b>). Розрахунок йде від загального TVL в USD.`;
     }
 
     for (let i = 1; i <= 5; i++) {
@@ -375,6 +375,7 @@ async function updateGlobalStats() {
         // HERO
         setText('dashHeroPrice', '$' + arubPrice.toFixed(2));
         setText('dashHeroStakers', stakersText);
+        setText('dashHeroTvl', formatUSD(tvlUsd));
 
         // APY из контракта
         const apyPercent = (tierInfo.apy / 100).toFixed(1);
