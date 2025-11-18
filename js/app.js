@@ -25,14 +25,128 @@ import {
     setMaxUnstakeArub
 } from './staking-actions.js';
 
-// === DASHBOARD CHARTS STATE (TVL + Price) ===
+// === DASHBOARD CHARTS STATE (TVL + USD/RUB) ===
 let stakedChart = null;
-let priceChart = null;
+let usdRubChart = null;
 const chartLabels = [];
 const chartStakedHistory = [];
-const chartPriceHistory = [];
 
-function updateDashboardCharts(tvlUsd, priceUsd) {
+// Данные USD/RUB 2020-2030 (стилизованные)
+const usdRubData = [
+    { x: new Date(2020, 0, 1).getTime(), y: 62 },
+    { x: new Date(2021, 0, 1).getTime(), y: 74 },
+    { x: new Date(2022, 0, 1).getTime(), y: 90 },
+    { x: new Date(2023, 0, 1).getTime(), y: 82 },
+    { x: new Date(2024, 0, 1).getTime(), y: 93 },
+    { x: new Date(2025, 0, 1).getTime(), y: 95 },
+    { x: new Date(2026, 0, 1).getTime(), y: 100 },
+    { x: new Date(2027, 0, 1).getTime(), y: 108 },
+    { x: new Date(2028, 0, 1).getTime(), y: 115 },
+    { x: new Date(2029, 0, 1).getTime(), y: 112 },
+    { x: new Date(2030, 0, 1).getTime(), y: 110 }
+];
+
+/**
+ * Initialize USD/RUB chart with ApexCharts
+ */
+function initUsdRubChart() {
+    const chartElement = document.getElementById('dashPriceChart');
+    if (!chartElement) {
+        console.warn('[APP] USD/RUB chart element not found');
+        return;
+    }
+
+    if (typeof ApexCharts === 'undefined') {
+        console.warn('[APP] ApexCharts is not loaded');
+        return;
+    }
+
+    const options = {
+        chart: {
+            type: 'area',
+            height: 220,
+            toolbar: { show: false },
+            background: 'transparent',
+            fontFamily: 'Inter, sans-serif'
+        },
+        series: [{
+            name: 'USD/RUB',
+            data: usdRubData
+        }],
+        dataLabels: { enabled: false },
+        stroke: {
+            curve: 'smooth',
+            width: 2,
+            colors: ['#60a5fa']
+        },
+        fill: {
+            type: 'gradient',
+            gradient: {
+                shade: 'dark',
+                type: 'vertical',
+                shadeIntensity: 0.5,
+                gradientToColors: ['#4a90e2'],
+                opacityFrom: 0.6,
+                opacityTo: 0.1
+            }
+        },
+        xaxis: {
+            type: 'datetime',
+            labels: {
+                format: 'yyyy',
+                datetimeUTC: false,
+                style: {
+                    colors: '#8b94a8',
+                    fontSize: '11px'
+                }
+            },
+            axisBorder: { show: false },
+            axisTicks: { show: false }
+        },
+        yaxis: {
+            labels: {
+                formatter: (val) => val.toFixed(0),
+                style: {
+                    colors: '#8b94a8',
+                    fontSize: '11px'
+                }
+            },
+            title: {
+                text: 'Курс USD/RUB',
+                style: {
+                    color: '#8b94a8',
+                    fontSize: '11px'
+                }
+            }
+        },
+        tooltip: {
+            theme: 'dark',
+            x: { format: 'yyyy' },
+            y: {
+                formatter: (val) => val.toFixed(2) + ' ₽'
+            }
+        },
+        grid: {
+            borderColor: 'rgba(255,255,255,0.06)',
+            strokeDashArray: 4
+        },
+        markers: {
+            size: 0,
+            hover: {
+                size: 5
+            }
+        }
+    };
+
+    usdRubChart = new ApexCharts(chartElement, options);
+    usdRubChart.render();
+    console.log('[APP] ✅ USD/RUB chart initialized');
+}
+
+/**
+ * Update TVL chart (Chart.js)
+ */
+function updateDashboardCharts(tvlUsd) {
     if (typeof Chart === 'undefined') {
         console.warn('[APP] Chart.js is not loaded, skip charts');
         return;
@@ -46,17 +160,14 @@ function updateDashboardCharts(tvlUsd, priceUsd) {
 
     chartLabels.push(label);
     chartStakedHistory.push(tvlUsd);
-    chartPriceHistory.push(priceUsd);
 
     if (chartLabels.length > 50) {
         chartLabels.shift();
         chartStakedHistory.shift();
-        chartPriceHistory.shift();
     }
 
     const stakedCanvas = document.getElementById('dashStakedChart');
-    const priceCanvas = document.getElementById('dashPriceChart');
-    if (!stakedCanvas || !priceCanvas) {
+    if (!stakedCanvas) {
         return; // графики не на этой странице
     }
 
@@ -89,37 +200,6 @@ function updateDashboardCharts(tvlUsd, priceUsd) {
         stakedChart.data.labels = chartLabels;
         stakedChart.data.datasets[0].data = chartStakedHistory;
         stakedChart.update('none');
-    }
-
-    // Price chart
-    if (!priceChart) {
-        priceChart = new Chart(priceCanvas.getContext('2d'), {
-            type: 'line',
-            data: {
-                labels: chartLabels,
-                datasets: [{
-                    label: 'Ціна ARUB, USD',
-                    data: chartPriceHistory,
-                    fill: false,
-                    tension: 0.35
-                }]
-            },
-            options: {
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { display: false },
-                    y: {
-                        ticks: {
-                            callback: v => '$' + v.toFixed(3)
-                        }
-                    }
-                }
-            }
-        });
-    } else {
-        priceChart.data.labels = chartLabels;
-        priceChart.data.datasets[0].data = chartPriceHistory;
-        priceChart.update('none');
     }
 }
 
@@ -166,6 +246,10 @@ async function initApp() {
 
         // Setup scroll animations
         setupScrollAnimations();
+
+        // Initialize USD/RUB chart
+        console.log('[APP] Initializing USD/RUB chart...');
+        initUsdRubChart();
 
         // Update global stats periodically (every 30 seconds)
         setInterval(() => {
@@ -449,8 +533,8 @@ async function updateGlobalStats() {
         console.log('[APP] 🔒 Staked ARUB:', formatTokenAmount(detailedStats.totalStakedArub), 'ARUB');
         console.log('[APP] 💵 Staked USDT:', formatTokenAmount(detailedStats.totalStakedUsdt), 'USDT');
 
-        // Обновляем графики TVL + Price
-        updateDashboardCharts(tvlUsd, arubPrice);
+        // Обновляем график TVL
+        updateDashboardCharts(tvlUsd);
 
     } catch (error) {
         console.error('[APP] ❌ Error updating global stats:', error);
