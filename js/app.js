@@ -346,13 +346,21 @@ async function updateGlobalStats() {
         setText('dashHeroStakers', stakersText);
 
         // APY из контракта
-        const apyText = (tierInfo.apy / 100).toFixed(1) + '%';
-        setText('dashHeroApy', apyText + ' річних');
+        const apyPercent = (tierInfo.apy / 100).toFixed(1);
+        setText('dashHeroApy', apyPercent + '% річних');
 
         // Обновляем жёлтую подпись под «Всього застейкано»
         const apyNoteEl = document.getElementById('apy-note');
         if (apyNoteEl) {
-            apyNoteEl.innerHTML = 'APY: <strong style="font-weight:600;">' + apyText + '</strong> для ранніх користувачів';
+            let apyLabel = '';
+            if (parseFloat(apyPercent) >= 20) {
+                // 24% или 20% → для ранніх користувачів
+                apyLabel = 'APY: <strong style="font-weight:600;">' + apyPercent + '%</strong> для ранніх користувачів';
+            } else {
+                // 16%, 12%, 8% → обычный APY
+                apyLabel = 'APY: <strong style="font-weight:600;">' + apyPercent + '%</strong> річних';
+            }
+            apyNoteEl.innerHTML = apyLabel;
         }
 
         // Нижние карточки
