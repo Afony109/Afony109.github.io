@@ -1278,6 +1278,32 @@
             background: rgba(255,255,255,0.05);
             color: #ff6b6b;
         }
+
+        /* === STATS ROW EQUAL === */
+        .stats-row-equal {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important; /* ровно 50/50 */
+            gap: 24px !important;
+            width: 100% !important;
+        }
+
+        /* Каждая карточка растягивается на всю доступную ширину */
+        .stats-row-equal .stats-card {
+            width: 100% !important;
+            background: linear-gradient(145deg, rgba(0,0,0,0.9), rgba(5,12,30,0.98));
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 18px 40px rgba(0,0,0,0.7);
+            padding: 18px 20px 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @media (max-width: 1000px) {
+            .stats-row-equal {
+                grid-template-columns: 1fr !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1442,21 +1468,21 @@
         </article>
     </div>
 
-    <div class="dashboard-charts">
-        <article class="dashboard-panel">
+    <div class="stats-row-equal">
+        <section class="stats-card tvl-card">
             <div class="dashboard-chart-title">💰 TVL: загальний стейкінг</div>
             <div class="dashboard-chart-sub">Загальна вартість застейканих активів, USD</div>
             <canvas id="dashStakedChart"></canvas>
-        </article>
+        </section>
 
-        <article class="dashboard-panel">
+        <section class="stats-card usd-card">
             <div class="dashboard-chart-title">📈 Курс USD/RUB</div>
             <div class="dashboard-chart-sub">Історія та сценарій 2020–2030</div>
             <div id="dashPriceChart"></div>
             <div class="dashboard-footer-note" style="margin-top: 10px; font-size: 10px;">
                 Частина графіка після поточної дати — умовний сценарій, не є інвестиційною порадою.
             </div>
-        </article>
+        </section>
     </div>
 
     <div class="dashboard-footer-note">
