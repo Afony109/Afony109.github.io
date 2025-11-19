@@ -208,6 +208,16 @@
             color: #ffffff;
         }
 
+        .main-nav-link.active-session {
+            border-color: rgba(255,255,255,0.40);
+            background: radial-gradient(circle at top left,
+                rgba(96,165,250,0.65),
+                rgba(0,0,0,0.98)
+            );
+            box-shadow: 0 14px 32px rgba(0,0,0,0.9);
+            color: #ffffff;
+        }
+
         .nav-right {
             display: flex;
             align-items: center;
@@ -1756,6 +1766,20 @@
         if (!walletConnected) {
             if (window.connectWallet) window.connectWallet();
         }
+    });
+</script>
+
+<script>
+    // Управление активной кнопкой навигации
+    document.querySelectorAll('.main-nav-link').forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Убираем активный класс со всех кнопок
+            document.querySelectorAll('.main-nav-link')
+                .forEach(b => b.classList.remove('active-session'));
+
+            // Добавляем активный класс к нажатой кнопке
+            btn.classList.add('active-session');
+        });
     });
 </script>
 
