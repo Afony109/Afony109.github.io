@@ -464,17 +464,6 @@ async function updateGlobalStats() {
         // APY из контракта
         const apyPercent = (tierInfo.apy / 100).toFixed(1);
         const apyNum = parseFloat(apyPercent);
-        setText('dashHeroApy', apyPercent + '% річних');
-
-        // Обновляем название карточки APY
-        const apyTitleEl = document.getElementById('apy-title');
-        if (apyTitleEl) {
-            if (apyNum >= 20) {
-                apyTitleEl.textContent = 'APY для ранніх';
-            } else {
-                apyTitleEl.textContent = 'Поточний APY';
-            }
-        }
 
         // Обновляем жёлтую подпись под «Всього застейкано»
         const apyNoteEl = document.getElementById('apy-note');
