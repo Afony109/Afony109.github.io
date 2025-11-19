@@ -32,19 +32,22 @@ const chartLabels = [];
 const chartStakedHistory = [];
 
 // Данные USD/RUB 2020-2030
-// Исторические данные (факт) - функция будет обновлять для 2025
-// Включает пік 2022 року (140) як частину історичної лінії
+// ИСТОРИЯ: красивая "горка" к 140 и плавный спуск
 function getHistoryData(currentRate) {
     return [
         { x: new Date(2020, 0, 1).getTime(), y: 72.3 },
         { x: new Date(2021, 0, 1).getTime(), y: 73.7 },
-        { x: new Date(2022, 0, 1).getTime(), y: 69.8 },   // 2022 середнє
-        { x: new Date(2022, 2, 1).getTime(), y: 140 },    // 2022 пік (березень)
-        { x: new Date(2023, 0, 1).getTime(), y: 85.5 },
+        { x: new Date(2022, 0, 1).getTime(), y: 140 },    // 2022 — линия доходит до пика
+        { x: new Date(2023, 0, 1).getTime(), y: 110 },    // 2023 — плавное снижение после пика
         { x: new Date(2024, 0, 1).getTime(), y: 92.8 },
         { x: new Date(2025, 0, 1).getTime(), y: currentRate }
     ];
 }
+
+// ПИК 2022 — 140 RUB (красная точка для подсветки)
+const peak2022Data = [
+    { x: new Date(2022, 0, 1).getTime(), y: 140 }
+];
 
 // Сценарий 2025-2030 - функция будет обновлять для 2025
 function getScenarioData(currentRate) {
@@ -107,7 +110,7 @@ function initUsdRubChart() {
         },
         series: [
             {
-                name: 'Факт (середньорічний курс, включно з піком 2022)',
+                name: 'Факт (середньорічний курс)',
                 data: getHistoryData(currentRate),
                 type: 'line'
             },
@@ -120,15 +123,20 @@ function initUsdRubChart() {
                 name: `Поточний курс (${currentRate.toFixed(2)})`,
                 data: currentPointData,
                 type: 'scatter'
+            },
+            {
+                name: 'Пік 2022 року (140)',
+                data: peak2022Data,
+                type: 'scatter'
             }
         ],
         dataLabels: { enabled: false },
         stroke: {
             curve: 'smooth',
-            width: [2, 2, 0],
-            dashArray: [0, 6, 0]
+            width: [2, 2, 0, 0],
+            dashArray: [0, 6, 0, 0]
         },
-        colors: ['#4a90e2', '#60a5fa', '#ffd700'],
+        colors: ['#4a90e2', '#60a5fa', '#ffd700', '#ef4444'],
         xaxis: {
             type: 'datetime',
             labels: {
@@ -170,9 +178,9 @@ function initUsdRubChart() {
             strokeDashArray: 4
         },
         markers: {
-            size: [0, 0, 6],
+            size: [0, 0, 6, 7],
             hover: {
-                size: [4, 4, 8]
+                size: [4, 4, 8, 9]
             }
         },
         legend: {
@@ -202,7 +210,7 @@ window.updateUsdRubPointFromArub = function() {
     // Update series
     usdRubChart.updateSeries([
         {
-            name: 'Факт (середньорічний курс, включно з піком 2022)',
+            name: 'Факт (середньорічний курс)',
             data: getHistoryData(newRate)
         },
         {
@@ -212,6 +220,10 @@ window.updateUsdRubPointFromArub = function() {
         {
             name: `Поточний курс (${newRate.toFixed(2)})`,
             data: currentPointData
+        },
+        {
+            name: 'Пік 2022 року (140)',
+            data: peak2022Data
         }
     ]);
 
