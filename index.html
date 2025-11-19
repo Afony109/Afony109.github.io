@@ -1372,6 +1372,19 @@
             overflow: hidden;
         }
 
+        /* Іконки для кнопок додавання токенів */
+        .icon-flip {
+            display: inline-block;
+            transform: rotate(180deg);
+            font-weight: 800;
+            margin-right: 6px;
+        }
+
+        .icon-usdt {
+            font-weight: 900;
+            margin-right: 6px;
+        }
+
         @media (max-width: 1000px) {
             .stats-row-equal {
                 grid-template-columns: 1fr !important;
@@ -1619,7 +1632,9 @@
                             <div class="page-card-text">Антируб — токен проти падіння рубля</div>
                         </div>
                     </div>
-                    <button onclick="addTokenToWallet('ARUB')" class="action-btn">🦊 Додати ARUB</button>
+                    <button onclick="addTokenToWallet('ARUB')" class="action-btn">
+                        <span class="icon-flip">₽</span> Додати ARUB
+                    </button>
                 </div>
 
                 <div class="page-card fade-in-up">
@@ -1630,7 +1645,9 @@
                             <div class="page-card-text">Тестовий USDT для Sepolia</div>
                         </div>
                     </div>
-                    <button onclick="addTokenToWallet('USDT')" class="action-btn">🦊 Додати USDT</button>
+                    <button onclick="addTokenToWallet('USDT')" class="action-btn">
+                        <span class="icon-usdt">$</span> Додати USDT
+                    </button>
                 </div>
 
             </div>
