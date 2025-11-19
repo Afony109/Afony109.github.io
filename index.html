@@ -1377,12 +1377,26 @@
             display: inline-block;
             transform: rotate(180deg);
             font-weight: 800;
+        }
+
+        .icon-flip:first-child {
             margin-right: 6px;
+        }
+
+        .icon-flip:last-child {
+            margin-left: 6px;
         }
 
         .icon-usdt {
             font-weight: 900;
+        }
+
+        .icon-usdt:first-child {
             margin-right: 6px;
+        }
+
+        .icon-usdt:last-child {
+            margin-left: 6px;
         }
 
         @media (max-width: 1000px) {
@@ -1633,7 +1647,7 @@
                         </div>
                     </div>
                     <button onclick="addTokenToWallet('ARUB')" class="action-btn">
-                        <span class="icon-flip">₽</span> Додати ARUB
+                        <span class="icon-flip">₽</span> Додати ARUB <span class="icon-flip">₽</span>
                     </button>
                 </div>
 
@@ -1646,7 +1660,7 @@
                         </div>
                     </div>
                     <button onclick="addTokenToWallet('USDT')" class="action-btn">
-                        <span class="icon-usdt">$</span> Додати USDT
+                        <span class="icon-usdt">$</span> Додати USDT <span class="icon-usdt">$</span>
                     </button>
                 </div>
 
