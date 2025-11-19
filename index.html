@@ -1853,14 +1853,14 @@
     '2025','2026','2027','2028','2029','2030'
   ];
 
-  // Историческая линия с горкой к 140 в 2022
+  // История: горка к 140 и спад
   const historyData = [
     72.3,        // 2020
     73.7,        // 2021
     140,         // 2022 - пик
     110,         // 2023
     92.8,        // 2024
-    currentRate, // 2025 - переходит в текущий курс
+    currentRate, // 2025 - текущий курс
     null, null, null, null, null
   ];
 
@@ -1875,7 +1875,7 @@
     250
   ];
 
-  // Жёлтая точка (текущий курс)
+  // Жёлтая точка (текущий курс 2025)
   const currentPointData = [
     null, null, null, null, null,
     currentRate,
@@ -1895,40 +1895,52 @@
     data: {
       labels: years,
       datasets: [
+        // 1) ІСТОРИЧНИЙ КУРС — СПЛОШНАЯ ГОЛУБАЯ ЛИНИЯ БЕЗ ТОЧЕК
         {
           label: 'Історичний курс',
           data: historyData,
           tension: 0.45,
           borderWidth: 2,
           borderColor: '#4ba3ff',
+          fill: false,
           pointRadius: 0,
-          pointHoverRadius: 0
+          pointHoverRadius: 0,
+          pointStyle: 'line'
         },
+        // 2) СЦЕНАРІЙ — ТОНКИЙ ГОЛУБОЙ ПУНКТИР БЕЗ ТОЧЕК
         {
           label: 'Сценарій 2025–2030',
           data: scenarioData,
           tension: 0.35,
           borderWidth: 2,
-          borderDash: [5, 4],
           borderColor: '#4ba3ff',
+          borderDash: [6, 4],
+          fill: false,
           pointRadius: 0,
-          pointHoverRadius: 0
+          pointHoverRadius: 0,
+          pointStyle: 'line'
         },
+        // 3) ПОТОЧНИЙ КУРС — ЖЁЛТАЯ ТОЧКА
         {
           label: `Поточний курс (${currentRate.toFixed(2)})`,
           data: currentPointData,
           borderWidth: 0,
           pointRadius: 6,
           pointHoverRadius: 8,
-          pointBackgroundColor: '#ffd54a'
+          pointBackgroundColor: '#ffd54a',
+          pointBorderColor: '#ffd54a',
+          pointStyle: 'circle'
         },
+        // 4) ПІК 2022 — КРАСНАЯ ТОЧКА
         {
           label: 'Пік 2022 року (140)',
           data: peak2022,
           borderWidth: 0,
           pointRadius: 7,
           pointHoverRadius: 9,
-          pointBackgroundColor: '#ff4b4b'
+          pointBackgroundColor: '#ff4b4b',
+          pointBorderColor: '#ff4b4b',
+          pointStyle: 'circle'
         }
       ]
     },
@@ -1938,57 +1950,7 @@
         legend: {
           display: true,
           labels: {
-            generateLabels(chart) {
-              const datasets = chart.data.datasets;
-
-              return datasets.map((ds, i) => {
-                // Базовый объект легенды
-                const label = {
-                  text: ds.label,
-                  datasetIndex: i
-                };
-
-                // --- ЛИНИЯ ДЛЯ ИСТОРИЧЕСКОГО КУРСА ---
-                if (ds.label === 'Історичний курс') {
-                  label.strokeStyle = '#4ba3ff';
-                  label.lineWidth = 2;
-                  label.fillStyle = 'transparent';
-                  label.lineDash = []; // сплошная
-                  label.pointStyle = false; // рисуем линию
-                  return label;
-                }
-
-                // --- ЛИНИЯ ДЛЯ СЦЕНАРИЯ ---
-                if (ds.label === 'Сценарій 2025–2030') {
-                  label.strokeStyle = '#4ba3ff';
-                  label.lineWidth = 2;
-                  label.fillStyle = 'transparent';
-                  label.lineDash = [5, 4]; // пунктир
-                  label.pointStyle = false;
-                  return label;
-                }
-
-                // --- ЖЁЛТАЯ ТОЧКА (текущий курс) ---
-                if (ds.label.startsWith('Поточний курс')) {
-                  label.pointStyle = 'circle';
-                  label.fillStyle = '#ffd54a';
-                  label.strokeStyle = '#ffd54a';
-                  label.lineWidth = 0;
-                  return label;
-                }
-
-                // --- КРАСНАЯ ТОЧКА (пик 2022) ---
-                if (ds.label === 'Пік 2022 року (140)') {
-                  label.pointStyle = 'circle';
-                  label.fillStyle = '#ff4b4b';
-                  label.strokeStyle = '#ff4b4b';
-                  label.lineWidth = 0;
-                  return label;
-                }
-
-                return label;
-              });
-            }
+            usePointStyle: true   // показываем в легенде ИМЕННО pointStyle
           }
         },
         tooltip: {
