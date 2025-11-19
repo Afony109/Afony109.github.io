@@ -339,9 +339,9 @@ async function initApp() {
         // Setup scroll animations
         setupScrollAnimations();
 
-        // Initialize USD/RUB chart
-        console.log('[APP] Initializing USD/RUB chart...');
-        initUsdRubChart();
+        // Initialize USD/RUB chart (now using Chart.js in HTML)
+        // console.log('[APP] Initializing USD/RUB chart...');
+        // initUsdRubChart();
 
         // Update global stats periodically (every 30 seconds)
         setInterval(() => {

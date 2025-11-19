@@ -1006,7 +1006,7 @@
             }
         }
         #dashStakedChart,
-        #dashPriceChart {
+        #usdRubChart {
             width: 100% !important;
             height: 220px !important;
         }
@@ -1477,8 +1477,8 @@
 
         <section class="stats-card usd-card">
             <div class="dashboard-chart-title">📈 Курс USD/RUB</div>
-            <div class="dashboard-chart-sub">Історія та сценарій 2020–2030</div>
-            <div id="dashPriceChart"></div>
+            <div class="dashboard-chart-sub">Історія та сценарій 2020–2030 (поточний: <span id="currentRateText">—</span>)</div>
+            <canvas id="usdRubChart"></canvas>
             <div class="dashboard-footer-note" style="margin-top: 10px; font-size: 10px;">
                 Частина графіка після поточної дати — умовний сценарій, не є інвестиційною порадою.
             </div>
@@ -1823,6 +1823,156 @@
 </script>
 
 <script type="module" src="js/app.js"></script>
+
+<script>
+  function getCurrentRateFromArub() {
+    const el = document.getElementById('arubPriceValue');
+    if (!el) return null;
+
+    const raw = el.textContent.trim()
+      .replace(',', '.')
+      .replace(/[^0-9.]/g, '');
+    const value = parseFloat(raw);
+
+    return isNaN(value) ? null : value;
+  }
+
+  // Берём текущий курс из цены ARUB
+  let currentRate = getCurrentRateFromArub();
+  if (currentRate === null) {
+    currentRate = 80.98; // запасной вариант
+  }
+
+  const currentRateSpan = document.getElementById('currentRateText');
+  if (currentRateSpan) {
+    currentRateSpan.textContent = currentRate.toFixed(2);
+  }
+
+  const years = [
+    '2020','2021','2022','2023','2024',
+    '2025','2026','2027','2028','2029','2030'
+  ];
+
+  // Историческая линия с горкой к 140 в 2022
+  const historyData = [
+    72.3,        // 2020
+    73.7,        // 2021
+    140,         // 2022 - пик
+    110,         // 2023
+    92.8,        // 2024
+    currentRate, // 2025 - переходит в текущий курс
+    null, null, null, null, null
+  ];
+
+  // Сценарий 2025–2030
+  const scenarioData = [
+    null, null, null, null, 92.8,
+    currentRate,
+    200,
+    400,
+    500,
+    350,
+    250
+  ];
+
+  // Жёлтая точка (текущий курс)
+  const currentPointData = [
+    null, null, null, null, null,
+    currentRate,
+    null, null, null, null, null
+  ];
+
+  // Красная точка (пик 2022)
+  const peak2022 = [
+    null, null, 140, null, null,
+    null, null, null, null, null, null
+  ];
+
+  const ctx = document.getElementById('usdRubChart').getContext('2d');
+
+  const usdRubChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: years,
+      datasets: [
+        {
+          label: 'Історичний курс',
+          data: historyData,
+          tension: 0.45,
+          borderWidth: 2,
+          pointRadius: 0,
+          pointHoverRadius: 0
+        },
+        {
+          label: 'Сценарій 2025–2030',
+          data: scenarioData,
+          tension: 0.35,
+          borderWidth: 2,
+          borderDash: [6, 4],   // пунктир
+          pointRadius: 0,
+          pointHoverRadius: 0
+        },
+        {
+          label: `Поточний курс (${currentRate.toFixed(2)})`,
+          data: currentPointData,
+          borderWidth: 0,
+          pointRadius: 6,
+          pointHoverRadius: 8
+        },
+        {
+          label: 'Пік 2022 року (140)',
+          data: peak2022,
+          borderWidth: 0,
+          pointRadius: 7,
+          pointHoverRadius: 9
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          display: true,
+          labels: {
+            usePointStyle: false // <– показываем мини-линию, а не кружок
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: function (context) {
+              const v = context.parsed.y;
+              if (!v) return '';
+              return `${context.dataset.label}: ${v.toFixed(2)} RUB`;
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: false
+        }
+      }
+    }
+  });
+
+  // Обновление, если цена ARUB меняется динамически
+  window.updateUsdRubPointFromArub = function () {
+    const newRate = getCurrentRateFromArub();
+    if (newRate === null) return;
+
+    if (currentRateSpan) {
+      currentRateSpan.textContent = newRate.toFixed(2);
+    }
+
+    usdRubChart.data.datasets[0].data[5] = newRate; // історія 2025
+    usdRubChart.data.datasets[1].data[5] = newRate; // сценарій 2025
+    usdRubChart.data.datasets[2].data[5] = newRate; // жовта точка
+    usdRubChart.data.datasets[2].label =
+      `Поточний курс (${newRate.toFixed(2)})`;
+
+    usdRubChart.update();
+  };
+</script>
 
 <script>
     window.addEventListener("load", () => {
