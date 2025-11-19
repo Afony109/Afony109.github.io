@@ -110,7 +110,7 @@ function initUsdRubChart() {
         },
         series: [
             {
-                name: 'Факт (середньорічний курс)',
+                name: 'Історичний курс',
                 data: getHistoryData(currentRate),
                 type: 'line'
             },
@@ -187,6 +187,11 @@ function initUsdRubChart() {
             show: true,
             labels: {
                 colors: '#8b94a8'
+            },
+            markers: {
+                width: 12,
+                height: 2,
+                radius: 0
             }
         }
     };
@@ -210,7 +215,7 @@ window.updateUsdRubPointFromArub = function() {
     // Update series
     usdRubChart.updateSeries([
         {
-            name: 'Факт (середньорічний курс)',
+            name: 'Історичний курс',
             data: getHistoryData(newRate)
         },
         {
