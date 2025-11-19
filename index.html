@@ -1938,7 +1938,57 @@
         legend: {
           display: true,
           labels: {
-            usePointStyle: false // <– показываем мини-линию, а не кружок
+            generateLabels(chart) {
+              const datasets = chart.data.datasets;
+
+              return datasets.map((ds, i) => {
+                // Базовый объект легенды
+                const label = {
+                  text: ds.label,
+                  datasetIndex: i
+                };
+
+                // --- ЛИНИЯ ДЛЯ ИСТОРИЧЕСКОГО КУРСА ---
+                if (ds.label === 'Історичний курс') {
+                  label.strokeStyle = '#4ba3ff';
+                  label.lineWidth = 2;
+                  label.fillStyle = 'transparent';
+                  label.lineDash = []; // сплошная
+                  label.pointStyle = false; // рисуем линию
+                  return label;
+                }
+
+                // --- ЛИНИЯ ДЛЯ СЦЕНАРИЯ ---
+                if (ds.label === 'Сценарій 2025–2030') {
+                  label.strokeStyle = '#4ba3ff';
+                  label.lineWidth = 2;
+                  label.fillStyle = 'transparent';
+                  label.lineDash = [5, 4]; // пунктир
+                  label.pointStyle = false;
+                  return label;
+                }
+
+                // --- ЖЁЛТАЯ ТОЧКА (текущий курс) ---
+                if (ds.label.startsWith('Поточний курс')) {
+                  label.pointStyle = 'circle';
+                  label.fillStyle = '#ffd54a';
+                  label.strokeStyle = '#ffd54a';
+                  label.lineWidth = 0;
+                  return label;
+                }
+
+                // --- КРАСНАЯ ТОЧКА (пик 2022) ---
+                if (ds.label === 'Пік 2022 року (140)') {
+                  label.pointStyle = 'circle';
+                  label.fillStyle = '#ff4b4b';
+                  label.strokeStyle = '#ff4b4b';
+                  label.lineWidth = 0;
+                  return label;
+                }
+
+                return label;
+              });
+            }
           }
         },
         tooltip: {
