@@ -31,20 +31,38 @@ let usdRubChart = null;
 const chartLabels = [];
 const chartStakedHistory = [];
 
-// Данные USD/RUB 2020-2030 (стилизованные)
-const usdRubData = [
-    { x: new Date(2020, 0, 1).getTime(), y: 62 },
-    { x: new Date(2021, 0, 1).getTime(), y: 74 },
-    { x: new Date(2022, 0, 1).getTime(), y: 90 },
-    { x: new Date(2023, 0, 1).getTime(), y: 82 },
-    { x: new Date(2024, 0, 1).getTime(), y: 93 },
-    { x: new Date(2025, 0, 1).getTime(), y: 95 },
-    { x: new Date(2026, 0, 1).getTime(), y: 100 },
-    { x: new Date(2027, 0, 1).getTime(), y: 108 },
-    { x: new Date(2028, 0, 1).getTime(), y: 115 },
-    { x: new Date(2029, 0, 1).getTime(), y: 112 },
-    { x: new Date(2030, 0, 1).getTime(), y: 110 }
+// Данные USD/RUB 2020-2030
+// Исторические данные (факт)
+const historyData = [
+    { x: new Date(2020, 0, 1).getTime(), y: 72.3 },
+    { x: new Date(2021, 0, 1).getTime(), y: 73.7 },
+    { x: new Date(2022, 0, 1).getTime(), y: 69.8 },
+    { x: new Date(2023, 0, 1).getTime(), y: 85.5 },
+    { x: new Date(2024, 0, 1).getTime(), y: 92.8 }
 ];
+
+// Сценарий 2025-2030
+const scenarioData = [
+    { x: new Date(2025, 0, 1).getTime(), y: 90 },
+    { x: new Date(2026, 0, 1).getTime(), y: 200 },
+    { x: new Date(2027, 0, 1).getTime(), y: 400 },
+    { x: new Date(2028, 0, 1).getTime(), y: 400 },
+    { x: new Date(2029, 0, 1).getTime(), y: 400 },
+    { x: new Date(2030, 0, 1).getTime(), y: 400 }
+];
+
+/**
+ * Get current USD/RUB rate from ARUB price
+ */
+function getCurrentRateFromArub() {
+    const el = document.getElementById('arubPriceValue');
+    if (!el) return null;
+
+    const raw = el.textContent.trim().replace(',', '.').replace(/[^0-9.]/g, '');
+    const value = parseFloat(raw);
+
+    return isNaN(value) ? null : value;
+}
 
 /**
  * Initialize USD/RUB chart with ApexCharts
@@ -61,35 +79,49 @@ function initUsdRubChart() {
         return;
     }
 
+    // Получаем текущий курс из цены ARUB
+    let currentRate = getCurrentRateFromArub();
+    if (currentRate === null) {
+        currentRate = 80.98; // fallback
+    }
+
+    // Текущая точка (2025)
+    const currentPointData = [
+        { x: new Date(2025, 0, 1).getTime(), y: currentRate }
+    ];
+
     const options = {
         chart: {
-            type: 'area',
+            type: 'line',
             height: 220,
             toolbar: { show: false },
             background: 'transparent',
             fontFamily: 'Inter, sans-serif'
         },
-        series: [{
-            name: 'USD/RUB',
-            data: usdRubData
-        }],
+        series: [
+            {
+                name: 'Факт (середньорічний курс)',
+                data: historyData,
+                type: 'line'
+            },
+            {
+                name: 'Сценарій 2025–2030',
+                data: scenarioData,
+                type: 'line'
+            },
+            {
+                name: `Поточний курс (${currentRate.toFixed(2)})`,
+                data: currentPointData,
+                type: 'scatter'
+            }
+        ],
         dataLabels: { enabled: false },
         stroke: {
             curve: 'smooth',
-            width: 2,
-            colors: ['#60a5fa']
+            width: [2, 2, 0],
+            dashArray: [0, 6, 0]
         },
-        fill: {
-            type: 'gradient',
-            gradient: {
-                shade: 'dark',
-                type: 'vertical',
-                shadeIntensity: 0.5,
-                gradientToColors: ['#4a90e2'],
-                opacityFrom: 0.6,
-                opacityTo: 0.1
-            }
-        },
+        colors: ['#4a90e2', '#60a5fa', '#ffd700'],
         xaxis: {
             type: 'datetime',
             labels: {
@@ -105,7 +137,7 @@ function initUsdRubChart() {
         },
         yaxis: {
             labels: {
-                formatter: (val) => val.toFixed(0),
+                formatter: (val) => val ? val.toFixed(0) : '',
                 style: {
                     colors: '#8b94a8',
                     fontSize: '11px'
@@ -123,7 +155,7 @@ function initUsdRubChart() {
             theme: 'dark',
             x: { format: 'yyyy' },
             y: {
-                formatter: (val) => val.toFixed(2) + ' ₽'
+                formatter: (val) => val ? val.toFixed(2) + ' ₽' : ''
             }
         },
         grid: {
@@ -131,17 +163,53 @@ function initUsdRubChart() {
             strokeDashArray: 4
         },
         markers: {
-            size: 0,
+            size: [0, 0, 6],
             hover: {
-                size: 5
+                size: [4, 4, 7]
+            }
+        },
+        legend: {
+            show: true,
+            labels: {
+                colors: '#8b94a8'
             }
         }
     };
 
     usdRubChart = new ApexCharts(chartElement, options);
     usdRubChart.render();
-    console.log('[APP] ✅ USD/RUB chart initialized');
+    console.log('[APP] ✅ USD/RUB chart initialized with current rate:', currentRate);
 }
+
+/**
+ * Update USD/RUB chart current point from ARUB price
+ */
+window.updateUsdRubPointFromArub = function() {
+    const newRate = getCurrentRateFromArub();
+    if (newRate === null || !usdRubChart) return;
+
+    const currentPointData = [
+        { x: new Date(2025, 0, 1).getTime(), y: newRate }
+    ];
+
+    // Update series
+    usdRubChart.updateSeries([
+        {
+            name: 'Факт (середньорічний курс)',
+            data: historyData
+        },
+        {
+            name: 'Сценарій 2025–2030',
+            data: scenarioData
+        },
+        {
+            name: `Поточний курс (${newRate.toFixed(2)})`,
+            data: currentPointData
+        }
+    ]);
+
+    console.log('[APP] 📊 USD/RUB chart updated with new rate:', newRate);
+};
 
 /**
  * Update TVL chart (Chart.js)
@@ -457,9 +525,14 @@ async function updateGlobalStats() {
         const supplyUsd = supplyTokens * arubPrice;
 
         // HERO
-        setText('dashHeroPrice', '$' + arubPrice.toFixed(2));
+        setText('arubPriceValue', arubPrice.toFixed(2));
         setText('dashHeroStakers', stakersText);
         setText('dashHeroTvl', formatUSD(tvlUsd));
+
+        // Update USD/RUB chart with new ARUB price
+        if (window.updateUsdRubPointFromArub) {
+            window.updateUsdRubPointFromArub();
+        }
 
         // APY из контракта
         const apyPercent = (tierInfo.apy / 100).toFixed(1);
