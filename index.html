@@ -834,6 +834,12 @@
             font-size: 16px;
             font-weight: 600;
         }
+        .dashboard-hero-note {
+            font-size: 9px;
+            color: var(--gray);
+            margin-top: 2px;
+            line-height: 1.2;
+        }
         .dashboard-hero-ring {
             position: absolute;
             right: -45px;
@@ -1335,6 +1341,11 @@
                     <div class="dashboard-hero-label">TVL (загальний)</div>
                     <div class="dashboard-hero-value" id="dashHeroTvl">—</div>
                 </div>
+                <div class="dashboard-hero-metric">
+                    <div class="dashboard-hero-label">Поточний рівень</div>
+                    <div class="dashboard-hero-value" id="dashHeroTier">—</div>
+                    <div class="dashboard-hero-note">Розрахунок від TVL в USD</div>
+                </div>
             </div>
         </div>
 
@@ -1371,10 +1382,6 @@
                     <li id="tier-4">Tier 4: $400,000 — $800,000 → <b>12% APY</b></li>
                     <li id="tier-5">Tier 5: >$800,000 → <b>8% APY</b></li>
                 </ul>
-
-                <div id="tier-current" class="tier-current">
-                    Поточний рівень: ...
-                </div>
             </div>
         </aside>
     </div>

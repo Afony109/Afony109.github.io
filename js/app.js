@@ -329,10 +329,10 @@ function updateTierUSD(stakedArub, stakedUsdt, priceArub, apy) {
     else if (tvl < 800000) tier = 4;
     else tier = 5;
 
-    const tierCurrentEl = document.getElementById('tier-current');
-    if (tierCurrentEl) {
-        tierCurrentEl.innerHTML =
-            `Поточний рівень: <b>Tier ${tier}</b> (<b>${apy}%</b>). Розрахунок йде від загального TVL в USD.`;
+    // Update hero tier display
+    const tierHeroEl = document.getElementById('dashHeroTier');
+    if (tierHeroEl) {
+        tierHeroEl.textContent = `Tier ${tier} (${apy}%)`;
     }
 
     for (let i = 1; i <= 5; i++) {
