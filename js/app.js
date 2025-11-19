@@ -28,8 +28,23 @@ import {
 // === DASHBOARD CHARTS STATE (TVL + USD/RUB) ===
 let stakedChart = null;
 let usdRubChart = null;
-const chartLabels = [];
-const chartStakedHistory = [];
+
+// Початкові статичні дані для графіка (плавний ріст TVL)
+const chartLabels = [
+    "01.09", "10.09", "20.09",
+    "01.10", "10.10", "20.10",
+    "01.11"
+];
+
+const chartStakedHistory = [
+    52000,
+    74000,
+    91000,
+    125000,
+    167000,
+    210000,
+    277988
+];
 
 // Данные USD/RUB 2020-2030
 // ИСТОРИЯ: красивая "горка" к 140 и плавный спуск
@@ -258,7 +273,7 @@ function updateDashboardCharts(tvlUsd) {
         chartStakedHistory.shift();
     }
 
-    const stakedCanvas = document.getElementById('dashStakedChart');
+    const stakedCanvas = document.getElementById('tvlChart');
     if (!stakedCanvas) {
         return; // графики не на этой странице
     }
@@ -270,19 +285,42 @@ function updateDashboardCharts(tvlUsd) {
             data: {
                 labels: chartLabels,
                 datasets: [{
-                    label: 'TVL, USD',
+                    label: 'TVL, $',
                     data: chartStakedHistory,
-                    fill: true,
-                    tension: 0.35
+                    borderWidth: 2,
+                    pointRadius: 3,
+                    pointHoverRadius: 5,
+                    tension: 0.35, // згладжена лінія
+                    borderColor: 'rgba(0, 158, 247, 1)',      // синій колір лінії
+                    backgroundColor: 'rgba(0, 158, 247, 0.15)', // напівпрозора заливка
+                    fill: true
                 }]
             },
             options: {
-                plugins: { legend: { display: false } },
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'TVL: $' + context.parsed.y.toLocaleString('en-US');
+                            }
+                        }
+                    }
+                },
                 scales: {
-                    x: { display: false },
+                    x: {
+                        display: true,
+                        grid: { display: false }
+                    },
                     y: {
+                        display: true,
                         ticks: {
                             callback: v => '$' + v.toLocaleString('en-US')
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.05)'
                         }
                     }
                 }

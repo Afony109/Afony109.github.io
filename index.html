@@ -1005,10 +1005,31 @@
                 box-shadow: 0 0 0 0 rgba(0,87,183,0);
             }
         }
-        #dashStakedChart,
+        #tvlChart,
         #usdRubChart {
             width: 100% !important;
             height: 220px !important;
+        }
+
+        /* Стилі для карточки TVL */
+        .stats-card-header {
+            margin-bottom: 14px;
+        }
+
+        .stats-card-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #e9eefc;
+        }
+
+        .stats-card-subtitle {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .stats-card-body {
+            position: relative;
         }
 
         /* Легенда USD/RUB */
@@ -1518,9 +1539,18 @@
 
     <div class="stats-row-equal">
         <section class="stats-card tvl-card">
-            <div class="dashboard-chart-title">💰 TVL: загальний стейкінг</div>
-            <div class="dashboard-chart-sub">Загальна вартість застейканих активів, USD</div>
-            <canvas id="dashStakedChart"></canvas>
+            <div class="stats-card-header">
+                <div class="stats-card-title">
+                    TVL: загальний стейкінг
+                </div>
+                <div class="stats-card-subtitle">
+                    Динаміка за часом
+                </div>
+            </div>
+
+            <div class="stats-card-body">
+                <canvas id="tvlChart" height="130"></canvas>
+            </div>
         </section>
 
         <section class="stats-card usd-card">

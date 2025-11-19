@@ -236,10 +236,31 @@
     }
 }
 
-#dashStakedChart,
+#tvlChart,
 #dashPriceChart {
     width: 100% !important;
     height: 220px !important;
+}
+
+/* Стилі для карточки TVL */
+.stats-card-header {
+    margin-bottom: 14px;
+}
+
+.stats-card-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #e9eefc;
+}
+
+.stats-card-subtitle {
+    font-size: 12px;
+    color: var(--gray);
+}
+
+.stats-card-body {
+    position: relative;
 }
 
 /* ==== ЕДИНЫЙ СТИЛЬ ДЛЯ ВСЕХ СЕКЦИЙ САЙТА (как дашборд) ==== */
