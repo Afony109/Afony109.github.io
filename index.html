@@ -126,6 +126,8 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            text-decoration: none;
+            cursor: pointer;
         }
 
         .logo-icon {
@@ -208,7 +210,8 @@
             color: #ffffff;
         }
 
-        .main-nav-link.active-session {
+        .main-nav-link.active-session,
+        .main-nav-link.nav-link-active {
             border-color: rgba(255,255,255,0.40);
             background: radial-gradient(circle at top left,
                 rgba(96,165,250,0.65),
@@ -1389,13 +1392,13 @@
 
 <nav>
     <div class="nav-left">
-        <div class="logo">
+        <a href="#hero" class="logo">
             <div class="logo-icon">₽</div>
             <div class="logo-text">
                 <span class="logo-text-top">ANTI</span>
                 <span class="logo-text-bottom">RUB</span>
             </div>
-        </div>
+        </a>
 
         <div class="main-nav">
             <a href="#trading" class="main-nav-link">Купити</a>
@@ -1430,7 +1433,7 @@
 </nav>
 
 <!-- ANTI RUB SOLID DASHBOARD -->
-<section class="dashboard-section">
+<section id="hero" class="dashboard-section">
     <div class="dashboard-grid">
         <div class="dashboard-panel">
             <div class="dashboard-hero-ring"></div>
@@ -2111,6 +2114,64 @@
     window.addEventListener("load", () => {
         document.body.classList.add("page-ready");
     });
+</script>
+
+<script>
+  // Навігація: підсвітка активної кнопки при кліку та скролі
+  const navLinks = document.querySelectorAll('.main-nav a.main-nav-link');
+  const sections = [];
+
+  navLinks.forEach(link => {
+    const targetId = link.getAttribute('href');
+    if (targetId && targetId.startsWith('#')) {
+      const section = document.querySelector(targetId);
+      if (section) {
+        sections.push(section);
+      }
+    }
+  });
+
+  // Функція встановлення активної кнопки
+  function setActiveLinkById(id) {
+    navLinks.forEach(link => {
+      const href = link.getAttribute('href');
+      if (href === '#' + id) {
+        link.classList.add('nav-link-active');
+      } else {
+        link.classList.remove('nav-link-active');
+      }
+    });
+  }
+
+  // 1) Підсвітка при кліку
+  navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      const href = link.getAttribute('href');
+      if (href && href.startsWith('#')) {
+        const id = href.substring(1);
+        setActiveLinkById(id);
+      }
+    });
+  });
+
+  // 2) Підсвітка при скролі (IntersectionObserver)
+  const observerOptions = {
+    root: null,
+    threshold: 0.3    // секція вважається активною, якщо видно ~30% висоти
+  };
+
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.getAttribute('id');
+        if (id) {
+          setActiveLinkById(id);
+        }
+      }
+    });
+  }, observerOptions);
+
+  sections.forEach(section => sectionObserver.observe(section));
 </script>
 
 </body>
