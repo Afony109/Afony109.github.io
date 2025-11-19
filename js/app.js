@@ -32,23 +32,33 @@ const chartLabels = [];
 const chartStakedHistory = [];
 
 // Данные USD/RUB 2020-2030
-// Исторические данные (факт)
-const historyData = [
-    { x: new Date(2020, 0, 1).getTime(), y: 72.3 },
-    { x: new Date(2021, 0, 1).getTime(), y: 73.7 },
-    { x: new Date(2022, 0, 1).getTime(), y: 69.8 },
-    { x: new Date(2023, 0, 1).getTime(), y: 85.5 },
-    { x: new Date(2024, 0, 1).getTime(), y: 92.8 }
-];
+// Исторические данные (факт) - функция будет обновлять для 2025
+function getHistoryData(currentRate) {
+    return [
+        { x: new Date(2020, 0, 1).getTime(), y: 72.3 },
+        { x: new Date(2021, 0, 1).getTime(), y: 73.7 },
+        { x: new Date(2022, 0, 1).getTime(), y: 69.8 },
+        { x: new Date(2023, 0, 1).getTime(), y: 85.5 },
+        { x: new Date(2024, 0, 1).getTime(), y: 92.8 },
+        { x: new Date(2025, 0, 1).getTime(), y: currentRate }
+    ];
+}
 
-// Сценарий 2025-2030
-const scenarioData = [
-    { x: new Date(2025, 0, 1).getTime(), y: 90 },
-    { x: new Date(2026, 0, 1).getTime(), y: 200 },
-    { x: new Date(2027, 0, 1).getTime(), y: 400 },
-    { x: new Date(2028, 0, 1).getTime(), y: 400 },
-    { x: new Date(2029, 0, 1).getTime(), y: 400 },
-    { x: new Date(2030, 0, 1).getTime(), y: 400 }
+// Сценарий 2025-2030 - функция будет обновлять для 2025
+function getScenarioData(currentRate) {
+    return [
+        { x: new Date(2025, 0, 1).getTime(), y: currentRate },
+        { x: new Date(2026, 0, 1).getTime(), y: 200 },
+        { x: new Date(2027, 0, 1).getTime(), y: 400 },
+        { x: new Date(2028, 0, 1).getTime(), y: 500 },
+        { x: new Date(2029, 0, 1).getTime(), y: 350 },
+        { x: new Date(2030, 0, 1).getTime(), y: 250 }
+    ];
+}
+
+// ПИК 2022 — 140 RUB (красная точка)
+const peak2022Data = [
+    { x: new Date(2022, 0, 1).getTime(), y: 140 }
 ];
 
 /**
@@ -101,27 +111,32 @@ function initUsdRubChart() {
         series: [
             {
                 name: 'Факт (середньорічний курс)',
-                data: historyData,
+                data: getHistoryData(currentRate),
                 type: 'line'
             },
             {
                 name: 'Сценарій 2025–2030',
-                data: scenarioData,
+                data: getScenarioData(currentRate),
                 type: 'line'
             },
             {
                 name: `Поточний курс (${currentRate.toFixed(2)})`,
                 data: currentPointData,
                 type: 'scatter'
+            },
+            {
+                name: 'Пік 2022 року (140)',
+                data: peak2022Data,
+                type: 'scatter'
             }
         ],
         dataLabels: { enabled: false },
         stroke: {
             curve: 'smooth',
-            width: [2, 2, 0],
-            dashArray: [0, 6, 0]
+            width: [2, 2, 0, 0],
+            dashArray: [0, 6, 0, 0]
         },
-        colors: ['#4a90e2', '#60a5fa', '#ffd700'],
+        colors: ['#4a90e2', '#60a5fa', '#ffd700', '#ef4444'],
         xaxis: {
             type: 'datetime',
             labels: {
@@ -163,9 +178,9 @@ function initUsdRubChart() {
             strokeDashArray: 4
         },
         markers: {
-            size: [0, 0, 6],
+            size: [0, 0, 6, 7],
             hover: {
-                size: [4, 4, 7]
+                size: [4, 4, 8, 9]
             }
         },
         legend: {
@@ -196,15 +211,19 @@ window.updateUsdRubPointFromArub = function() {
     usdRubChart.updateSeries([
         {
             name: 'Факт (середньорічний курс)',
-            data: historyData
+            data: getHistoryData(newRate)
         },
         {
             name: 'Сценарій 2025–2030',
-            data: scenarioData
+            data: getScenarioData(newRate)
         },
         {
             name: `Поточний курс (${newRate.toFixed(2)})`,
             data: currentPointData
+        },
+        {
+            name: 'Пік 2022 року (140)',
+            data: peak2022Data
         }
     ]);
 
