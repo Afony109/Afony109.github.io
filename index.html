@@ -736,6 +736,13 @@
             to { transform: rotate(360deg); }
         }
 
+        /* Две карточки одинаковой ширины */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 50% + 50% */
+            gap: 24px;
+        }
+
         @media (max-width: 768px) {
             nav {
                 padding-left: 20px;
@@ -764,6 +771,11 @@
 
             .section-title {
                 font-size: 2em;
+            }
+
+            /* Адаптив для телефонов и маленьких экранов */
+            .stats-row {
+                grid-template-columns: 1fr; /* одна карточка под другой */
             }
         }
 
