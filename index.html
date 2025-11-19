@@ -1011,6 +1011,54 @@
             height: 220px !important;
         }
 
+        /* Легенда USD/RUB */
+        .usd-rub-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 12px;
+            font-size: 13px;
+            align-items: center;
+        }
+
+        .usd-rub-legend .legend-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Линии в легенде */
+        .legend-line {
+            display: inline-block;
+            width: 28px;
+            height: 0;
+            border-top: 2px solid #4ba3ff; /* голубой */
+        }
+
+        .legend-line-solid {
+            border-style: solid;
+        }
+
+        .legend-line-dashed {
+            border-style: dashed;
+        }
+
+        /* Кружки в легенде */
+        .legend-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .legend-dot-yellow {
+            background: #ffd54a;
+        }
+
+        .legend-dot-red {
+            background: #ff4b4b;
+        }
+
         /* Page sections */
         .page-section {
             max-width: 1200px;
@@ -1479,6 +1527,27 @@
             <div class="dashboard-chart-title">📈 Курс USD/RUB</div>
             <div class="dashboard-chart-sub">Історія та сценарій 2020–2030 (поточний: <span id="currentRateText">—</span>)</div>
             <canvas id="usdRubChart"></canvas>
+            <div class="usd-rub-legend">
+              <span class="legend-item">
+                <span class="legend-line legend-line-solid"></span>
+                Історичний курс
+              </span>
+
+              <span class="legend-item">
+                <span class="legend-line legend-line-dashed"></span>
+                Сценарій 2025–2030
+              </span>
+
+              <span class="legend-item">
+                <span class="legend-dot legend-dot-yellow"></span>
+                <span id="legendCurrentRateText">Поточний курс</span>
+              </span>
+
+              <span class="legend-item">
+                <span class="legend-dot legend-dot-red"></span>
+                Пік 2022 року (140)
+              </span>
+            </div>
             <div class="dashboard-footer-note" style="margin-top: 10px; font-size: 10px;">
                 Частина графіка після поточної дати — умовний сценарій, не є інвестиційною порадою.
             </div>
