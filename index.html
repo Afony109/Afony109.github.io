@@ -1917,6 +1917,11 @@
     currentRateSpan.textContent = currentRate.toFixed(2);
   }
 
+  const legendCurrentRateText = document.getElementById('legendCurrentRateText');
+  if (legendCurrentRateText) {
+    legendCurrentRateText.textContent = `Поточний курс (${currentRate.toFixed(2)})`;
+  }
+
   const years = [
     '2020','2021','2022','2023','2024',
     '2025','2026','2027','2028','2029','2030'
@@ -2049,6 +2054,10 @@
 
     if (currentRateSpan) {
       currentRateSpan.textContent = newRate.toFixed(2);
+    }
+
+    if (legendCurrentRateText) {
+      legendCurrentRateText.textContent = `Поточний курс (${newRate.toFixed(2)})`;
     }
 
     usdRubChart.data.datasets[0].data[5] = newRate; // історія 2025
