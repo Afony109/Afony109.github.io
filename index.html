@@ -141,7 +141,6 @@
             color: #000;
             font-size: 1.8em;
             font-weight: 800;
-            transform: rotate(180deg); /* перевертаємо символ рубля */
         }
 
         .logo-text {
@@ -292,7 +291,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
 
-            /* стиль как у карточек стейкинга */
+            /* стиль как у карточек стейкінга */
             border: 1px solid rgba(255,255,255,0.16);
             background: radial-gradient(
                 circle at top left,
@@ -1372,37 +1371,22 @@
             overflow: hidden;
         }
 
-        /* Іконки для кнопок додавання токенів */
-        .icon-flip {
-            display: inline-block;
-            transform: rotate(180deg);
-            font-weight: 800;
-        }
-
-        .icon-flip:first-child {
-            margin-right: 6px;
-        }
-
-        .icon-flip:last-child {
-            margin-left: 6px;
-        }
-
-        .icon-usdt {
-            font-weight: 900;
-        }
-
-        .icon-usdt:first-child {
-            margin-right: 6px;
-        }
-
-        .icon-usdt:last-child {
-            margin-left: 6px;
-        }
-
         @media (max-width: 1000px) {
             .stats-row-equal {
                 grid-template-columns: 1fr !important;
             }
+        }
+
+        .icon-flip {
+            display: inline-block;
+            transform: rotate(180deg);
+            font-weight: 800;
+            margin-right: 6px;
+        }
+
+        .icon-usdt {
+            font-weight: 900;
+            margin-right: 6px;
         }
     </style>
 </head>
@@ -1647,7 +1631,7 @@
                         </div>
                     </div>
                     <button onclick="addTokenToWallet('ARUB')" class="action-btn">
-                        <span class="icon-flip">₽</span> Додати ARUB <span class="icon-flip">₽</span>
+                        <span class="icon-flip">₽</span> Додати ARUB
                     </button>
                 </div>
 
@@ -1660,7 +1644,7 @@
                         </div>
                     </div>
                     <button onclick="addTokenToWallet('USDT')" class="action-btn">
-                        <span class="icon-usdt">$</span> Додати USDT <span class="icon-usdt">$</span>
+                        <span class="icon-usdt">$</span> Додати USDT
                     </button>
                 </div>
 
@@ -1965,74 +1949,66 @@
 
 <script type="module" src="js/app.js"></script>
 
+<!-- Динамический реальный курс USD/RUB -->
 <script>
-  function getCurrentRateFromArub() {
-    const el = document.getElementById('arubPriceValue');
-    if (!el) return null;
+  // === Реальный курс USD/RUB через API ===
 
-    const raw = el.textContent.trim()
-      .replace(',', '.')
-      .replace(/[^0-9.]/g, '');
-    const value = parseFloat(raw);
+  async function fetchUsdRubRate() {
+    try {
+      const res = await fetch(
+        'https://api.exchangerate.host/latest?base=USD&symbols=RUB'
+      );
+      const data = await res.json();
 
-    return isNaN(value) ? null : value;
+      if (!data || !data.rates || typeof data.rates.RUB !== 'number') {
+        return null;
+      }
+
+      return data.rates.RUB;
+    } catch (e) {
+      console.error('USD/RUB fetch error', e);
+      return null;
+    }
   }
 
-  // Берём текущий курс из цены ARUB
-  let currentRate = getCurrentRateFromArub();
-  if (currentRate === null) {
-    currentRate = 80.98; // запасной вариант
-  }
-
-  const currentRateSpan = document.getElementById('currentRateText');
-  if (currentRateSpan) {
-    currentRateSpan.textContent = currentRate.toFixed(2);
-  }
-
-  const legendCurrentRateText = document.getElementById('legendCurrentRateText');
-  if (legendCurrentRateText) {
-    legendCurrentRateText.textContent = `Поточний курс (${currentRate.toFixed(2)})`;
-  }
+  let usdRubChart;
+  let currentRate = 80.98; // запасной курс, если API не ответит
 
   const years = [
     '2020','2021','2022','2023','2024',
     '2025','2026','2027','2028','2029','2030'
   ];
 
-  // История: горка к 140 и спад
   const historyData = [
-    72.3,        // 2020
-    73.7,        // 2021
-    140,         // 2022 - пик
-    110,         // 2023
-    92.8,        // 2024
-    currentRate, // 2025 - текущий курс
+    72.3,
+    73.7,
+    140,
+    110,
+    92.8,
+    currentRate,
     null, null, null, null, null
   ];
 
-  // Сценарий 2025–2030
   const scenarioData = [
-    null,   // 2020
-    null,   // 2021
-    null,   // 2022
-    null,   // 2023
-    null,   // 2024
-    currentRate, // 2025 — жёлтая точка (старт)
-    200,    // 2026
-    400,    // 2027
-    500,    // 2028
-    350,    // 2029
-    250     // 2030
+    null,
+    null,
+    null,
+    null,
+    null,
+    currentRate,
+    200,
+    400,
+    500,
+    350,
+    250
   ];
 
-  // Жёлтая точка (текущий курс 2025)
   const currentPointData = [
     null, null, null, null, null,
     currentRate,
     null, null, null, null, null
   ];
 
-  // Красная точка (пик 2022)
   const peak2022 = [
     null, null, 140, null, null,
     null, null, null, null, null, null
@@ -2040,106 +2016,127 @@
 
   const ctx = document.getElementById('usdRubChart').getContext('2d');
 
-  const usdRubChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: years,
-      datasets: [
-        // 1) ІСТОРИЧНИЙ КУРС — СПЛОШНАЯ ГОЛУБАЯ ЛИНИЯ БЕЗ ТОЧЕК
-        {
-          label: 'Історичний курс',
-          data: historyData,
-          tension: 0.45,
-          borderWidth: 2,
-          borderColor: '#4ba3ff',
-          fill: false,
-          pointRadius: 0,
-          pointHoverRadius: 0,
-          pointStyle: 'line'
-        },
-        // 2) СЦЕНАРІЙ — ТОНКИЙ ГОЛУБОЙ ПУНКТИР БЕЗ ТОЧЕК
-        {
-          label: 'Сценарій 2025–2030',
-          data: scenarioData,
-          tension: 0.35,
-          borderWidth: 2,
-          borderColor: '#4ba3ff',
-          borderDash: [6, 4],
-          fill: false,
-          spanGaps: false,   // ← НЕ соединять через null
-          pointRadius: 0,
-          pointHoverRadius: 0,
-          pointStyle: 'line'
-        },
-        // 3) ПОТОЧНИЙ КУРС — ЖЁЛТАЯ ТОЧКА
-        {
-          label: `Поточний курс (${currentRate.toFixed(2)})`,
-          data: currentPointData,
-          borderWidth: 0,
-          pointRadius: 6,
-          pointHoverRadius: 8,
-          pointBackgroundColor: '#ffd54a',
-          pointBorderColor: '#ffd54a',
-          pointStyle: 'circle'
-        },
-        // 4) ПІК 2022 — КРАСНАЯ ТОЧКА
-        {
-          label: 'Пік 2022 року (140)',
-          data: peak2022,
-          borderWidth: 0,
-          pointRadius: 7,
-          pointHoverRadius: 9,
-          pointBackgroundColor: '#ff4b4b',
-          pointBorderColor: '#ff4b4b',
-          pointStyle: 'circle'
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          display: false   // <– выключаем стандартную легенду
-        },
-        tooltip: {
-          callbacks: {
-            label: function (context) {
-              const v = context.parsed.y;
-              if (!v) return '';
-              return `${context.dataset.label}: ${v.toFixed(2)} RUB`;
+  function buildUsdRubChart() {
+    usdRubChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: years,
+        datasets: [
+          {
+            label: 'Історичний курс',
+            data: historyData,
+            tension: 0.45,
+            borderWidth: 2,
+            borderColor: '#4ba3ff',
+            fill: false,
+            pointRadius: 0,
+            pointHoverRadius: 0
+          },
+          {
+            label: 'Сценарій 2025–2030',
+            data: scenarioData,
+            tension: 0.35,
+            borderWidth: 2,
+            borderColor: '#4ba3ff',
+            borderDash: [6, 4],
+            fill: false,
+            spanGaps: false,
+            pointRadius: 0,
+            pointHoverRadius: 0
+          },
+          {
+            label: `Поточний курс (${currentRate.toFixed(2)})`,
+            data: currentPointData,
+            borderWidth: 0,
+            pointRadius: 6,
+            pointHoverRadius: 8,
+            pointBackgroundColor: '#ffd54a',
+            pointBorderColor: '#ffd54a'
+          },
+          {
+            label: 'Пік 2022 року (140)',
+            data: peak2022,
+            borderWidth: 0,
+            pointRadius: 7,
+            pointHoverRadius: 9,
+            pointBackgroundColor: '#ff4b4b',
+            pointBorderColor: '#ff4b4b'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                const v = context.parsed.y;
+                if (!v) return '';
+                return `${context.dataset.label}: ${v.toFixed(2)} RUB`;
+              }
             }
           }
-        }
-      },
-      scales: {
-        y: {
-          beginAtZero: false
+        },
+        scales: {
+          y: {
+            beginAtZero: false
+          }
         }
       }
-    }
-  });
+    });
+  }
 
-  // Обновление, если цена ARUB меняется динамически
-  window.updateUsdRubPointFromArub = function () {
-    const newRate = getCurrentRateFromArub();
-    if (newRate === null) return;
-
+  function updateRateTexts(rate) {
+    const currentRateSpan = document.getElementById('currentRateText');
     if (currentRateSpan) {
-      currentRateSpan.textContent = newRate.toFixed(2);
+      currentRateSpan.textContent = rate.toFixed(2);
     }
-
+    const legendCurrentRateText = document.getElementById('legendCurrentRateText');
     if (legendCurrentRateText) {
-      legendCurrentRateText.textContent = `Поточний курс (${newRate.toFixed(2)})`;
+      legendCurrentRateText.textContent =
+        `Поточний курс (${rate.toFixed(2)})`;
+    }
+  }
+
+  async function initUsdRubChart() {
+    const apiRate = await fetchUsdRubRate();
+    if (apiRate !== null) {
+      currentRate = apiRate;
     }
 
-    usdRubChart.data.datasets[0].data[5] = newRate; // історія 2025
-    usdRubChart.data.datasets[1].data[5] = newRate; // сценарій 2025
-    usdRubChart.data.datasets[2].data[5] = newRate; // жовта точка
-    usdRubChart.data.datasets[2].label =
-      `Поточний курс (${newRate.toFixed(2)})`;
+    historyData[5] = currentRate;
+    scenarioData[5] = currentRate;
+    currentPointData[5] = currentRate;
 
+    updateRateTexts(currentRate);
+    buildUsdRubChart();
+
+    setInterval(refreshUsdRubRate, 5 * 60 * 1000);
+  }
+
+  async function refreshUsdRubRate() {
+    const apiRate = await fetchUsdRubRate();
+    if (apiRate === null || !usdRubChart) return;
+
+    currentRate = apiRate;
+    historyData[5] = currentRate;
+    scenarioData[5] = currentRate;
+    currentPointData[5] = currentRate;
+
+    usdRubChart.data.datasets[0].data[5] = currentRate;
+    usdRubChart.data.datasets[1].data[5] = currentRate;
+    usdRubChart.data.datasets[2].data[5] = currentRate;
+    usdRubChart.data.datasets[2].label =
+      `Поточний курс (${currentRate.toFixed(2)})`;
+
+    updateRateTexts(currentRate);
     usdRubChart.update();
-  };
+  }
+
+  initUsdRubChart();
 </script>
 
 <script>
@@ -2163,7 +2160,6 @@
     }
   });
 
-  // Функція встановлення активної кнопки
   function setActiveLinkById(id) {
     navLinks.forEach(link => {
       const href = link.getAttribute('href');
@@ -2175,7 +2171,6 @@
     });
   }
 
-  // 1) Підсвітка при кліку
   navLinks.forEach(link => {
     link.addEventListener('click', (e) => {
       const href = link.getAttribute('href');
@@ -2186,10 +2181,9 @@
     });
   });
 
-  // 2) Підсвітка при скролі (IntersectionObserver)
   const observerOptions = {
     root: null,
-    threshold: 0.3    // секція вважається активною, якщо видно ~30% висоти
+    threshold: 0.3
   };
 
   const sectionObserver = new IntersectionObserver((entries) => {
@@ -2208,4 +2202,3 @@
 
 </body>
 </html>
-<!-- Cache bust: 1763569577 -->
