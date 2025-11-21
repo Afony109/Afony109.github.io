@@ -64,30 +64,47 @@ let readOnlyTokenContract = null;
 // Cache for USD/RUB exchange rate
 let cachedUsdRubRate = null;
 let lastRateFetchTime = 0;
-const RATE_CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+const RPC_FALLBACKS = [
+    'https://ethereum-sepolia-rpc.publicnode.com',
+    'https://rpc.sepolia.org',
+    'https://1rpc.io/sepolia',
+    'https://sepolia.infura.io/v3/YOUR_KEY',
+    'https://eth-sepolia.g.alchemy.com/v2/YOUR_KEY'
+];
+
+async function getWorkingProvider() {
+    for (const url of RPC_FALLBACKS) {
+        try {
+            const provider = new ethers.providers.JsonRpcProvider(url);
+            await Promise.race([
+                provider.getBlockNumber(),
+                new Promise((_, reject) => setTimeout(() => reject(new Error('RPC timeout')), 4000))
+            ]);
+            console.log('[RPC] Using:', url);
+            return provider;
+        } catch (e) {
+            console.warn('[RPC] Failed:', url, '-', e?.message || e);
+        }
+    }
+    throw new Error('No RPC available from fallback list');
+}
 
 /**
  * Initialize read-only contracts for public data
  */
-export function initReadOnlyContracts() {
+export async function initReadOnlyContracts() {
     try {
         console.log('[CONTRACTS] Initializing read-only contracts...');
 
-        // Use public RPC that supports CORS
-        const rpcUrl = 'https://ethereum-sepolia-rpc.publicnode.com';
-        console.log('[CONTRACTS] Using RPC:', rpcUrl);
+        readOnlyProvider = await getWorkingProvider();
 
-        // Create provider using public RPC with CORS support
-        readOnlyProvider = new ethers.providers.JsonRpcProvider(rpcUrl);
-
-        // Initialize read-only contract instances
         readOnlyStakingContract = new ethers.Contract(CONFIG.STAKING_ADDRESS, STAKING_ABI, readOnlyProvider);
         readOnlyTokenContract = new ethers.Contract(CONFIG.TOKEN_ADDRESS, TOKEN_ABI, readOnlyProvider);
 
-        console.log('[CONTRACTS] ✅ Read-only contracts initialized');
+        console.log('[CONTRACTS] Read-only contracts initialized');
         return true;
     } catch (error) {
-        console.error('[CONTRACTS] ❌ Error initializing read-only contracts:', error);
+        console.error('[CONTRACTS] Error initializing read-only contracts:', error);
         return false;
     }
 }
@@ -363,7 +380,11 @@ export async function getArubPrice() {
                 }
             }
         } catch (error) {
-            console.warn('[CONTRACTS] On-chain rate fetch failed:', error);
+            console.error('[CONTRACTS] On-chain rate fetch failed', {
+                code: error?.code,
+                data: error?.data,
+                message: error?.message
+            });
         }
     }
 

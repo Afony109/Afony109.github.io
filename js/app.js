@@ -345,7 +345,7 @@ async function initApp() {
     try {
         // Initialize read-only contracts first (for public data)
         console.log('[APP] Initializing read-only contracts...');
-        const readOnlySuccess = initReadOnlyContracts();
+        const readOnlySuccess = await initReadOnlyContracts();
 
         // Update stats immediately after read-only contracts are initialized
         if (readOnlySuccess) {
