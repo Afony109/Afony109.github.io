@@ -68,8 +68,8 @@ const RPC_FALLBACKS = [
     'https://ethereum-sepolia-rpc.publicnode.com',
     'https://rpc.sepolia.org',
     'https://1rpc.io/sepolia',
-    'https://sepolia.infura.io/v3/YOUR_KEY',
-    'https://eth-sepolia.g.alchemy.com/v2/YOUR_KEY'
+    'https://sepolia.infura.io/v3/4eaba2c22421462eab401f71d5b2b5e5',
+    'https://eth-sepolia.g.alchemy.com/v2/5Jxy1ozrFFV9rlJHW4xznilpqo4ZXNCF'
 ];
 
 async function getWorkingProvider() {
