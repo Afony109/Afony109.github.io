@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANTI RUB - Ð¡Ñ‚ÐµÐ¹ÐºÑ–Ð½Ð³ ARUB Ñ‚Ð° USDT ðŸ‡ºðŸ‡¦</title>
+    <title>ANTI RUB - Стейкінг ARUB та USDT 🇺🇦</title>
 
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='50' fill='%230057B7'/><rect y='50' width='100' height='50' fill='%23FFD700'/><text x='50' y='60' font-size='50' text-anchor='middle' fill='white' font-weight='bold'>â‚´</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='50' fill='%230057B7'/><rect y='50' width='100' height='50' fill='%23FFD700'/><text x='50' y='60' font-size='50' text-anchor='middle' fill='white' font-weight='bold'>₴</text></svg>">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
@@ -39,9 +39,9 @@
             --red: #ef4444;
             --card-bg: rgba(255,255,255,0.03);
 
-            /* Ð¤Ð›ÐÐ“ Ð£ÐšÐ ÐÐ‡ÐÐ˜ â€” Ð¿Ñ€Ð°Ð²Ð¸Ð»ÑŒÐ½Ñ– ÐºÐ¾Ð»ÑŒÐ¾Ñ€Ð¸ */
+            /* ФЛАГ УКРАЇНИ — правильні кольори */
             --ukraine-blue: #4a90e2;
-            --ukraine-yellow: #ffd700; /* Ð¶Ð¾Ð²Ñ‚Ð¸Ð¹ */
+            --ukraine-yellow: #ffd700; /* жовтий */
         }
 
         * {
@@ -100,20 +100,20 @@
             75% { transform: rotate(10deg); }
         }
 
-        /* ====== ÐÐžÐ’Ð Ð¨ÐÐŸÐšÐ / NAV ====== */
+        /* ====== НОВА ШАПКА / NAV ====== */
         nav {
             position: fixed;
             top: 0;
             width: 100%;
 
-            /* Ð²Ñ‹Ñ€Ð°Ð²Ð½Ð¸Ð²Ð°Ð½Ð¸Ðµ Ð¿Ð¾ Ñ†ÐµÐ½Ñ‚Ñ€Ñƒ 1200px ÐºÐ¾Ð½Ñ‚ÐµÐ¹Ð½ÐµÑ€Ð° */
+            /* выравнивание по центру 1200px контейнера */
             padding-left: calc((100vw - 1200px) / 2 + 20px);
             padding-right: calc((100vw - 1200px) / 2 + 20px);
             padding-top: 20px;
             padding-bottom: 20px;
 
             display: flex;
-            justify-content: flex-start;   /* Ð²Ð¼ÐµÑÑ‚Ð¾ space-between */
+            justify-content: flex-start;   /* вместо space-between */
             align-items: center;
 
             z-index: 1000;
@@ -141,7 +141,7 @@
             color: #000;
             font-size: 1.8em;
             font-weight: 800;
-            transform: rotate(180deg); /* Ð¿ÐµÑ€ÐµÐ²ÐµÑ€Ñ‚Ð°Ñ”Ð¼Ð¾ ÑÐ¸Ð¼Ð²Ð¾Ð» Ñ€ÑƒÐ±Ð»Ñ */
+            transform: rotate(180deg); /* перевертаємо символ рубля */
         }
 
         .logo-text {
@@ -156,14 +156,14 @@
         .logo-text-top {
             font-size: 1.25em;
             font-weight: 700;
-            color: var(--ukraine-blue); /* ANTI â€” ÑÐ¸Ð½Ð¸Ð¹ */
+            color: var(--ukraine-blue); /* ANTI — синий */
             letter-spacing: 0.06em;
         }
 
         .logo-text-bottom {
             font-size: 1.1em;
             font-weight: 700;
-            color: var(--ukraine-yellow); /* RUB â€” Ð¶Ñ‘Ð»Ñ‚Ñ‹Ð¹ */
+            color: var(--ukraine-yellow); /* RUB — жёлтый */
             letter-spacing: 0.1em;
             text-transform: uppercase;
         }
@@ -192,7 +192,7 @@
             white-space: nowrap;
             transition: 0.25s ease;
 
-            /* ÑÑ‚Ð¸Ð»ÑŒ ÐºÐ°Ðº Ñƒ Ñ‚Ñ€Ñ‘Ñ… ÐºÐ°Ñ€Ñ‚Ð¾Ñ‡ÐµÐº ÑÑ‚ÐµÐ¹ÐºÐ¸Ð½Ð³Ð° */
+            /* стиль как у трёх карточек стейкинга */
             border: 1px solid rgba(255,255,255,0.16);
             background: radial-gradient(circle at top left,
                 rgba(0,87,183,0.40),
@@ -254,7 +254,7 @@
         .ua-top {
             font-weight: 800;
             font-size: 0.95em;
-            color: #0057B7; /* ÑÐ¸Ð½Ð¸Ð¹ */
+            color: #0057B7; /* синий */
             display: block;
             line-height: 1;
         }
@@ -262,22 +262,22 @@
         .ua-bottom {
             font-weight: 800;
             font-size: 0.70em;
-            color: #FFD700; /* Ð¶Ñ‘Ð»Ñ‚Ñ‹Ð¹ */
+            color: #FFD700; /* жёлтый */
             display: block;
             line-height: 1;
             margin-top: -2px;
         }
 
-        /* --- EN (Ñ‡Ñ‚Ð¾Ð± Ð½Ðµ Ð±Ñ‹Ð»Ð¾ Ð±Ð»ÐµÐºÐ»Ñ‹Ð¼) --- */
+        /* --- EN (чтоб не было блеклым) --- */
         .en-top {
             font-weight: 800;
             font-size: 0.95em;
             color: #e9eefc;
         }
 
-        /* --- Ñ„Ð¾Ð½ ÐºÐ½Ð¾Ð¿ÐºÐ¸ Ð°ÐºÑ‚Ð¸Ð²Ð½Ð¾Ð³Ð¾ ÑÐ·Ñ‹ÐºÐ° --- */
+        /* --- фон кнопки активного языка --- */
         .lang-btn.active {
-            background: rgba(0,0,0,0.35);  /* ÐºÑ€Ð°ÑÐ¸Ð²Ñ‹Ð¹ Ñ‚Ñ‘Ð¼Ð½Ñ‹Ð¹ Ñ„Ð¾Ð½ */
+            background: rgba(0,0,0,0.35);  /* красивый тёмный фон */
             border: 1px solid rgba(255,255,255,0.15);
         }
 
@@ -292,7 +292,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
 
-            /* ÑÑ‚Ð¸Ð»ÑŒ ÐºÐ°Ðº Ñƒ ÐºÐ°Ñ€Ñ‚Ð¾Ñ‡ÐµÐº ÑÑ‚ÐµÐ¹ÐºÐ¸Ð½Ð³Ð° */
+            /* стиль как у карточек стейкинга */
             border: 1px solid rgba(255,255,255,0.16);
             background: radial-gradient(
                 circle at top left,
@@ -301,7 +301,7 @@
             );
             color: #e9eefc;
 
-            /* Ð²Ñ‹Ñ€Ð°Ð²Ð½Ð¸Ð²Ð°Ð½Ð¸Ðµ Ð¸ Ð°Ð½Ð¸Ð¼Ð°Ñ†Ð¸Ñ */
+            /* выравнивание и анимация */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -321,7 +321,7 @@
             color: #ffffff;
         }
 
-        /* ÐºÐ¾Ð³Ð´Ð° ÐºÐ¾ÑˆÐµÐ»Ñ‘Ðº Ð¿Ð¾Ð´ÐºÐ»ÑŽÑ‡ÐµÐ½ â€“ Ñ‡ÑƒÑ‚ÑŒ ÑÑ€Ñ‡Ðµ, Ð½Ð¾ Ñ‚Ð¾Ñ‚ Ð¶Ðµ Ñ€Ð°Ð·Ð¼ÐµÑ€ */
+        /* когда кошелёк подключен – чуть ярче, но тот же размер */
         .connect-btn.connected {
             border-color: rgba(34,197,94,0.7);
             background: radial-gradient(
@@ -331,7 +331,7 @@
             );
         }
 
-        /* ===== Ð¾ÑÑ‚Ð°Ð»ÑŒÐ½Ð¾Ð¹ ÑÑ‚Ð°Ñ€Ñ‹Ð¹ ÑÑ‚Ð¸Ð»ÑŒ ===== */
+        /* ===== остальной старый стиль ===== */
 
         .hero {
             padding: 120px 50px 80px;
@@ -740,7 +740,7 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Ð”Ð²Ðµ ÐºÐ°Ñ€Ñ‚Ð¾Ñ‡ÐºÐ¸ Ð¾Ð´Ð¸Ð½Ð°ÐºÐ¾Ð²Ð¾Ð¹ ÑˆÐ¸Ñ€Ð¸Ð½Ñ‹ */
+        /* Две карточки одинаковой ширины */
         .stats-row {
             display: grid;
             grid-template-columns: repeat(2, 1fr); /* 50% + 50% */
@@ -777,9 +777,9 @@
                 font-size: 2em;
             }
 
-            /* ÐÐ´Ð°Ð¿Ñ‚Ð¸Ð² Ð´Ð»Ñ Ñ‚ÐµÐ»ÐµÑ„Ð¾Ð½Ð¾Ð² Ð¸ Ð¼Ð°Ð»ÐµÐ½ÑŒÐºÐ¸Ñ… ÑÐºÑ€Ð°Ð½Ð¾Ð² */
+            /* Адаптив для телефонов и маленьких экранов */
             .stats-row {
-                grid-template-columns: 1fr; /* Ð¾Ð´Ð½Ð° ÐºÐ°Ñ€Ñ‚Ð¾Ñ‡ÐºÐ° Ð¿Ð¾Ð´ Ð´Ñ€ÑƒÐ³Ð¾Ð¹ */
+                grid-template-columns: 1fr; /* одна карточка под другой */
             }
         }
 
@@ -1015,7 +1015,7 @@
             height: 220px !important;
         }
 
-        /* Ð¡Ñ‚Ð¸Ð»Ñ– Ð´Ð»Ñ ÐºÐ°Ñ€Ñ‚Ð¾Ñ‡ÐºÐ¸ TVL */
+        /* Стилі для карточки TVL */
         .stats-card-header {
             margin-bottom: 14px;
         }
@@ -1036,7 +1036,7 @@
             position: relative;
         }
 
-        /* Ð›ÐµÐ³ÐµÐ½Ð´Ð° USD/RUB */
+        /* Легенда USD/RUB */
         .usd-rub-legend {
             display: flex;
             flex-wrap: wrap;
@@ -1045,12 +1045,6 @@
             font-size: 13px;
             align-items: center;
         }
-        #rateSourceIndicator {
-            margin-top: 6px;
-            font-size: 11px;
-            color: var(--gray);
-        }
-
 
         .usd-rub-legend .legend-item {
             display: inline-flex;
@@ -1058,12 +1052,12 @@
             gap: 6px;
         }
 
-        /* Ð›Ð¸Ð½Ð¸Ð¸ Ð² Ð»ÐµÐ³ÐµÐ½Ð´Ðµ */
+        /* Линии в легенде */
         .legend-line {
             display: inline-block;
             width: 28px;
             height: 0;
-            border-top: 2px solid #4ba3ff; /* Ð³Ð¾Ð»ÑƒÐ±Ð¾Ð¹ */
+            border-top: 2px solid #4ba3ff; /* голубой */
         }
 
         .legend-line-solid {
@@ -1074,7 +1068,7 @@
             border-style: dashed;
         }
 
-        /* ÐšÑ€ÑƒÐ¶ÐºÐ¸ Ð² Ð»ÐµÐ³ÐµÐ½Ð´Ðµ */
+        /* Кружки в легенде */
         .legend-dot {
             display: inline-block;
             width: 10px;
@@ -1361,12 +1355,12 @@
         /* === STATS ROW EQUAL === */
         .stats-row-equal {
             display: grid !important;
-            grid-template-columns: 1fr 1fr !important; /* Ñ€Ð¾Ð²Ð½Ð¾ 50/50 */
+            grid-template-columns: 1fr 1fr !important; /* ровно 50/50 */
             gap: 24px !important;
             width: 100% !important;
         }
 
-        /* ÐšÐ°Ð¶Ð´Ð°Ñ ÐºÐ°Ñ€Ñ‚Ð¾Ñ‡ÐºÐ° Ñ€Ð°ÑÑ‚ÑÐ³Ð¸Ð²Ð°ÐµÑ‚ÑÑ Ð½Ð° Ð²ÑÑŽ Ð´Ð¾ÑÑ‚ÑƒÐ¿Ð½ÑƒÑŽ ÑˆÐ¸Ñ€Ð¸Ð½Ñƒ */
+        /* Каждая карточка растягивается на всю доступную ширину */
         .stats-row-equal .stats-card {
             width: 100% !important;
             background: linear-gradient(145deg, rgba(0,0,0,0.9), rgba(5,12,30,0.98));
@@ -1378,7 +1372,7 @@
             overflow: hidden;
         }
 
-        /* Ð†ÐºÐ¾Ð½ÐºÐ¸ Ð´Ð»Ñ ÐºÐ½Ð¾Ð¿Ð¾Ðº Ð´Ð¾Ð´Ð°Ð²Ð°Ð½Ð½Ñ Ñ‚Ð¾ÐºÐµÐ½Ñ–Ð² */
+        /* Іконки для кнопок додавання токенів */
         .icon-flip {
             display: inline-block;
             transform: rotate(180deg);
@@ -1418,16 +1412,16 @@
 
 <div class="ukraine-banner" id="ukraine-banner">
     <div class="ukraine-banner-text">
-        <span class="ukraine-flag">ðŸ‡ºðŸ‡¦</span>
-        <span>ÐœÐ¸ Ð·Ð° Ð¼Ð¸Ñ€ Ñƒ Ð²Ñ–Ð»ÑŒÐ½Ñ–Ð¹ Ñ‚Ð° Ñ†Ñ–Ð»Ñ–ÑÐ½Ñ–Ð¹ Ð£ÐºÑ€Ð°Ñ—Ð½Ñ–!</span>
-        <span class="ukraine-flag">ðŸ‡ºðŸ‡¦</span>
+        <span class="ukraine-flag">🇺🇦</span>
+        <span>Ми за мир у вільній та цілісній Україні!</span>
+        <span class="ukraine-flag">🇺🇦</span>
     </div>
 </div>
 
 <nav>
     <div class="nav-left">
         <a href="#hero" class="logo">
-            <div class="logo-icon">â‚½</div>
+            <div class="logo-icon">₽</div>
             <div class="logo-text">
                 <span class="logo-text-top">ANTI</span>
                 <span class="logo-text-bottom">RUB</span>
@@ -1435,12 +1429,12 @@
         </a>
 
         <div class="main-nav">
-            <a href="#trading" class="main-nav-link">ÐšÑƒÐ¿Ð¸Ñ‚Ð¸</a>
-            <a href="#trading" class="main-nav-link">ÐŸÑ€Ð¾Ð´Ð°Ñ‚Ð¸</a>
-            <a href="#staking" class="main-nav-link">Ð¡Ñ‚ÐµÐ¹ÐºÑ–Ð½Ð³</a>
-            <a href="#stats" class="main-nav-link">Ð¡Ñ‚Ð°Ñ‚Ð¸ÑÑ‚Ð¸ÐºÐ°</a>
-            <a href="#docs" class="main-nav-link">Ð”Ð¾ÐºÑƒÐ¼ÐµÐ½Ñ‚Ð°Ñ†Ñ–Ñ</a>
-            <a href="#faq" class="main-nav-link">ÐŸÐ¸Ñ‚Ð°Ð½Ð½Ñ</a>
+            <a href="#trading" class="main-nav-link">Купити</a>
+            <a href="#trading" class="main-nav-link">Продати</a>
+            <a href="#staking" class="main-nav-link">Стейкінг</a>
+            <a href="#stats" class="main-nav-link">Статистика</a>
+            <a href="#docs" class="main-nav-link">Документація</a>
+            <a href="#faq" class="main-nav-link">Питання</a>
         </div>
     </div>
 
@@ -1457,12 +1451,32 @@
         </div>
 
         <div class="wallet-button-area">
-            <button id="connectBtn" class="connect-btn">ÐŸÑ–Ð´ÐºÐ»ÑŽÑ‡Ð¸Ñ‚Ð¸ Ð³Ð°Ð¼Ð°Ð½ÐµÑ†ÑŒ</button>
+            <button id="connectBtn" class="connect-btn">Підключити гаманець</button>
 
             <div class="wallet-dropdown" id="walletDropdown">
-                <button id="disconnectWalletBtn">Ð’Ñ–Ð´ÐºÐ»ÑŽÑ‡Ð¸Ñ‚Ð¸ Ð³Ð°Ð¼Ð°Ð½ÐµÑ†ÑŒ</button>
+                <button id="disconnectWalletBtn">Відключити гаманець</button>
             </div>
         </div>
+                <!-- НОВАЯ КАРТОЧКА: FaustKran (faucet тестових USDT) -->
+                <div class="page-card fade-in-up">
+                    <div class="page-card-header">
+                        <div class="page-card-icon">💧</div>
+                        <div>
+                            <div class="page-card-title">FaustKran</div>
+                            <div class="page-card-text">
+                                Отримайте тестові USDT через faucet, щоб протестувати стейкінг та торгівлю
+                                без реальних грошей.
+                            </div>
+                        </div>
+                    </div>
+                    <button
+                        class="action-btn"
+                        onclick="document.getElementById('trading')?.scrollIntoView({ behavior: 'smooth' });"
+                    >
+                        Перейти до розділу «Торгівля»
+                    </button>
+                </div>
+
     </div>
 </nav>
 
@@ -1472,66 +1486,66 @@
         <div class="dashboard-panel">
             <div class="dashboard-hero-ring"></div>
             <div class="dashboard-hero-pill">
-                ðŸ‡ºðŸ‡¦ <span>On-chain Ð´Ð°ÑˆÐ±Ð¾Ñ€Ð´ Ð±ÐµÐ· Ð¿Ñ–Ð´ÐºÐ»ÑŽÑ‡ÐµÐ½Ð½Ñ Ð³Ð°Ð¼Ð°Ð½Ñ†Ñ</span>
+                🇺🇦 <span>On-chain дашборд без підключення гаманця</span>
             </div>
-            <h1 class="dashboard-hero-title">Ð¡Ñ‚ÐµÐ¹ÐºÑ–Ð½Ð³ ANTI RUB: Ð·Ð°Ñ€Ð¾Ð±Ð»ÑÑ”Ð¼Ð¾ Ð½Ð° Ð¿Ð°Ð´Ñ–Ð½Ð½Ñ– Ñ€ÑƒÐ±Ð»Ñ</h1>
+            <h1 class="dashboard-hero-title">Стейкінг ANTI RUB: заробляємо на падінні рубля</h1>
             <p class="dashboard-hero-sub">
-                Ð”Ð°ÑˆÐ±Ð¾Ñ€Ð´ Ð¿Ð¾ÐºÐ°Ð·ÑƒÑ” Ð·Ð°Ð³Ð°Ð»ÑŒÐ½Ð¸Ð¹ ÑÑ‚ÐµÐ¹ÐºÑ–Ð½Ð³, ÑÑƒÐ¼Ð°Ñ€Ð½Ð¸Ð¹ supply, ÐºÑ–Ð»ÑŒÐºÑ–ÑÑ‚ÑŒ ÑÑ‚ÐµÐ¹ÐºÐµÑ€Ñ–Ð² Ñ‚Ð°
-                Ð¿Ð¾Ñ‚Ð¾Ñ‡Ð½Ñƒ Ñ†Ñ–Ð½Ñƒ ARUB Ñƒ Ð´Ð¾Ð»Ð°Ñ€Ð°Ñ…. Ð”Ð°Ð½Ñ– Ð¾Ð½Ð¾Ð²Ð»ÑŽÑŽÑ‚ÑŒÑÑ Ð½Ð°Ð¿Ñ€ÑÐ¼Ñƒ Ð· Ð¼ÐµÑ€ÐµÐ¶Ñ– Sepolia Ñ‰Ð¾Ð¿Ñ–Ð²Ñ…Ð²Ð¸Ð»Ð¸Ð½Ð¸.
+                Дашборд показує загальний стейкінг, сумарний supply, кількість стейкерів та
+                поточну ціну ARUB у доларах. Дані оновлюються напряму з мережі Sepolia щопівхвилини.
             </p>
             <div class="dashboard-hero-metrics">
                 <div class="dashboard-hero-metric">
-                    <div class="dashboard-hero-label">Ð¦Ñ–Ð½Ð° ARUB</div>
-                    <div class="dashboard-hero-value">$<span id="arubPriceValue">â€”</span></div>
+                    <div class="dashboard-hero-label">Ціна ARUB</div>
+                    <div class="dashboard-hero-value">$<span id="arubPriceValue">—</span></div>
                 </div>
                 <div class="dashboard-hero-metric">
-                    <div class="dashboard-hero-label">ÐšÑ–Ð»ÑŒÐºÑ–ÑÑ‚ÑŒ ÑÑ‚ÐµÐ¹ÐºÐµÑ€Ñ–Ð²</div>
-                    <div class="dashboard-hero-value" id="dashHeroStakers">â€”</div>
+                    <div class="dashboard-hero-label">Кількість стейкерів</div>
+                    <div class="dashboard-hero-value" id="dashHeroStakers">—</div>
                 </div>
                 <div class="dashboard-hero-metric">
-                    <div class="dashboard-hero-label">TVL (Ð·Ð°Ð³Ð°Ð»ÑŒÐ½Ð¸Ð¹)</div>
-                    <div class="dashboard-hero-value" id="dashHeroTvl">â€”</div>
+                    <div class="dashboard-hero-label">TVL (загальний)</div>
+                    <div class="dashboard-hero-value" id="dashHeroTvl">—</div>
                 </div>
                 <div class="dashboard-hero-metric">
-                    <div class="dashboard-hero-label">ÐŸÐ¾Ñ‚Ð¾Ñ‡Ð½Ð¸Ð¹ Ñ€Ñ–Ð²ÐµÐ½ÑŒ</div>
-                    <div class="dashboard-hero-value" id="dashHeroTier">â€”</div>
-                    <div class="dashboard-hero-note">Ð Ð¾Ð·Ñ€Ð°Ñ…ÑƒÐ½Ð¾Ðº Ð²Ñ–Ð´ TVL Ð² USD</div>
+                    <div class="dashboard-hero-label">Поточний рівень</div>
+                    <div class="dashboard-hero-value" id="dashHeroTier">—</div>
+                    <div class="dashboard-hero-note">Розрахунок від TVL в USD</div>
                 </div>
             </div>
         </div>
 
         <aside class="dashboard-panel dashboard-panel-alt">
-            <h3>ÐœÐµÑ€ÐµÐ¶Ð° Ñ‚Ð° Ð¿ÐµÑ€ÐµÐ²Ñ–Ñ€ÐºÐ° ÐºÐ¾Ð½Ñ‚Ñ€Ð°ÐºÑ‚Ñ–Ð²</h3>
+            <h3>Мережа та перевірка контрактів</h3>
             <p>
-                ÐšÐ¾Ð½Ñ‚Ñ€Ð°ÐºÑ‚Ð¸ ARUB Ñ– ÑÑ‚ÐµÐ¹ÐºÑ–Ð½Ð³Ñƒ Ð¿Ñ€Ð°Ñ†ÑŽÑŽÑ‚ÑŒ Ñƒ Ð¼ÐµÑ€ÐµÐ¶Ñ– Ethereum Sepolia.
-                Ð’Ð¸ Ð·Ð°Ð²Ð¶Ð´Ð¸ Ð¼Ð¾Ð¶ÐµÑ‚Ðµ Ð·Ð²Ñ–Ñ€Ð¸Ñ‚Ð¸ Ð²ÑÑ– Ñ‡Ð¸ÑÐ»Ð° Ð½Ð°Ð¿Ñ€ÑÐ¼Ñƒ Ñƒ Ð±Ð»Ð¾ÐºÑ‡ÐµÐ¹Ð½Ñ–.
+                Контракти ARUB і стейкінгу працюють у мережі Ethereum Sepolia.
+                Ви завжди можете звірити всі числа напряму у блокчейні.
             </p>
             <div class="dashboard-chips">
                 <button class="dashboard-chip" type="button" onclick="window.open('https://sepolia.etherscan.io/address/0x98fFc1A4Ff6eAD8EebFd02cDA54852Bb69744788','_blank')">
-                    ðŸ”— <span>ARUB Ñ‚Ð¾ÐºÐµÐ½</span>
+                    🔗 <span>ARUB токен</span>
                 </button>
                 <button class="dashboard-chip" type="button" onclick="window.open('https://sepolia.etherscan.io/address/0xd98F611370262f7494eee27f55bc9a8922a9a66d','_blank')">
-                    ðŸ“„ <span>Staking ÐºÐ¾Ð½Ñ‚Ñ€Ð°ÐºÑ‚</span>
+                    📄 <span>Staking контракт</span>
                 </button>
                 <button class="dashboard-chip" type="button" onclick="window.open('https://dexscreener.com/search?q=0x98fFc1A4Ff6eAD8EebFd02cDA54852Bb69744788','_blank')">
-                    ðŸ“Š <span>ÐŸÐ°Ñ€Ð° ARUB Ð½Ð° DexScreener</span>
+                    📊 <span>Пара ARUB на DexScreener</span>
                 </button>
             </div>
             <div class="dashboard-chips">
                 <div class="dashboard-pill-small">
-                    â„¹ï¸ <span>ÐŸÐµÑ€ÐµÐ²Ñ–Ñ€Ñ‚Ðµ, Ð² ÑÐºÐ¾Ð¼Ñƒ Ð¿ÑƒÐ»Ñ– Ð²Ð¸ ÑÑ‚ÐµÐ¹ÐºÐ°Ð»Ð¸ (USDT Ñ‡Ð¸ ARUB) Ð¿ÐµÑ€ÐµÐ´ Ð·Ð½ÑÑ‚Ñ‚ÑÐ¼.</span>
+                    ℹ️ <span>Перевірте, в якому пулі ви стейкали (USDT чи ARUB) перед зняттям.</span>
                 </div>
             </div>
 
             <div class="tiers-card">
-                <h3 class="tiers-title">Ð Ñ–Ð²Ð½Ñ– ÑÑ‚ÐµÐ¹ÐºÑ–Ð½Ð³Ñƒ (USD)</h3>
+                <h3 class="tiers-title">Рівні стейкінгу (USD)</h3>
 
                 <ul class="tiers-list">
-                    <li id="tier-1">Tier 1: $0 â€” $100,000 â†’ <b>24% APY</b></li>
-                    <li id="tier-2">Tier 2: $100,000 â€” $200,000 â†’ <b>20% APY</b></li>
-                    <li id="tier-3">Tier 3: $200,000 â€” $400,000 â†’ <b>16% APY</b></li>
-                    <li id="tier-4">Tier 4: $400,000 â€” $800,000 â†’ <b>12% APY</b></li>
-                    <li id="tier-5">Tier 5: >$800,000 â†’ <b>8% APY</b></li>
+                    <li id="tier-1">Tier 1: $0 — $100,000 → <b>24% APY</b></li>
+                    <li id="tier-2">Tier 2: $100,000 — $200,000 → <b>20% APY</b></li>
+                    <li id="tier-3">Tier 3: $200,000 — $400,000 → <b>16% APY</b></li>
+                    <li id="tier-4">Tier 4: $400,000 — $800,000 → <b>12% APY</b></li>
+                    <li id="tier-5">Tier 5: >$800,000 → <b>8% APY</b></li>
                 </ul>
             </div>
         </aside>
@@ -1539,15 +1553,15 @@
 
     <div class="dashboard-loading">
         <div class="dashboard-pulse-dot"></div>
-        <span id="dashLoadingText">Ð—Ð°Ð²Ð°Ð½Ñ‚Ð°Ð¶ÐµÐ½Ð½Ñ Ð´Ð°Ð½Ð¸Ñ… Ð· Ð±Ð»Ð¾ÐºÑ‡ÐµÐ¹Ð½Ñƒ...</span>
+        <span id="dashLoadingText">Завантаження даних з блокчейну...</span>
     </div>
 
     <div class="dashboard-stats-grid" id="stats">
         <!-- 1. Total Supply ARUB -->
         <article class="dashboard-stat-card">
-            <div class="dashboard-stat-label">ðŸš€ Ð’Ð¸Ð¿ÑƒÑ‰ÐµÐ½Ð¾ ARUB</div>
-            <div class="dashboard-stat-value" id="arub-supply">â€”</div>
-            <div class="dashboard-stat-sub" id="arub-supply-usd">â€”</div>
+            <div class="dashboard-stat-label">🚀 Випущено ARUB</div>
+            <div class="dashboard-stat-value" id="arub-supply">—</div>
+            <div class="dashboard-stat-sub" id="arub-supply-usd">—</div>
             <div class="dashboard-pill-small">
                 Decimals: <strong style="font-weight:600;">6</strong>
             </div>
@@ -1555,21 +1569,21 @@
 
         <!-- 2. Staked ARUB -->
         <article class="dashboard-stat-card">
-            <div class="dashboard-stat-label">ðŸ’Ž Ð—Ð°ÑÑ‚ÐµÐ¹ÐºÐ°Ð½Ð¾ ARUB</div>
-            <div class="dashboard-stat-value" id="arub-staked">â€”</div>
-            <div class="dashboard-stat-sub" id="arub-staked-usd">â€”</div>
+            <div class="dashboard-stat-label">💎 Застейкано ARUB</div>
+            <div class="dashboard-stat-value" id="arub-staked">—</div>
+            <div class="dashboard-stat-sub" id="arub-staked-usd">—</div>
             <div class="dashboard-pill-small" id="apy-note">
-                APY: <strong style="font-weight:600;">16%</strong> Ñ€Ñ–Ñ‡Ð½Ð¸Ñ…
+                APY: <strong style="font-weight:600;">16%</strong> річних
             </div>
         </article>
 
         <!-- 3. Staked USDT -->
         <article class="dashboard-stat-card">
-            <div class="dashboard-stat-label">ðŸ’µ Ð—Ð°ÑÑ‚ÐµÐ¹ÐºÐ°Ð½Ð¾ USDT</div>
-            <div class="dashboard-stat-value" id="usdt-staked">â€”</div>
-            <div class="dashboard-stat-sub" id="usdt-staked-usd">â€”</div>
+            <div class="dashboard-stat-label">💵 Застейкано USDT</div>
+            <div class="dashboard-stat-value" id="usdt-staked">—</div>
+            <div class="dashboard-stat-sub" id="usdt-staked-usd">—</div>
             <div class="dashboard-pill-small">
-                Ð¡Ñ‚Ð°Ð±Ñ–Ð»ÑŒÐ½Ð¸Ð¹ Ð°ÐºÑ‚Ð¸Ð²
+                Стабільний актив
             </div>
         </article>
     </div>
@@ -1578,58 +1592,58 @@
         <section class="stats-card tvl-card">
             <div class="stats-card-header">
                 <div class="stats-card-title">
-                    TVL: Ð·Ð°Ð³Ð°Ð»ÑŒÐ½Ð¸Ð¹ ÑÑ‚ÐµÐ¹ÐºÑ–Ð½Ð³
+                    TVL: загальний стейкінг
                 </div>
                 <div class="stats-card-subtitle">
-                    Ð”Ð¸Ð½Ð°Ð¼Ñ–ÐºÐ° Ð·Ð° Ñ‡Ð°ÑÐ¾Ð¼
+                    Динаміка за часом
                 </div>
             </div>
 
             <div class="stats-card-body">
                 <canvas id="tvlChart" height="130"></canvas>
 
-                <!-- Ð¢ÐµÐºÑÑ‚ ÑÐºÐ¸Ð¹ Ñ‚Ð¾Ñ‡Ð½Ð¾ Ð·'ÑÐ²Ð¸Ñ‚ÑŒÑÑ -->
+                <!-- Текст який точно з'явиться -->
                 <div style="margin-top: 18px; font-size: 14px; line-height: 1.35; color: #ffffffcc;">
-                    <b>ÐŸÐ¾ÑÑÐ½ÐµÐ½Ð½Ñ TVL:</b><br>
-                    TVL Ð²Ñ€Ð°Ñ…Ð¾Ð²ÑƒÑ” Ð»Ð¸ÑˆÐµ Ð°ÐºÑ‚Ð¸Ð²Ð¸, ÑÐºÑ– <b>Ð·Ð°ÑÑ‚ÐµÐ¹ÐºÐ°Ð½Ñ–</b> Ñƒ ÐºÐ¾Ð½Ñ‚Ñ€Ð°ÐºÑ‚Ñ–.<br>
-                    ÐŸÑ€Ð¾ÑÑ‚Ð¾ ÐºÑƒÐ¿Ð»ÐµÐ½Ñ–, Ð°Ð»Ðµ Ð½Ðµ Ð·Ð°ÑÑ‚ÐµÐ¹ÐºÐ°Ð½Ñ– ARUB â€” <b>Ð½Ðµ Ð²Ñ…Ð¾Ð´ÑÑ‚ÑŒ</b> Ñƒ TVL.
+                    <b>Пояснення TVL:</b><br>
+                    TVL враховує лише активи, які <b>застейкані</b> у контракті.<br>
+                    Просто куплені, але не застейкані ARUB — <b>не входять</b> у TVL.
                 </div>
             </div>
         </section>
 
         <section class="stats-card usd-card">
-            <div class="dashboard-chart-title">ðŸ“ˆ ÐšÑƒÑ€Ñ USD/RUB</div>
-            <div class="dashboard-chart-sub">Ð†ÑÑ‚Ð¾Ñ€Ñ–Ñ Ñ‚Ð° ÑÑ†ÐµÐ½Ð°Ñ€Ñ–Ð¹ 2020â€“2030 (Ð¿Ð¾Ñ‚Ð¾Ñ‡Ð½Ð¸Ð¹: <span id="currentRateText">â€”</span>)</div>
+            <div class="dashboard-chart-title">📈 Курс USD/RUB</div>
+            <div class="dashboard-chart-sub">Історія та сценарій 2020–2030 (поточний: <span id="currentRateText">—</span>)</div>
             <canvas id="usdRubChart"></canvas>
             <div class="usd-rub-legend">
               <span class="legend-item">
                 <span class="legend-line legend-line-solid"></span>
-                Ð†ÑÑ‚Ð¾Ñ€Ð¸Ñ‡Ð½Ð¸Ð¹ ÐºÑƒÑ€Ñ
+                Історичний курс
               </span>
 
               <span class="legend-item">
                 <span class="legend-line legend-line-dashed"></span>
-                Ð¡Ñ†ÐµÐ½Ð°Ñ€Ñ–Ð¹ 2025â€“2030
+                Сценарій 2025–2030
               </span>
 
               <span class="legend-item">
                 <span class="legend-dot legend-dot-yellow"></span>
-                <span id="legendCurrentRateText">ÐŸÐ¾Ñ‚Ð¾Ñ‡Ð½Ð¸Ð¹ ÐºÑƒÑ€Ñ</span>
+                <span id="legendCurrentRateText">Поточний курс</span>
               </span>
 
               <span class="legend-item">
                 <span class="legend-dot legend-dot-red"></span>
-                ÐŸÑ–Ðº 2022 Ñ€Ð¾ÐºÑƒ (140)
+                Пік 2022 року (140)
               </span>
             </div>
             <div class="dashboard-footer-note" style="margin-top: 10px; font-size: 10px;">
-                Ð§Ð°ÑÑ‚Ð¸Ð½Ð° Ð³Ñ€Ð°Ñ„Ñ–ÐºÐ° Ð¿Ñ–ÑÐ»Ñ Ð¿Ð¾Ñ‚Ð¾Ñ‡Ð½Ð¾Ñ— Ð´Ð°Ñ‚Ð¸ â€” ÑƒÐ¼Ð¾Ð²Ð½Ð¸Ð¹ ÑÑ†ÐµÐ½Ð°Ñ€Ñ–Ð¹, Ð½Ðµ Ñ” Ñ–Ð½Ð²ÐµÑÑ‚Ð¸Ñ†Ñ–Ð¹Ð½Ð¾ÑŽ Ð¿Ð¾Ñ€Ð°Ð´Ð¾ÑŽ.
+                Частина графіка після поточної дати — умовний сценарій, не є інвестиційною порадою.
             </div>
         </section>
     </div>
 
     <div class="dashboard-footer-note">
-        Ð”Ð°Ð½Ñ– Ð¾Ð½Ð¾Ð²Ð»ÑŽÑŽÑ‚ÑŒÑÑ ÐºÐ¾Ð¶Ð½Ñ– 30 ÑÐµÐºÑƒÐ½Ð´. Ð¯ÐºÑ‰Ð¾ DexScreener Ð½ÐµÐ´Ð¾ÑÑ‚ÑƒÐ¿Ð½Ð¸Ð¹, Ð²Ð¸ÐºÐ¾Ñ€Ð¸ÑÑ‚Ð¾Ð²ÑƒÑ”Ñ‚ÑŒÑÑ ÐºÑƒÑ€Ñ USD/RUB (1 ARUB = USD/RUB).
+        Дані оновлюються кожні 30 секунд. Якщо DexScreener недоступний, використовується курс USD/RUB (1 ARUB = USD/RUB).
     </div>
 </section>
 
@@ -1637,58 +1651,36 @@
     <div class="page-section">
         <div class="page-panel">
             <div class="page-pill">
-                ðŸ“‹ <span>Ð”Ð¾Ð´Ð°Ð¹Ñ‚Ðµ Ñ‚Ð¾ÐºÐµÐ½Ð¸</span>
+                📋 <span>Додайте токени</span>
             </div>
-            <h2 class="page-section-title">Ð”Ð¾Ð´Ð°Ð¹Ñ‚Ðµ ARUB Ñ‚Ð° USDT</h2>
-            <p class="page-section-subtitle">Ð©Ð¾Ð± Ð±Ð°Ñ‡Ð¸Ñ‚Ð¸ Ñ‚Ð¾ÐºÐµÐ½Ð¸ Ð² MetaMask</p>
+            <h2 class="page-section-title">Додайте ARUB та USDT</h2>
+            <p class="page-section-subtitle">Щоб бачити токени в MetaMask</p>
 
             <div class="page-panel-grid">
 
-                <!-- ÐšÐ°Ñ€Ñ‚Ð¾Ñ‡ÐºÐ°: ARUB -->
                 <div class="page-card fade-in-up">
                     <div class="page-card-header">
-                        <div class="page-card-icon">ðŸª™</div>
+                        <div class="page-card-icon">🪙</div>
                         <div>
                             <div class="page-card-title">ARUB Token <span class="pool-badge arub">ARUB</span></div>
-                            <div class="page-card-text">ÐÐ½Ñ‚Ð¸Ñ€ÑƒÐ± â€” Ñ‚Ð¾ÐºÐµÐ½ Ð¿Ñ€Ð¾Ñ‚Ð¸ Ð¿Ð°Ð´Ñ–Ð½Ð½Ñ Ñ€ÑƒÐ±Ð»Ñ</div>
+                            <div class="page-card-text">Антируб — токен проти падіння рубля</div>
                         </div>
                     </div>
                     <button onclick="addTokenToWallet('ARUB')" class="action-btn">
-                        <span class="icon-flip">â‚½</span> Ð”Ð¾Ð´Ð°Ñ‚Ð¸ ARUB <span class="icon-flip">â‚½</span>
+                        <span class="icon-flip">₽</span> Додати ARUB <span class="icon-flip">₽</span>
                     </button>
                 </div>
 
-                <!-- ÐšÐ°Ñ€Ñ‚Ð¾Ñ‡ÐºÐ°: MockUSDT -->
                 <div class="page-card fade-in-up">
                     <div class="page-card-header">
-                        <div class="page-card-icon">ðŸ’µ</div>
+                        <div class="page-card-icon">💵</div>
                         <div>
                             <div class="page-card-title">MockUSDT <span class="pool-badge usdt">Testnet</span></div>
-                            <div class="page-card-text">Ð¢ÐµÑÑ‚Ð¾Ð²Ð¸Ð¹ USDT Ð´Ð»Ñ Sepolia</div>
+                            <div class="page-card-text">Тестовий USDT для Sepolia</div>
                         </div>
                     </div>
                     <button onclick="addTokenToWallet('USDT')" class="action-btn">
-                        <span class="icon-usdt">$</span> Ð”Ð¾Ð´Ð°Ñ‚Ð¸ USDT <span class="icon-usdt">$</span>
-                    </button>
-                </div>
-
-                <!-- ÐÐžÐ’ÐÐ¯ ÐšÐÐ Ð¢ÐžÐ§ÐšÐ: FaustKran (faucet Ñ‚ÐµÑÑ‚Ð¾Ð²Ð¸Ñ… USDT) -->
-                <div class="page-card fade-in-up">
-                    <div class="page-card-header">
-                        <div class="page-card-icon">ðŸ’§</div>
-                        <div>
-                            <div class="page-card-title">FaustKran</div>
-                            <div class="page-card-text">
-                                ÐžÑ‚Ñ€Ð¸Ð¼Ð°Ð¹Ñ‚Ðµ Ñ‚ÐµÑÑ‚Ð¾Ð²Ñ– USDT Ñ‡ÐµÑ€ÐµÐ· faucet, Ñ‰Ð¾Ð± Ð¿Ñ€Ð¾Ñ‚ÐµÑÑ‚ÑƒÐ²Ð°Ñ‚Ð¸ ÑÑ‚ÐµÐ¹ÐºÑ–Ð½Ð³ Ñ‚Ð° Ñ‚Ð¾Ñ€Ð³Ñ–Ð²Ð»ÑŽ
-                                Ð±ÐµÐ· Ñ€ÐµÐ°Ð»ÑŒÐ½Ð¸Ñ… Ð³Ñ€Ð¾ÑˆÐµÐ¹.
-                            </div>
-                        </div>
-                    </div>
-                    <button
-                        class="action-btn"
-                        onclick="document.getElementById('faucet')?.scrollIntoView({ behavior: 'smooth' });"
-                    >
-                        ÐŸÐµÑ€ÐµÐ¹Ñ‚Ð¸ Ð´Ð¾ faucet USDT
+                        <span class="icon-usdt">$</span> Додати USDT <span class="icon-usdt">$</span>
                     </button>
                 </div>
 
@@ -1702,15 +1694,15 @@
     <div class="page-section">
         <div class="page-panel">
             <div class="page-pill">
-                ðŸ’° <span>Ð¢Ð¾Ñ€Ð³Ñ–Ð²Ð»Ñ</span>
+                💰 <span>Торгівля</span>
             </div>
-            <h2 class="page-section-title">Ð¢Ð¾Ñ€Ð³Ñ–Ð²Ð»Ñ ARUB</h2>
-            <p class="page-section-subtitle">ÐšÑƒÐ¿ÑƒÐ¹Ñ‚Ðµ Ñ‚Ð° Ð¿Ñ€Ð¾Ð´Ð°Ð²Ð°Ð¹Ñ‚Ðµ Ñ‚Ð¾ÐºÐµÐ½Ð¸ ARUB</p>
+            <h2 class="page-section-title">Торгівля ARUB</h2>
+            <p class="page-section-subtitle">Купуйте та продавайте токени ARUB</p>
 
             <div id="tradingInterface" class="page-card fade-in-up">
                 <div style="text-align:center; padding:50px;">
-                    <div class="stat-icon" style="font-size:3em;">ðŸ”’</div>
-                    <p>ÐŸÑ–Ð´ÐºÐ»ÑŽÑ‡Ñ–Ñ‚ÑŒ Ð³Ð°Ð¼Ð°Ð½ÐµÑ†ÑŒ Ð´Ð»Ñ Ñ‚Ð¾Ñ€Ð³Ñ–Ð²Ð»Ñ–</p>
+                    <div class="stat-icon" style="font-size:3em;">🔒</div>
+                    <p>Підключіть гаманець для торгівлі</p>
                 </div>
             </div>
         </div>
@@ -1721,15 +1713,15 @@
     <div class="page-section">
         <div class="page-panel">
             <div class="page-pill">
-                ðŸ’§ <span>Faucet</span>
+                💧 <span>Faucet</span>
             </div>
-            <h2 class="page-section-title">Ð¢ÐµÑÑ‚Ð¾Ð²Ñ– USDT</h2>
-            <p class="page-section-subtitle">ÐžÑ‚Ñ€Ð¸Ð¼Ð°Ð¹Ñ‚Ðµ Ð±ÐµÐ·ÐºÐ¾ÑˆÑ‚Ð¾Ð²Ð½Ñ– Ñ‚ÐµÑÑ‚Ð¾Ð²Ñ– USDT Ð´Ð»Ñ Sepolia</p>
+            <h2 class="page-section-title">Тестові USDT</h2>
+            <p class="page-section-subtitle">Отримайте безкоштовні тестові USDT для Sepolia</p>
 
             <div id="faucetInterface" class="page-card fade-in-up">
                 <div style="text-align:center; padding:50px;">
-                    <div class="stat-icon" style="font-size:3em;">ðŸ”’</div>
-                    <p>ÐŸÑ–Ð´ÐºÐ»ÑŽÑ‡Ñ–Ñ‚ÑŒ Ð³Ð°Ð¼Ð°Ð½ÐµÑ†ÑŒ Ð´Ð»Ñ faucet</p>
+                    <div class="stat-icon" style="font-size:3em;">🔒</div>
+                    <p>Підключіть гаманець для faucet</p>
                 </div>
             </div>
         </div>
@@ -1740,15 +1732,15 @@
     <div class="page-section">
         <div class="page-panel">
             <div class="page-pill">
-                ðŸ”’ <span>Ð¡Ñ‚ÐµÐ¹ÐºÑ–Ð½Ð³</span>
+                🔒 <span>Стейкінг</span>
             </div>
-            <h2 class="page-section-title">Ð¡Ñ‚ÐµÐ¹ÐºÑ–Ð½Ð³</h2>
-            <p class="page-section-subtitle">Ð¡Ñ‚ÐµÐ¹ÐºÐ°Ð¹Ñ‚Ðµ ARUB Ð°Ð±Ð¾ USDT Ñ‚Ð° Ð¾Ñ‚Ñ€Ð¸Ð¼ÑƒÐ¹Ñ‚Ðµ Ð¿Ð°ÑÐ¸Ð²Ð½Ð¸Ð¹ Ð´Ð¾Ñ…Ñ–Ð´</p>
+            <h2 class="page-section-title">Стейкінг</h2>
+            <p class="page-section-subtitle">Стейкайте ARUB або USDT та отримуйте пасивний дохід</p>
 
             <div id="stakingInterface" class="page-card fade-in-up">
                 <div style="text-align:center; padding:50px;">
-                    <div class="stat-icon" style="font-size:3em;">ðŸ”’</div>
-                    <p>ÐŸÑ–Ð´ÐºÐ»ÑŽÑ‡Ñ–Ñ‚ÑŒ Ð³Ð°Ð¼Ð°Ð½ÐµÑ†ÑŒ Ð´Ð»Ñ ÑÑ‚ÐµÐ¹ÐºÑ–Ð½Ð³Ñƒ</p>
+                    <div class="stat-icon" style="font-size:3em;">🔒</div>
+                    <p>Підключіть гаманець для стейкінгу</p>
                 </div>
             </div>
         </div>
@@ -1759,61 +1751,61 @@
     <div class="page-section">
         <div class="page-panel">
             <div class="page-pill">
-                ðŸ“š <span>Ð”Ð¾ÐºÑƒÐ¼ÐµÐ½Ñ‚Ð°Ñ†Ñ–Ñ</span>
+                📚 <span>Документація</span>
             </div>
-            <h2 class="page-section-title">Ð”Ð¾ÐºÑƒÐ¼ÐµÐ½Ñ‚Ð°Ñ†Ñ–Ñ ANTI RUB</h2>
+            <h2 class="page-section-title">Документація ANTI RUB</h2>
             <p class="page-section-subtitle">
-                Ð¢ÑƒÑ‚ Ð·Ñ–Ð±Ñ€Ð°Ð½Ñ– Ð¾ÑÐ½Ð¾Ð²Ð½Ñ– Ð¿Ð¾ÑÐ¸Ð»Ð°Ð½Ð½Ñ Ñ‚Ð° Ð¿Ð¾ÑÑÐ½ÐµÐ½Ð½Ñ: ÑÐº Ð¿Ñ€Ð°Ñ†ÑŽÑ” Ñ‚Ð¾ÐºÐµÐ½, ÑÑ‚ÐµÐ¹ÐºÑ–Ð½Ð³,
-                Ñ€Ð¸Ð·Ð¸ÐºÐ¸ Ñ‚Ð° ÑŽÑ€Ð¸Ð´Ð¸Ñ‡Ð½Ñ– Ð¼Ð¾Ð¼ÐµÐ½Ñ‚Ð¸. Ð’Ð¸ Ð¼Ð¾Ð¶ÐµÑ‚Ðµ Ð·Ð¼Ñ–Ð½Ð¸Ñ‚Ð¸/Ð´Ð¾Ð¿Ð¾Ð²Ð½Ð¸Ñ‚Ð¸ Ñ‚ÐµÐºÑÑ‚ Ð¿Ñ–Ð´ ÑÐ²Ñ–Ð¹ Ð¿Ñ€Ð¾Ñ”ÐºÑ‚.
+                Тут зібрані основні посилання та пояснення: як працює токен, стейкінг,
+                ризики та юридичні моменти. Ви можете змінити/доповнити текст під свій проєкт.
             </p>
 
             <div class="page-panel-grid">
 
                 <div class="page-card">
                     <div class="page-card-header">
-                        <div class="page-card-icon">ðŸ“„</div>
+                        <div class="page-card-icon">📄</div>
                         <div>
-                            <div class="page-card-title">Whitepaper / ÐºÐ¾Ð½Ñ†ÐµÐ¿Ñ†Ñ–Ñ</div>
+                            <div class="page-card-title">Whitepaper / концепція</div>
                             <div class="page-card-text">
-                                ÐžÐ¿Ð¸Ñ Ñ–Ð´ÐµÑ— ANTI RUB, ÐµÐºÐ¾Ð½Ð¾Ð¼Ñ–ÐºÐ° Ñ‚Ð¾ÐºÐµÐ½Ð°, Ð»Ð¾Ð³Ñ–ÐºÐ° ÑÑ‚ÐµÐ¹ÐºÑ–Ð½Ð³Ñƒ Ñ‚Ð° Ð´Ð¶ÐµÑ€ÐµÐ»Ð° Ð´Ð¾Ñ…Ð¾Ð´Ñƒ.
+                                Опис ідеї ANTI RUB, економіка токена, логіка стейкінгу та джерела доходу.
                             </div>
                         </div>
                     </div>
                     <div class="page-card-text">
-                        <strong>ÐŸÑ€Ð¸ÐºÐ»Ð°Ð´:</strong> Ð´Ð¾Ð´Ð°Ð¹Ñ‚Ðµ Ð¿Ð¾ÑÐ¸Ð»Ð°Ð½Ð½Ñ Ð½Ð° PDF Ð°Ð±Ð¾ Ð¾ÐºÑ€ÐµÐ¼Ñƒ ÑÑ‚Ð¾Ñ€Ñ–Ð½ÐºÑƒ Ð· Ð´ÐµÑ‚Ð°Ð»ÑŒÐ½Ð¸Ð¼ Ð¾Ð¿Ð¸ÑÐ¾Ð¼
-                        (whitepaper, litepaper Ñ‚Ð¾Ñ‰Ð¾).
+                        <strong>Приклад:</strong> додайте посилання на PDF або окрему сторінку з детальним описом
+                        (whitepaper, litepaper тощо).
                     </div>
                 </div>
 
                 <div class="page-card">
                     <div class="page-card-header">
-                        <div class="page-card-icon">ðŸ§®</div>
+                        <div class="page-card-icon">🧮</div>
                         <div>
-                            <div class="page-card-title">ÐœÐ¾Ð´ÐµÐ»ÑŒ APY Ñ‚Ð° Ñ€Ñ–Ð²Ð½Ñ–</div>
+                            <div class="page-card-title">Модель APY та рівні</div>
                             <div class="page-card-text">
-                                Ð¯Ðº Ñ€Ð°Ñ…ÑƒÑ”Ñ‚ÑŒÑÑ APY, Ñ‰Ð¾ Ñ‚Ð°ÐºÐµ Ñ€Ñ–Ð²Ð½Ñ– (tiers) Ñ– Ñ‡Ð¾Ð¼Ñƒ Ð²Ñ–Ð´ Ð·Ð°Ð³Ð°Ð»ÑŒÐ½Ð¾Ð³Ð¾ ÑÑ‚ÐµÐ¹ÐºÑƒ Ð·Ð°Ð»ÐµÐ¶Ð¸Ñ‚ÑŒ Ð´Ð¾Ñ…Ñ–Ð´Ð½Ñ–ÑÑ‚ÑŒ.
+                                Як рахується APY, що таке рівні (tiers) і чому від загального стейку залежить дохідність.
                             </div>
                         </div>
                     </div>
                     <div class="page-card-text">
-                        ÐšÐ¾Ñ€Ð¾Ñ‚ÐºÐ¾ Ð¾Ð¿Ð¸ÑˆÑ–Ñ‚ÑŒ Ñ„Ð¾Ñ€Ð¼ÑƒÐ»Ñƒ, Ð¿Ñ€Ð¸ÐºÐ»Ð°Ð´Ð¸ Ñ€Ð¾Ð·Ñ€Ð°Ñ…ÑƒÐ½ÐºÑ–Ð² Ñ‚Ð° Ð¾Ð±Ð¼ÐµÐ¶ÐµÐ½Ð½Ñ. ÐœÐ¾Ð¶Ð½Ð° Ð´Ð°Ñ‚Ð¸ Ð¿Ð¾ÑÐ¸Ð»Ð°Ð½Ð½Ñ Ð½Ð° GitHub
-                        Ð· ÐºÐ¾Ð´Ð¾Ð¼ ÐºÐ¾Ð½Ñ‚Ñ€Ð°ÐºÑ‚Ñ–Ð².
+                        Коротко опишіть формулу, приклади розрахунків та обмеження. Можна дати посилання на GitHub
+                        з кодом контрактів.
                     </div>
                 </div>
 
                 <div class="page-card">
                     <div class="page-card-header">
-                        <div class="page-card-icon">âš–ï¸</div>
+                        <div class="page-card-icon">⚖️</div>
                         <div>
-                            <div class="page-card-title">Ð Ð¸Ð·Ð¸ÐºÐ¸ Ñ‚Ð° Ð´Ð¸ÑÐºÐ»ÐµÐ¹Ð¼ÐµÑ€</div>
+                            <div class="page-card-title">Ризики та дисклеймер</div>
                             <div class="page-card-text">
-                                Ð¡Ñ‚Ð°Ð½Ð´Ð°Ñ€Ñ‚Ð½Ðµ Ð¿Ð¾Ð¿ÐµÑ€ÐµÐ´Ð¶ÐµÐ½Ð½Ñ Ð¿Ñ€Ð¾ Ñ€Ð¸Ð·Ð¸ÐºÐ¸, Ð²Ð¾Ð»Ð°Ñ‚Ð¸Ð»ÑŒÐ½Ñ–ÑÑ‚ÑŒ Ñ‚Ð° Ð²Ñ–Ð´ÑÑƒÑ‚Ð½Ñ–ÑÑ‚ÑŒ Ð³Ð°Ñ€Ð°Ð½Ñ‚Ñ–Ð¹ Ð¿Ñ€Ð¸Ð±ÑƒÑ‚ÐºÑƒ.
+                                Стандартне попередження про ризики, волатильність та відсутність гарантій прибутку.
                             </div>
                         </div>
                     </div>
                     <div class="page-card-text">
-                        ÐÐ°Ð¿Ð¸ÑˆÑ–Ñ‚ÑŒ Ñ‡ÐµÑÐ½Ð¸Ð¹ Ð´Ð¸ÑÐºÐ»ÐµÐ¹Ð¼ÐµÑ€: Ñ†Ðµ Ð½Ðµ Ñ„Ñ–Ð½Ð°Ð½ÑÐ¾Ð²Ð° Ð¿Ð¾Ñ€Ð°Ð´Ð°, ÐºÐ¾Ñ€Ð¸ÑÑ‚ÑƒÐ²Ð°Ñ‡ ÑÐ°Ð¼ Ð½ÐµÑÐµ Ð²Ñ–Ð´Ð¿Ð¾Ð²Ñ–Ð´Ð°Ð»ÑŒÐ½Ñ–ÑÑ‚ÑŒ
-                        Ð·Ð° ÑÐ²Ð¾Ñ— Ñ€Ñ–ÑˆÐµÐ½Ð½Ñ. ÐœÐ¾Ð¶Ð½Ð° Ð²Ð¸Ð½ÐµÑÑ‚Ð¸ Ð½Ð° Ð¾ÐºÑ€ÐµÐ¼Ñƒ ÑÑ‚Ð¾Ñ€Ñ–Ð½ÐºÑƒ Terms of Use.
+                        Напишіть чесний дисклеймер: це не фінансова порада, користувач сам несе відповідальність
+                        за свої рішення. Можна винести на окрему сторінку Terms of Use.
                     </div>
                 </div>
 
@@ -1827,52 +1819,52 @@
     <div class="page-section">
         <div class="page-panel page-panel-alt">
             <div class="page-pill">
-                â“ <span>ÐŸÐ¸Ñ‚Ð°Ð½Ð½Ñ</span>
+                ❓ <span>Питання</span>
             </div>
-            <h2 class="page-section-title">Ð§Ð°ÑÑ‚Ñ– Ð·Ð°Ð¿Ð¸Ñ‚Ð°Ð½Ð½Ñ (FAQ)</h2>
+            <h2 class="page-section-title">Часті запитання (FAQ)</h2>
             <p class="page-section-subtitle">
-                Ð¯ÐºÑ‰Ð¾ Ð²Ð¸ Ñ‚Ñ–Ð»ÑŒÐºÐ¸ Ð·Ð½Ð°Ð¹Ð¾Ð¼Ð¸Ñ‚ÐµÑÑ Ð· ANTI RUB, Ð¿Ð¾Ñ‡Ð½Ñ–Ñ‚ÑŒ Ð· Ñ†Ð¸Ñ… Ð¿Ð¸Ñ‚Ð°Ð½ÑŒ. Ð¢ÐµÐºÑÑ‚ Ð¼Ð¾Ð¶Ð½Ð° Ð·Ð¼Ñ–Ð½Ð¸Ñ‚Ð¸ Ð¿Ñ–Ð´ ÑÐ²Ð¾ÑŽ Ð°ÑƒÐ´Ð¸Ñ‚Ð¾Ñ€Ñ–ÑŽ.
+                Якщо ви тільки знайомитеся з ANTI RUB, почніть з цих питань. Текст можна змінити під свою аудиторію.
             </p>
 
             <div class="faq-list">
 
                 <div class="faq-item">
-                    <div class="faq-question">Ð©Ð¾ Ñ‚Ð°ÐºÐµ ANTI RUB (ARUB)?</div>
+                    <div class="faq-question">Що таке ANTI RUB (ARUB)?</div>
                     <div class="faq-answer">
-                        Ð¦Ðµ Ñ‚Ð¾ÐºÐµÐ½, Ð¿Ñ€Ð¸Ð²'ÑÐ·Ð°Ð½Ð¸Ð¹ Ð´Ð¾ Ñ–Ð´ÐµÑ— Â«Ð·Ð°Ñ€Ð¾Ð±Ð»ÑÑ‚Ð¸ Ð½Ð° Ð¿Ð°Ð´Ñ–Ð½Ð½Ñ– Ñ€ÑƒÐ±Ð»ÑÂ». Ð’Ð¸ Ð¼Ð¾Ð¶ÐµÑ‚Ðµ ÐºÑƒÐ¿ÑƒÐ²Ð°Ñ‚Ð¸ ARUB,
-                        ÑÑ‚ÐµÐ¹ÐºÐ°Ñ‚Ð¸ Ð¹Ð¾Ð³Ð¾ Ð°Ð±Ð¾ Ð²Ð¸ÐºÐ¾Ñ€Ð¸ÑÑ‚Ð¾Ð²ÑƒÐ²Ð°Ñ‚Ð¸ ÑÐº Ñ–Ð½ÑÑ‚Ñ€ÑƒÐ¼ÐµÐ½Ñ‚ Ð´Ð»Ñ Ñ‚ÐµÑÑ‚ÑƒÐ²Ð°Ð½Ð½Ñ Ð¼ÐµÑ…Ð°Ð½Ñ–Ðº DeFi Ñƒ Ð¼ÐµÑ€ÐµÐ¶Ñ– Sepolia.
+                        Це токен, прив'язаний до ідеї «заробляти на падінні рубля». Ви можете купувати ARUB,
+                        стейкати його або використовувати як інструмент для тестування механік DeFi у мережі Sepolia.
                     </div>
                 </div>
 
                 <div class="faq-item">
-                    <div class="faq-question">Ð§Ð¸ Ð¿Ð¾Ñ‚Ñ€Ñ–Ð±Ð½Ñ– Ñ€ÐµÐ°Ð»ÑŒÐ½Ñ– Ð³Ñ€Ð¾ÑˆÑ– Ð´Ð»Ñ Ñ‚ÐµÑÑ‚Ñƒ?</div>
+                    <div class="faq-question">Чи потрібні реальні гроші для тесту?</div>
                     <div class="faq-answer">
-                        ÐÑ–. ÐÐ° Ñ†Ñ–Ð¹ Ð²ÐµÑ€ÑÑ–Ñ— Ð¿Ñ€Ð°Ñ†ÑŽÑ” Ñ‚ÐµÑÑ‚Ð½ÐµÑ‚ Sepolia. Ð’Ð¸ Ð¼Ð¾Ð¶ÐµÑ‚Ðµ Ð¾Ñ‚Ñ€Ð¸Ð¼Ð°Ñ‚Ð¸ Ñ‚ÐµÑÑ‚Ð¾Ð²Ñ– USDT Ñ‡ÐµÑ€ÐµÐ· Faucet
-                        Ñ‚Ð° Ð²Ð·Ð°Ñ”Ð¼Ð¾Ð´Ñ–ÑÑ‚Ð¸ Ð· ÐºÐ¾Ð½Ñ‚Ñ€Ð°ÐºÑ‚Ð°Ð¼Ð¸ Ð±ÐµÐ· Ñ€ÐµÐ°Ð»ÑŒÐ½Ð¸Ñ… ÐºÐ¾ÑˆÑ‚Ñ–Ð² (Ð°Ð»Ðµ Ð¼ÐµÑ€ÐµÐ¶ÐµÐ²Ð¸Ð¹ gas Ñƒ Ð²Ð¸Ð³Ð»ÑÐ´Ñ– Sepolia ETH Ð²ÑÐµ Ð¶ Ð¿Ð¾Ñ‚Ñ€Ñ–Ð±ÐµÐ½).
+                        Ні. На цій версії працює тестнет Sepolia. Ви можете отримати тестові USDT через Faucet
+                        та взаємодіяти з контрактами без реальних коштів (але мережевий gas у вигляді Sepolia ETH все ж потрібен).
                     </div>
                 </div>
 
                 <div class="faq-item">
-                    <div class="faq-question">Ð¯Ðº Ð¿Ñ€Ð°Ñ†ÑŽÑ” ÑÑ‚ÐµÐ¹ÐºÑ–Ð½Ð³ ARUB Ñ‚Ð° USDT?</div>
+                    <div class="faq-question">Як працює стейкінг ARUB та USDT?</div>
                     <div class="faq-answer">
-                        Ð’Ð¸ Ð¼Ð¾Ð¶ÐµÑ‚Ðµ Ð·Ð°ÑÑ‚ÐµÐ¹ÐºÐ°Ñ‚Ð¸ Ð°Ð±Ð¾ USDT, Ð°Ð±Ð¾ ARUB Ð² Ð¾ÐºÑ€ÐµÐ¼Ñ– Ð¿ÑƒÐ»Ð¸. Ð’Ð¸Ð½Ð°Ð³Ð¾Ñ€Ð¾Ð´Ð¸ Ð½Ð°Ñ€Ð°Ñ…Ð¾Ð²ÑƒÑŽÑ‚ÑŒÑÑ Ð² ARUB Ð·Ð° Ð¿Ð¾Ñ‚Ð¾Ñ‡Ð½Ð¸Ð¼ APY,
-                        ÑÐºÐ¸Ð¹ Ð·Ð°Ð»ÐµÐ¶Ð¸Ñ‚ÑŒ Ð²Ñ–Ð´ Ð·Ð°Ð³Ð°Ð»ÑŒÐ½Ð¾Ñ— ÑÑƒÐ¼Ð¸ Ð·Ð°ÑÑ‚ÐµÐ¹ÐºÐ°Ð½Ð¸Ñ… Ð°ÐºÑ‚Ð¸Ð²Ñ–Ð² Ñƒ Ð´Ð¾Ð»Ð°Ñ€Ð°Ñ…. Ð”ÐµÑ‚Ð°Ð»Ñ– â€” Ñƒ Ñ€Ð¾Ð·Ð´Ñ–Ð»Ñ– Â«Ð¡Ñ‚ÐµÐ¹ÐºÑ–Ð½Ð³Â».
+                        Ви можете застейкати або USDT, або ARUB в окремі пули. Винагороди нараховуються в ARUB за поточним APY,
+                        який залежить від загальної суми застейканих активів у доларах. Деталі — у розділі «Стейкінг».
                     </div>
                 </div>
 
                 <div class="faq-item">
-                    <div class="faq-question">Ð§Ð¸ Ð¼Ð¾Ð¶Ð½Ð° Ð²Ñ‚Ñ€Ð°Ñ‚Ð¸Ñ‚Ð¸ Ð³Ñ€Ð¾ÑˆÑ–?</div>
+                    <div class="faq-question">Чи можна втратити гроші?</div>
                     <div class="faq-answer">
-                        Ð¢Ð°Ðº, Ð±ÑƒÐ´ÑŒ-ÑÐºÑ– ÐºÑ€Ð¸Ð¿Ñ‚Ð¾Ð°ÐºÑ‚Ð¸Ð²Ð¸ Ð½ÐµÑÑƒÑ‚ÑŒ Ñ€Ð¸Ð·Ð¸ÐºÐ¸: Ð²Ð¾Ð»Ð°Ñ‚Ð¸Ð»ÑŒÐ½Ñ–ÑÑ‚ÑŒ Ñ†Ñ–Ð½, Ð¿Ð¾Ð¼Ð¸Ð»ÐºÐ¸ ÑÐ¼Ð°Ñ€Ñ‚-ÐºÐ¾Ð½Ñ‚Ñ€Ð°ÐºÑ‚Ñ–Ð²,
-                        Ñ€Ð¸Ð·Ð¸ÐºÐ¸ Ð¼ÐµÑ€ÐµÐ¶Ñ–. Ð’Ð¸ÐºÐ¾Ñ€Ð¸ÑÑ‚Ð¾Ð²ÑƒÐ¹Ñ‚Ðµ Ñ‚Ñ–Ð»ÑŒÐºÐ¸ Ñ‚Ñƒ ÑÑƒÐ¼Ñƒ, ÑÐºÑƒ Ð³Ð¾Ñ‚Ð¾Ð²Ñ– Ð²Ñ‚Ñ€Ð°Ñ‚Ð¸Ñ‚Ð¸, Ñ– Ð¾Ð±Ð¾Ð²'ÑÐ·ÐºÐ¾Ð²Ð¾ Ñ‡Ð¸Ñ‚Ð°Ð¹Ñ‚Ðµ Ð´Ð¸ÑÐºÐ»ÐµÐ¹Ð¼ÐµÑ€.
+                        Так, будь-які криптоактиви несуть ризики: волатильність цін, помилки смарт-контрактів,
+                        ризики мережі. Використовуйте тільки ту суму, яку готові втратити, і обов'язково читайте дисклеймер.
                     </div>
                 </div>
 
                 <div class="faq-item">
-                    <div class="faq-question">Ð”Ðµ Ð¿Ð¾Ð´Ð¸Ð²Ð¸Ñ‚Ð¸ÑÑ ÐºÐ¾Ð´ ÐºÐ¾Ð½Ñ‚Ñ€Ð°ÐºÑ‚Ñ–Ð²?</div>
+                    <div class="faq-question">Де подивитися код контрактів?</div>
                     <div class="faq-answer">
-                        ÐŸÐ¾ÑÐ¸Ð»Ð°Ð½Ð½Ñ Ð½Ð° ÐºÐ¾Ð½Ñ‚Ñ€Ð°ÐºÑ‚Ð¸ Ñ” Ñƒ Ñ„ÑƒÑ‚ÐµÑ€Ñ– Ñ‚Ð° Ð² Ñ€Ð¾Ð·Ð´Ñ–Ð»Ñ– Â«Ð¡Ñ‚Ð°Ñ‚Ð¸ÑÑ‚Ð¸ÐºÐ°Â». Ð’Ð¸ Ð¼Ð¾Ð¶ÐµÑ‚Ðµ Ð¿ÐµÑ€ÐµÐ²Ñ–Ñ€Ð¸Ñ‚Ð¸ Ñ—Ñ… Ð½Ð°
-                        Etherscan Ñ‚Ð° (Ð·Ð° Ð±Ð°Ð¶Ð°Ð½Ð½ÑÐ¼) Ð¿Ñ€Ð¸Ð²'ÑÐ·Ð°Ñ‚Ð¸ Ñ€ÐµÐ¿Ð¾Ð·Ð¸Ñ‚Ð¾Ñ€Ñ–Ð¹ GitHub.
+                        Посилання на контракти є у футері та в розділі «Статистика». Ви можете перевірити їх на
+                        Etherscan та (за бажанням) прив'язати репозиторій GitHub.
                     </div>
                 </div>
 
@@ -1887,21 +1879,21 @@
 
         <div class="footer-section">
             <h4>ANTI RUB</h4>
-            <p>ÐŸÑ€Ð¾Ñ”ÐºÑ‚ Ð¿Ñ€Ð¾Ñ‚Ð¸ Ð¿Ð°Ð´Ñ–Ð½Ð½Ñ Ñ€Ð¾ÑÑ–Ð¹ÑÑŒÐºÐ¾Ð³Ð¾ Ñ€ÑƒÐ±Ð»Ñ ðŸ‡ºðŸ‡¦</p>
+            <p>Проєкт проти падіння російського рубля 🇺🇦</p>
         </div>
 
         <div class="footer-section">
-            <h4>ÐÐ°Ð²Ñ–Ð³Ð°Ñ†Ñ–Ñ</h4>
+            <h4>Навігація</h4>
             <ul class="footer-links">
-                <li><a href="index.html">Ð“Ð¾Ð»Ð¾Ð²Ð½Ð°</a></li>
-                <li><a href="trading.html">Ð¢Ð¾Ñ€Ð³Ñ–Ð²Ð»Ñ</a></li>
-                <li><a href="staking.html">Ð¡Ñ‚ÐµÐ¹ÐºÑ–Ð½Ð³</a></li>
+                <li><a href="index.html">Головна</a></li>
+                <li><a href="trading.html">Торгівля</a></li>
+                <li><a href="staking.html">Стейкінг</a></li>
                 <li><a href="faucet.html">Faucet</a></li>
             </ul>
         </div>
 
         <div class="footer-section">
-            <h4>ÐšÐ¾Ð½Ñ‚Ñ€Ð°ÐºÑ‚Ð¸</h4>
+            <h4>Контракти</h4>
             <ul class="footer-links">
                 <li><a href="https://sepolia.etherscan.io/address/0xe4A39E3D2C64C2D3a1d9c7C6B9eB63db55277b71" target="_blank">ARUB Token</a></li>
                 <li><a href="https://sepolia.etherscan.io/address/0x5360400F8B80382017AEE6e4C09c8a935526757B" target="_blank">Staking Contract</a></li>
@@ -1912,7 +1904,7 @@
     </div>
 
     <div class="footer-bottom">
-        ðŸ‡ºðŸ‡¦ Slava Ukraini! â€¢ Sepolia Testnet â€¢ Version 2.0
+        🇺🇦 Slava Ukraini! • Sepolia Testnet • Version 2.0
     </div>
 </footer>
 
@@ -1925,51 +1917,51 @@
     let hideTimer = null;
     let walletConnected = false;
 
-    // ÐŸÐ¾ÐºÐ°Ð·Ñ‹Ð²Ð°ÐµÐ¼ Ð¼ÐµÐ½ÑŽ
+    // Показываем меню
     function showDropdown() {
         clearTimeout(hideTimer);
         dropdown.classList.add("show");
     }
 
-    // Ð¡ Ð·Ð°Ð´ÐµÑ€Ð¶ÐºÐ¾Ð¹ ÑÐºÑ€Ñ‹Ð²Ð°ÐµÐ¼
+    // С задержкой скрываем
     function hideDropdown() {
         hideTimer = setTimeout(() => {
             dropdown.classList.remove("show");
-        }, 250); // â† Ð¼Ð¾Ð¶Ð½Ð¾ 200â€“300Ð¼Ñ
+        }, 250); // ← можно 200–300мс
     }
 
-    // ÐžÑ‚ÐºÑ€Ñ‹Ð²Ð°ÐµÐ¼ Ð¼ÐµÐ½ÑŽ Ð¿Ñ€Ð¸ Ð½Ð°Ð²ÐµÐ´ÐµÐ½Ð¸Ð¸
+    // Открываем меню при наведении
     walletArea.addEventListener("mouseenter", () => {
         if (walletConnected) showDropdown();
     });
 
-    // ÐÐ°Ñ‡Ð°Ñ‚ÑŒ Ð·Ð°ÐºÑ€Ñ‹Ð²Ð°Ñ‚ÑŒ, Ð½Ð¾ Ñ Ð·Ð°Ð´ÐµÑ€Ð¶ÐºÐ¾Ð¹
+    // Начать закрывать, но с задержкой
     walletArea.addEventListener("mouseleave", () => {
         hideDropdown();
     });
 
-    // ÐžÑ‚ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ
+    // Отключение
     disconnectBtn.addEventListener("click", () => {
         if (window.disconnectWallet) window.disconnectWallet();
         window.onWalletDisconnected();
     });
 
-    // Ð’Ð½ÐµÑˆÐ½Ð¸Ð¹ Ð²Ñ‹Ð·Ð¾Ð² Ð¸Ð· wallet.js Ð¿Ñ€Ð¸ Ð¿Ð¾Ð´ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ð¸
+    // Внешний вызов из wallet.js при подключении
     window.onWalletConnected = function(address) {
         walletConnected = true;
         connectBtn.textContent = address.slice(0,6) + "..." + address.slice(-4);
         connectBtn.classList.add("connected");
     };
 
-    // Ð’Ð½ÐµÑˆÐ½Ð¸Ð¹ Ð²Ñ‹Ð·Ð¾Ð² Ð¸Ð· wallet.js Ð¿Ñ€Ð¸ Ð¾Ñ‚ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ð¸
+    // Внешний вызов из wallet.js при отключении
     window.onWalletDisconnected = function() {
         walletConnected = false;
-        connectBtn.textContent = "ÐŸÑ–Ð´ÐºÐ»ÑŽÑ‡Ð¸Ñ‚Ð¸ Ð³Ð°Ð¼Ð°Ð½ÐµÑ†ÑŒ";
+        connectBtn.textContent = "Підключити гаманець";
         connectBtn.classList.remove("connected");
         dropdown.classList.remove("show");
     };
 
-    // ÐšÐ»Ð¸Ðº â€” Ñ‚Ð¾Ð»ÑŒÐºÐ¾ Ð´Ð»Ñ Ð¿Ð¾Ð´ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ñ
+    // Клик — только для подключения
     connectBtn.addEventListener("click", () => {
         if (!walletConnected) {
             if (window.connectWallet) window.connectWallet();
@@ -1978,14 +1970,14 @@
 </script>
 
 <script>
-    // Ð£Ð¿Ñ€Ð°Ð²Ð»ÐµÐ½Ð¸Ðµ Ð°ÐºÑ‚Ð¸Ð²Ð½Ð¾Ð¹ ÐºÐ½Ð¾Ð¿ÐºÐ¾Ð¹ Ð½Ð°Ð²Ð¸Ð³Ð°Ñ†Ð¸Ð¸
+    // Управление активной кнопкой навигации
     document.querySelectorAll('.main-nav-link').forEach(btn => {
         btn.addEventListener('click', () => {
-            // Ð£Ð±Ð¸Ñ€Ð°ÐµÐ¼ Ð°ÐºÑ‚Ð¸Ð²Ð½Ñ‹Ð¹ ÐºÐ»Ð°ÑÑ ÑÐ¾ Ð²ÑÐµÑ… ÐºÐ½Ð¾Ð¿Ð¾Ðº
+            // Убираем активный класс со всех кнопок
             document.querySelectorAll('.main-nav-link')
                 .forEach(b => b.classList.remove('active-session'));
 
-            // Ð”Ð¾Ð±Ð°Ð²Ð»ÑÐµÐ¼ Ð°ÐºÑ‚Ð¸Ð²Ð½Ñ‹Ð¹ ÐºÐ»Ð°ÑÑ Ðº Ð½Ð°Ð¶Ð°Ñ‚Ð¾Ð¹ ÐºÐ½Ð¾Ð¿ÐºÐµ
+            // Добавляем активный класс к нажатой кнопке
             btn.classList.add('active-session');
         });
     });
@@ -1994,303 +1986,181 @@
 <script type="module" src="js/app.js"></script>
 
 <script>
-  // === Ð„Ð”Ð˜ÐÐ• Ð”Ð–Ð•Ð Ð•Ð›Ðž Ð”Ð›Ð¯ Ð’Ð¡Ð†Ð¥ Ð¦Ð˜Ð¤Ð  + Ð†ÐÐ”Ð˜ÐšÐÐ¢ÐžÐ  Ð”Ð–Ð•Ð Ð•Ð›Ð ===
-  // currentRate â€“ Ñ‚Ðµ, Ñ‰Ð¾ Ð²Ð²Ð°Ð¶Ð°Ñ”Ð¼Ð¾ "Ñ†Ñ–Ð½Ð¾ÑŽ ARUB" Ñ– "Ð¿Ð¾Ñ‚Ð¾Ñ‡Ð½Ð¸Ð¼ ÐºÑƒÑ€ÑÐ¾Ð¼".
-  //
-  // ÐŸÐ¾Ñ€ÑÐ´Ð¾Ðº Ð´Ð¶ÐµÑ€ÐµÐ»:
-  //  1) Forex API #1 (open.er-api.com, USDâ†’RUB)
-  //  2) DexScreener (Ñ†Ñ–Ð½Ð° ARUB Ð² USD)
-  //  3) Forex API #2 (exchangerate.host, USDâ†’RUB)
-  //
-  // window.currentRateSourceLabel â€” Ñ‚ÐµÐºÑÑ‚Ð¾Ð²Ð° Ð¼Ñ–Ñ‚ÐºÐ° Ð´Ð»Ñ Ð¿Ð»Ð°ÑˆÐºÐ¸ "Ð”Ð¶ÐµÑ€ÐµÐ»Ð¾ Ð´Ð°Ð½Ð¸Ñ…".
+  function getCurrentRateFromArub() {
+    const el = document.getElementById('arubPriceValue');
+    if (!el) return null;
 
-  let currentRate = 80.98;      // Ð´ÐµÑ„Ð¾Ð»Ñ‚, Ñ‰Ð¾Ð± Ñ‰Ð¾ÑÑŒ Ð±ÑƒÐ»Ð¾ Ð¿Ñ€Ð¸ Ð¿ÐµÑ€ÑˆÐ¾Ð¼Ñƒ Ñ€ÐµÐ½Ð´ÐµÑ€Ñ–
-  let usdRubChart = null;
-  window.currentRateSourceLabel = 'Ð»Ð¾ÐºÐ°Ð»ÑŒÐ½Ðµ Ð·Ð½Ð°Ñ‡ÐµÐ½Ð½Ñ (Ð´ÐµÑ„Ð¾Ð»Ñ‚)';
+    const raw = el.textContent.trim()
+      .replace(',', '.')
+      .replace(/[^0-9.]/g, '');
+    const value = parseFloat(raw);
+
+    return isNaN(value) ? null : value;
+  }
+
+  // Берём текущий курс из цены ARUB
+  let currentRate = getCurrentRateFromArub();
+  if (currentRate === null) {
+    currentRate = 80.98; // запасной вариант
+  }
+
+  const currentRateSpan = document.getElementById('currentRateText');
+  if (currentRateSpan) {
+    currentRateSpan.textContent = currentRate.toFixed(2);
+  }
+
+  const legendCurrentRateText = document.getElementById('legendCurrentRateText');
+  if (legendCurrentRateText) {
+    legendCurrentRateText.textContent = `Поточний курс (${currentRate.toFixed(2)})`;
+  }
 
   const years = [
     '2020','2021','2022','2023','2024',
     '2025','2026','2027','2028','2029','2030'
   ];
 
-  function buildUsdRubDatasets() {
-    const historyData = [
-      72.3,        // 2020
-      73.7,        // 2021
-      140,         // 2022 - Ð¿Ñ–Ðº
-      110,         // 2023
-      92.8,        // 2024
-      currentRate, // 2025 â€” Ð¿Ð¾Ñ‚Ð¾Ñ‡Ð½Ð¸Ð¹ ÐºÑƒÑ€Ñ
-      null, null, null, null, null
-    ];
+  // История: горка к 140 и спад
+  const historyData = [
+    72.3,        // 2020
+    73.7,        // 2021
+    140,         // 2022 - пик
+    110,         // 2023
+    92.8,        // 2024
+    currentRate, // 2025 - текущий курс
+    null, null, null, null, null
+  ];
 
-    const scenarioData = [
-      null,   // 2020
-      null,   // 2021
-      null,   // 2022
-      null,   // 2023
-      null,   // 2024
-      currentRate, // 2025 â€” ÑÑ‚Ð°Ñ€Ñ‚ ÑÑ†ÐµÐ½Ð°Ñ€Ñ–ÑŽ
-      200,    // 2026
-      400,    // 2027
-      500,    // 2028
-      350,    // 2029
-      250     // 2030
-    ];
+  // Сценарий 2025–2030
+  const scenarioData = [
+    null,   // 2020
+    null,   // 2021
+    null,   // 2022
+    null,   // 2023
+    null,   // 2024
+    currentRate, // 2025 — жёлтая точка (старт)
+    200,    // 2026
+    400,    // 2027
+    500,    // 2028
+    350,    // 2029
+    250     // 2030
+  ];
 
-    const currentPointData = [
-      null, null, null, null, null,
-      currentRate,
-      null, null, null, null, null
-    ];
+  // Жёлтая точка (текущий курс 2025)
+  const currentPointData = [
+    null, null, null, null, null,
+    currentRate,
+    null, null, null, null, null
+  ];
 
-    const peak2022 = [
-      null, null, 140, null, null,
-      null, null, null, null, null, null
-    ];
+  // Красная точка (пик 2022)
+  const peak2022 = [
+    null, null, 140, null, null,
+    null, null, null, null, null, null
+  ];
 
-    return { historyData, scenarioData, currentPointData, peak2022 };
-  }
+  const ctx = document.getElementById('usdRubChart').getContext('2d');
 
-  function updateDomWithCurrentRate() {
-    // Ð’Ð•Ð Ð¥ÐÐ¯ ÐšÐÐ Ð¢ÐšÐ "Ð¦Ñ–Ð½Ð° ARUB"
-    const arubPriceEl = document.getElementById('arubPriceValue');
-    if (arubPriceEl) {
-      arubPriceEl.textContent = currentRate.toFixed(2);
-    }
-
-    // Ð¢ÐµÐºÑÑ‚ Ñƒ ÐºÐ°Ñ€Ñ‚Ñ†Ñ– Ð³Ñ€Ð°Ñ„Ñ–ÐºÐ°
-    const currentRateSpan = document.getElementById('currentRateText');
-    if (currentRateSpan) {
-      currentRateSpan.textContent = currentRate.toFixed(2);
-    }
-
-    const legendCurrentRateText = document.getElementById('legendCurrentRateText');
-    if (legendCurrentRateText) {
-      legendCurrentRateText.textContent = `ÐŸÐ¾Ñ‚Ð¾Ñ‡Ð½Ð¸Ð¹ ÐºÑƒÑ€Ñ (${currentRate.toFixed(2)})`;
-    }
-
-    // ðŸ”¹ ÐŸÐ»Ð°ÑˆÐºÐ° "Ð”Ð¶ÐµÑ€ÐµÐ»Ð¾ Ð´Ð°Ð½Ð¸Ñ…"
-    const sourceEl = document.getElementById('rateSourceIndicator');
-    if (sourceEl) {
-      sourceEl.textContent = 'Ð”Ð¶ÐµÑ€ÐµÐ»Ð¾ Ð´Ð°Ð½Ð¸Ñ…: ' + (window.currentRateSourceLabel || 'â€”');
-    }
-
-    // Ð¯ÐºÑ‰Ð¾ Ð³Ñ€Ð°Ñ„Ñ–Ðº Ð²Ð¶Ðµ Ñ” â€“ Ð¾Ð½Ð¾Ð²Ð»ÑŽÑ”Ð¼Ð¾ Ð´Ð°Ñ‚Ð°ÑÐµÑ‚Ð¸ Ð´Ð»Ñ 2025 Ñ€Ð¾ÐºÑƒ
-    if (usdRubChart) {
-      usdRubChart.data.datasets[0].data[5] = currentRate; // Ñ–ÑÑ‚Ð¾Ñ€Ñ–Ñ 2025
-      usdRubChart.data.datasets[1].data[5] = currentRate; // ÑÑ†ÐµÐ½Ð°Ñ€Ñ–Ð¹ 2025
-      usdRubChart.data.datasets[2].data[5] = currentRate; // Ð¶Ð¾Ð²Ñ‚Ð° Ñ‚Ð¾Ñ‡ÐºÐ°
-      usdRubChart.data.datasets[2].label = `ÐŸÐ¾Ñ‚Ð¾Ñ‡Ð½Ð¸Ð¹ ÐºÑƒÑ€Ñ (${currentRate.toFixed(2)})`;
-
-      usdRubChart.update();
-    }
-  }
-
-  function initUsdRubChart() {
-    const ctxEl = document.getElementById('usdRubChart');
-    if (!ctxEl) return;
-
-    const ctx = ctxEl.getContext('2d');
-
-    const { historyData, scenarioData, currentPointData, peak2022 } = buildUsdRubDatasets();
-
-    usdRubChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: years,
-        datasets: [
-          {
-            label: 'Ð†ÑÑ‚Ð¾Ñ€Ð¸Ñ‡Ð½Ð¸Ð¹ ÐºÑƒÑ€Ñ',
-            data: historyData,
-            tension: 0.45,
-            borderWidth: 2,
-            borderColor: '#4ba3ff',
-            fill: false,
-            pointRadius: 0,
-            pointHoverRadius: 0,
-            pointStyle: 'line'
-          },
-          {
-            label: 'Ð¡Ñ†ÐµÐ½Ð°Ñ€Ñ–Ð¹ 2025â€“2030',
-            data: scenarioData,
-            tension: 0.35,
-            borderWidth: 2,
-            borderColor: '#4ba3ff',
-            borderDash: [6, 4],
-            fill: false,
-            spanGaps: false,
-            pointRadius: 0,
-            pointHoverRadius: 0,
-            pointStyle: 'line'
-          },
-          {
-            label: `ÐŸÐ¾Ñ‚Ð¾Ñ‡Ð½Ð¸Ð¹ ÐºÑƒÑ€Ñ (${currentRate.toFixed(2)})`,
-            data: currentPointData,
-            borderWidth: 0,
-            pointRadius: 6,
-            pointHoverRadius: 8,
-            pointBackgroundColor: '#ffd54a',
-            pointBorderColor: '#ffd54a',
-            pointStyle: 'circle'
-          },
-          {
-            label: 'ÐŸÑ–Ðº 2022 Ñ€Ð¾ÐºÑƒ (140)',
-            data: peak2022,
-            borderWidth: 0,
-            pointRadius: 7,
-            pointHoverRadius: 9,
-            pointBackgroundColor: '#ff4b4b',
-            pointBorderColor: '#ff4b4b',
-            pointStyle: 'circle'
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: function (context) {
-                const v = context.parsed.y;
-                if (!v) return '';
-                return `${context.dataset.label}: ${v.toFixed(2)} RUB`;
-              }
+  const usdRubChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: years,
+      datasets: [
+        // 1) ІСТОРИЧНИЙ КУРС — СПЛОШНАЯ ГОЛУБАЯ ЛИНИЯ БЕЗ ТОЧЕК
+        {
+          label: 'Історичний курс',
+          data: historyData,
+          tension: 0.45,
+          borderWidth: 2,
+          borderColor: '#4ba3ff',
+          fill: false,
+          pointRadius: 0,
+          pointHoverRadius: 0,
+          pointStyle: 'line'
+        },
+        // 2) СЦЕНАРІЙ — ТОНКИЙ ГОЛУБОЙ ПУНКТИР БЕЗ ТОЧЕК
+        {
+          label: 'Сценарій 2025–2030',
+          data: scenarioData,
+          tension: 0.35,
+          borderWidth: 2,
+          borderColor: '#4ba3ff',
+          borderDash: [6, 4],
+          fill: false,
+          spanGaps: false,   // ← НЕ соединять через null
+          pointRadius: 0,
+          pointHoverRadius: 0,
+          pointStyle: 'line'
+        },
+        // 3) ПОТОЧНИЙ КУРС — ЖЁЛТАЯ ТОЧКА
+        {
+          label: `Поточний курс (${currentRate.toFixed(2)})`,
+          data: currentPointData,
+          borderWidth: 0,
+          pointRadius: 6,
+          pointHoverRadius: 8,
+          pointBackgroundColor: '#ffd54a',
+          pointBorderColor: '#ffd54a',
+          pointStyle: 'circle'
+        },
+        // 4) ПІК 2022 — КРАСНАЯ ТОЧКА
+        {
+          label: 'Пік 2022 року (140)',
+          data: peak2022,
+          borderWidth: 0,
+          pointRadius: 7,
+          pointHoverRadius: 9,
+          pointBackgroundColor: '#ff4b4b',
+          pointBorderColor: '#ff4b4b',
+          pointStyle: 'circle'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          display: false   // <– выключаем стандартную легенду
+        },
+        tooltip: {
+          callbacks: {
+            label: function (context) {
+              const v = context.parsed.y;
+              if (!v) return '';
+              return `${context.dataset.label}: ${v.toFixed(2)} RUB`;
             }
           }
-        },
-        scales: {
-          y: { beginAtZero: false }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: false
         }
       }
-    });
-
-    updateDomWithCurrentRate();
-  }
-
-  // ---------- Ð”Ð–Ð•Ð Ð•Ð›Ð Ð”ÐÐÐ˜Ð¥ ----------
-
-  // 1) Forex API #1: open.er-api.com
-  async function fetchFromPrimaryForex() {
-    try {
-      const url = "https://open.er-api.com/v6/latest/USD";
-      const res = await fetch(url);
-      if (!res.ok) throw new Error("Primary forex error");
-      const data = await res.json();
-
-      if (!data || data.result !== "success" || !data.rates || !data.rates.RUB) {
-        throw new Error("Primary forex: RUB missing");
-      }
-
-      const rate = parseFloat(data.rates.RUB);
-      if (!rate || isNaN(rate)) throw new Error("Primary forex: NaN");
-
-      return rate;
-    } catch (e) {
-      console.warn("[Primary forex] fail:", e.message || e);
-      return null;
     }
-  }
-
-  // 2) DexScreener â€“ Ñ†Ñ–Ð½Ð° ARUB Ð² USD
-  async function fetchFromDexScreener() {
-    try {
-      const url = "https://api.dexscreener.com/latest/dex/tokens/0x98fFc1A4Ff6eAD8EebFd02cDA54852Bb69744788";
-      const res = await fetch(url);
-      if (!res.ok) throw new Error("DexScreener error");
-      const data = await res.json();
-
-      if (!data.pairs || !data.pairs.length) {
-        throw new Error("DexScreener: no pairs");
-      }
-
-      const p = data.pairs[0];
-      if (!p.priceUsd) throw new Error("DexScreener: no priceUsd");
-
-      const price = parseFloat(p.priceUsd);
-      if (!price || isNaN(price)) throw new Error("DexScreener: NaN");
-
-      return price;
-    } catch (e) {
-      console.warn("[DexScreener] fail:", e.message || e);
-      return null;
-    }
-  }
-
-  // 3) Forex API #2: exchangerate.host
-  async function fetchFromSecondaryForex() {
-    try {
-      const url = "https://api.exchangerate.host/latest?base=USD&symbols=RUB";
-      const res = await fetch(url);
-      if (!res.ok) throw new Error("Secondary forex error");
-      const data = await res.json();
-
-      if (!data || !data.rates || !data.rates.RUB) {
-        throw new Error("Secondary forex: RUB missing");
-      }
-
-      const rate = parseFloat(data.rates.RUB);
-      if (!rate || isNaN(rate)) throw new Error("Secondary forex: NaN");
-
-      return rate;
-    } catch (e) {
-      console.warn("[Secondary forex] fail:", e.message || e);
-      return null;
-    }
-  }
-
-  // Ð›Ð°Ð½Ñ†ÑŽÐ¶Ð¾Ðº Ð´Ð¶ÐµÑ€ÐµÐ»: Ð¿Ð¾Ð²ÐµÑ€Ñ‚Ð°Ñ”Ð¼Ð¾ Ñ‡Ð¸ÑÐ»Ð¾, Ð° Ð¼Ñ–Ñ‚ÐºÑƒ Ð´Ð¶ÐµÑ€ÐµÐ»Ð° Ð¿Ð¸ÑˆÐµÐ¼Ð¾ Ð² window.currentRateSourceLabel
-  async function resolveRateFromAllSources() {
-    // 1) ÐžÑÐ½Ð¾Ð²Ð½Ð¸Ð¹ Ñ„Ð¾Ñ€ÐµÐºÑ
-    let rate = await fetchFromPrimaryForex();
-    if (rate) {
-      window.currentRateSourceLabel = 'Forex #1 (open.er-api.com)';
-      return rate;
-    }
-
-    // 2) DexScreener
-    rate = await fetchFromDexScreener();
-    if (rate) {
-      window.currentRateSourceLabel = 'DexScreener (ARUB Ñ‚Ð¾ÐºÐµÐ½)';
-      return rate;
-    }
-
-    // 3) Ð”Ñ€ÑƒÐ³Ð¸Ð¹ Ñ„Ð¾Ñ€ÐµÐºÑ
-    rate = await fetchFromSecondaryForex();
-    if (rate) {
-      window.currentRateSourceLabel = 'Forex #2 (exchangerate.host)';
-      return rate;
-    }
-
-    // Ð¯ÐºÑ‰Ð¾ Ð²ÑÑ– Ð²Ð¿Ð°Ð»Ð¸ â€“ Ð½Ðµ Ð·Ð¼Ñ–Ð½ÑŽÑ”Ð¼Ð¾ currentRateSourceLabel
-    return null;
-  }
-
-  async function fetchRateAndUpdate() {
-    try {
-      const newRate = await resolveRateFromAllSources();
-      if (!newRate) {
-        console.warn("All sources failed, keeping previous currentRate =", currentRate);
-        updateDomWithCurrentRate(); // Ð¾Ð½Ð¾Ð²Ð¸Ð¼Ð¾ Ð¿Ð»Ð°ÑˆÐºÑƒ Ñ…Ð¾Ñ‡ Ð±Ð¸ Ð· Ð´ÐµÑ„Ð¾Ð»Ñ‚Ð¾Ð¼
-        return;
-      }
-
-      currentRate = newRate;
-      updateDomWithCurrentRate();
-      console.log("Rate updated from sources chain:", currentRate.toFixed(4), "| source:", window.currentRateSourceLabel);
-    } catch (err) {
-      console.error("Unexpected error in fetchRateAndUpdate:", err);
-    }
-  }
-
-  window.addEventListener('load', () => {
-    initUsdRubChart();
-    fetchRateAndUpdate();                  // Ð¿ÐµÑ€ÑˆÐµ Ð¾Ð½Ð¾Ð²Ð»ÐµÐ½Ð½Ñ Ð¾Ð´Ñ€Ð°Ð·Ñƒ
-    setInterval(fetchRateAndUpdate, 60000); // Ð´Ð°Ð»Ñ– â€“ ÐºÐ¾Ð¶Ð½Ñƒ Ñ…Ð²Ð¸Ð»Ð¸Ð½Ñƒ
   });
-</script>
 
+  // Обновление, если цена ARUB меняется динамически
+  window.updateUsdRubPointFromArub = function () {
+    const newRate = getCurrentRateFromArub();
+    if (newRate === null) return;
+
+    if (currentRateSpan) {
+      currentRateSpan.textContent = newRate.toFixed(2);
+    }
+
+    if (legendCurrentRateText) {
+      legendCurrentRateText.textContent = `Поточний курс (${newRate.toFixed(2)})`;
+    }
+
+    usdRubChart.data.datasets[0].data[5] = newRate; // історія 2025
+    usdRubChart.data.datasets[1].data[5] = newRate; // сценарій 2025
+    usdRubChart.data.datasets[2].data[5] = newRate; // жовта точка
+    usdRubChart.data.datasets[2].label =
+      `Поточний курс (${newRate.toFixed(2)})`;
+
+    usdRubChart.update();
+  };
+</script>
 
 <script>
     window.addEventListener("load", () => {
@@ -2299,7 +2169,7 @@
 </script>
 
 <script>
-  // ÐÐ°Ð²Ñ–Ð³Ð°Ñ†Ñ–Ñ: Ð¿Ñ–Ð´ÑÐ²Ñ–Ñ‚ÐºÐ° Ð°ÐºÑ‚Ð¸Ð²Ð½Ð¾Ñ— ÐºÐ½Ð¾Ð¿ÐºÐ¸ Ð¿Ñ€Ð¸ ÐºÐ»Ñ–ÐºÑƒ Ñ‚Ð° ÑÐºÑ€Ð¾Ð»Ñ–
+  // Навігація: підсвітка активної кнопки при кліку та скролі
   const navLinks = document.querySelectorAll('.main-nav a.main-nav-link');
   const sections = [];
 
@@ -2313,7 +2183,7 @@
     }
   });
 
-  // Ð¤ÑƒÐ½ÐºÑ†Ñ–Ñ Ð²ÑÑ‚Ð°Ð½Ð¾Ð²Ð»ÐµÐ½Ð½Ñ Ð°ÐºÑ‚Ð¸Ð²Ð½Ð¾Ñ— ÐºÐ½Ð¾Ð¿ÐºÐ¸
+  // Функція встановлення активної кнопки
   function setActiveLinkById(id) {
     navLinks.forEach(link => {
       const href = link.getAttribute('href');
@@ -2325,7 +2195,7 @@
     });
   }
 
-  // 1) ÐŸÑ–Ð´ÑÐ²Ñ–Ñ‚ÐºÐ° Ð¿Ñ€Ð¸ ÐºÐ»Ñ–ÐºÑƒ
+  // 1) Підсвітка при кліку
   navLinks.forEach(link => {
     link.addEventListener('click', (e) => {
       const href = link.getAttribute('href');
@@ -2336,10 +2206,10 @@
     });
   });
 
-  // 2) ÐŸÑ–Ð´ÑÐ²Ñ–Ñ‚ÐºÐ° Ð¿Ñ€Ð¸ ÑÐºÑ€Ð¾Ð»Ñ– (IntersectionObserver)
+  // 2) Підсвітка при скролі (IntersectionObserver)
   const observerOptions = {
     root: null,
-    threshold: 0.3    // ÑÐµÐºÑ†Ñ–Ñ Ð²Ð²Ð°Ð¶Ð°Ñ”Ñ‚ÑŒÑÑ Ð°ÐºÑ‚Ð¸Ð²Ð½Ð¾ÑŽ, ÑÐºÑ‰Ð¾ Ð²Ð¸Ð´Ð½Ð¾ ~30% Ð²Ð¸ÑÐ¾Ñ‚Ð¸
+    threshold: 0.3    // секція вважається активною, якщо видно ~30% висоти
   };
 
   const sectionObserver = new IntersectionObserver((entries) => {
