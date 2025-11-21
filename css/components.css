@@ -602,3 +602,19 @@
     0% { transform: translateX(-100%); }
     100% { transform: translateX(100%); }
 }
+
+/* === FIX: Align token card buttons horizontally on Add Tokens section === */
+.page-panel-grid {
+    display: flex;
+    gap: 30px;
+}
+
+.page-card {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.page-card .action-btn {
+    margin-top: auto;
+}
