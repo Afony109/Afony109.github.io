@@ -28,7 +28,8 @@ export function initTradingModule() {
     // Update price periodically
     setInterval(async () => {
         try {
-            currentRate = await getArubPrice();
+            const priceInfo = await getArubPrice();
+            currentRate = priceInfo.price;
             console.log('[TRADING] Updated ARUB price:', currentRate);
         } catch (error) {
             console.error('[TRADING] Error updating price:', error);
@@ -56,7 +57,8 @@ export async function updateTradingUI(userAddress) {
 
     try {
         const { usdtBalance, arubBalance } = await getUserBalances(userAddress);
-        currentRate = await getArubPrice();
+        const priceInfo = await getArubPrice();
+        currentRate = priceInfo.price;
 
         tradingInterface.innerHTML = `
             <div class="staking-grid">

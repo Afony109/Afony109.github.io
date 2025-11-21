@@ -54,7 +54,7 @@ export async function updateStakingUI(userAddress) {
             { usdtBalance, arubBalance },
             stakingInfo,
             poolStats,
-            arubPrice,
+            arubPriceInfo,
             detailedStats
         ] = await Promise.all([
             getUserBalances(userAddress),
@@ -63,6 +63,8 @@ export async function updateStakingUI(userAddress) {
             getArubPrice(),
             getDetailedStats()
         ]);
+
+        const arubPrice = arubPriceInfo.price;
 
         // Calculate tier information using BOTH pools (USDT + ARUB)
         // This ensures consistent APY calculation across the entire site

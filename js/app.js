@@ -481,12 +481,15 @@ async function updateGlobalStats() {
 
     try {
         // 1. Получаем данные с блокчейна
-        const [poolStats, arubPrice, totalSupply, detailedStats] = await Promise.all([
+        const [poolStats, arubPriceInfo, totalSupply, detailedStats] = await Promise.all([
             getPoolStats(),
             getArubPrice(),
             getTotalSupplyArub(),
             getDetailedStats()
         ]);
+
+        const arubPrice = arubPriceInfo.price;
+        const arubPriceSource = arubPriceInfo.source;
 
         // 2. TVL в USD (USDT + ARUB)
         const tvlUsd = detailedStats.totalStakedUsdt + detailedStats.totalStakedArub * arubPrice;
@@ -504,7 +507,8 @@ async function updateGlobalStats() {
             totalSupplyArub: document.getElementById('totalSupplyArub'),
             totalStakedArub: document.getElementById('totalStakedArub'),
             totalStakedUsdt: document.getElementById('totalStakedUsdt'),
-            totalRewards: document.getElementById('totalRewards')
+            totalRewards: document.getElementById('totalRewards'),
+            arubPriceSource: document.getElementById('arubPriceSource')
         };
 
         const stakingElements = {
@@ -529,6 +533,12 @@ async function updateGlobalStats() {
 
         if (elements.globalArubPrice) {
             elements.globalArubPrice.textContent = `${arubPrice.toFixed(2)} USDT`;
+        }
+        if (elements.arubPriceSource) {
+            const isOracle = arubPriceSource === 'oracle';
+            const label = isOracle ? 'Oracle' : 'Backup';
+            elements.arubPriceSource.textContent = `Джерело курсу: ${label}${isOracle ? '' : ' ⚠️'}`;
+            elements.arubPriceSource.style.color = isOracle ? '#80e29d' : '#fbbf24';
         }
 
         if (stakingElements.totalTvl) {

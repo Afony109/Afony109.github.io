@@ -333,19 +333,47 @@ async function fetchUsdRubRate() {
  * @returns {Promise<number>} Price in USDT (привязано до курсу USD/RUB)
  */
 export async function getArubPrice() {
-    // ARUB прив'язаний до USD/RUB курсу
-    // 1 ARUB = USD/RUB rate (наприклад ~81 USDT при курсі 81 RUB за 1 USD)
+    const contract = tokenContract || readOnlyTokenContract;
 
-    // Try to get live rate from API
-    const liveRate = await fetchUsdRubRate();
+    const formatRate = (bn) => {
+        try {
+            const num = parseFloat(ethers.utils.formatUnits(bn, CONFIG.DECIMALS.USDT));
+            return Number.isFinite(num) && num > 0 ? num : null;
+        } catch (err) {
+            console.warn('[CONTRACTS] Failed to format rate:', err);
+            return null;
+        }
+    };
 
-    if (liveRate) {
-        return liveRate;
+    if (contract) {
+        try {
+            if (contract.currentRate) {
+                const rateBn = await contract.currentRate();
+                const rate = formatRate(rateBn);
+                if (rate !== null) {
+                    return { price: rate, source: 'oracle' };
+                }
+            }
+
+            if (contract.oraclePrice) {
+                const rateBn = await contract.oraclePrice();
+                const rate = formatRate(rateBn);
+                if (rate !== null) {
+                    return { price: rate, source: 'oracle' };
+                }
+            }
+        } catch (error) {
+            console.warn('[CONTRACTS] On-chain rate fetch failed:', error);
+        }
     }
 
-    // Fallback to static value if API fails
+    const liveRate = await fetchUsdRubRate();
+    if (liveRate) {
+        return { price: liveRate, source: 'api' };
+    }
+
     console.warn('[CONTRACTS] Using fallback USD/RUB rate:', CONFIG.FALLBACK.ARUB_PRICE_USDT);
-    return CONFIG.FALLBACK.ARUB_PRICE_USDT;
+    return { price: CONFIG.FALLBACK.ARUB_PRICE_USDT, source: 'fallback' };
 }
 
 /**
