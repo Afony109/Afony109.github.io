@@ -1045,6 +1045,12 @@
             font-size: 13px;
             align-items: center;
         }
+        #rateSourceIndicator {
+            margin-top: 6px;
+            font-size: 11px;
+            color: var(--gray);
+        }
+
 
         .usd-rub-legend .legend-item {
             display: inline-flex;
@@ -1457,26 +1463,6 @@
                 <button id="disconnectWalletBtn">Відключити гаманець</button>
             </div>
         </div>
-                <!-- НОВАЯ КАРТОЧКА: FaustKran (faucet тестових USDT) -->
-                <div class="page-card fade-in-up">
-                    <div class="page-card-header">
-                        <div class="page-card-icon">💧</div>
-                        <div>
-                            <div class="page-card-title">FaustKran</div>
-                            <div class="page-card-text">
-                                Отримайте тестові USDT через faucet, щоб протестувати стейкінг та торгівлю
-                                без реальних грошей.
-                            </div>
-                        </div>
-                    </div>
-                    <button
-                        class="action-btn"
-                        onclick="document.getElementById('trading')?.scrollIntoView({ behavior: 'smooth' });"
-                    >
-                        Перейти до розділу «Торгівля»
-                    </button>
-                </div>
-
     </div>
 </nav>
 
@@ -1658,6 +1644,7 @@
 
             <div class="page-panel-grid">
 
+                <!-- Карточка: ARUB -->
                 <div class="page-card fade-in-up">
                     <div class="page-card-header">
                         <div class="page-card-icon">🪙</div>
@@ -1671,6 +1658,7 @@
                     </button>
                 </div>
 
+                <!-- Карточка: MockUSDT -->
                 <div class="page-card fade-in-up">
                     <div class="page-card-header">
                         <div class="page-card-icon">💵</div>
@@ -1681,6 +1669,26 @@
                     </div>
                     <button onclick="addTokenToWallet('USDT')" class="action-btn">
                         <span class="icon-usdt">$</span> Додати USDT <span class="icon-usdt">$</span>
+                    </button>
+                </div>
+
+                <!-- НОВАЯ КАРТОЧКА: FaustKran (faucet тестових USDT) -->
+                <div class="page-card fade-in-up">
+                    <div class="page-card-header">
+                        <div class="page-card-icon">💧</div>
+                        <div>
+                            <div class="page-card-title">FaustKran</div>
+                            <div class="page-card-text">
+                                Отримайте тестові USDT через faucet, щоб протестувати стейкінг та торгівлю
+                                без реальних грошей.
+                            </div>
+                        </div>
+                    </div>
+                    <button
+                        class="action-btn"
+                        onclick="document.getElementById('faucet')?.scrollIntoView({ behavior: 'smooth' });"
+                    >
+                        Перейти до faucet USDT
                     </button>
                 </div>
 
@@ -1986,181 +1994,303 @@
 <script type="module" src="js/app.js"></script>
 
 <script>
-  function getCurrentRateFromArub() {
-    const el = document.getElementById('arubPriceValue');
-    if (!el) return null;
+  // === ЄДИНЕ ДЖЕРЕЛО ДЛЯ ВСІХ ЦИФР + ІНДИКАТОР ДЖЕРЕЛА ===
+  // currentRate – те, що вважаємо "ціною ARUB" і "поточним курсом".
+  //
+  // Порядок джерел:
+  //  1) Forex API #1 (open.er-api.com, USD→RUB)
+  //  2) DexScreener (ціна ARUB в USD)
+  //  3) Forex API #2 (exchangerate.host, USD→RUB)
+  //
+  // window.currentRateSourceLabel — текстова мітка для плашки "Джерело даних".
 
-    const raw = el.textContent.trim()
-      .replace(',', '.')
-      .replace(/[^0-9.]/g, '');
-    const value = parseFloat(raw);
-
-    return isNaN(value) ? null : value;
-  }
-
-  // Берём текущий курс из цены ARUB
-  let currentRate = getCurrentRateFromArub();
-  if (currentRate === null) {
-    currentRate = 80.98; // запасной вариант
-  }
-
-  const currentRateSpan = document.getElementById('currentRateText');
-  if (currentRateSpan) {
-    currentRateSpan.textContent = currentRate.toFixed(2);
-  }
-
-  const legendCurrentRateText = document.getElementById('legendCurrentRateText');
-  if (legendCurrentRateText) {
-    legendCurrentRateText.textContent = `Поточний курс (${currentRate.toFixed(2)})`;
-  }
+  let currentRate = 80.98;      // дефолт, щоб щось було при першому рендері
+  let usdRubChart = null;
+  window.currentRateSourceLabel = 'локальне значення (дефолт)';
 
   const years = [
     '2020','2021','2022','2023','2024',
     '2025','2026','2027','2028','2029','2030'
   ];
 
-  // История: горка к 140 и спад
-  const historyData = [
-    72.3,        // 2020
-    73.7,        // 2021
-    140,         // 2022 - пик
-    110,         // 2023
-    92.8,        // 2024
-    currentRate, // 2025 - текущий курс
-    null, null, null, null, null
-  ];
+  function buildUsdRubDatasets() {
+    const historyData = [
+      72.3,        // 2020
+      73.7,        // 2021
+      140,         // 2022 - пік
+      110,         // 2023
+      92.8,        // 2024
+      currentRate, // 2025 — поточний курс
+      null, null, null, null, null
+    ];
 
-  // Сценарий 2025–2030
-  const scenarioData = [
-    null,   // 2020
-    null,   // 2021
-    null,   // 2022
-    null,   // 2023
-    null,   // 2024
-    currentRate, // 2025 — жёлтая точка (старт)
-    200,    // 2026
-    400,    // 2027
-    500,    // 2028
-    350,    // 2029
-    250     // 2030
-  ];
+    const scenarioData = [
+      null,   // 2020
+      null,   // 2021
+      null,   // 2022
+      null,   // 2023
+      null,   // 2024
+      currentRate, // 2025 — старт сценарію
+      200,    // 2026
+      400,    // 2027
+      500,    // 2028
+      350,    // 2029
+      250     // 2030
+    ];
 
-  // Жёлтая точка (текущий курс 2025)
-  const currentPointData = [
-    null, null, null, null, null,
-    currentRate,
-    null, null, null, null, null
-  ];
+    const currentPointData = [
+      null, null, null, null, null,
+      currentRate,
+      null, null, null, null, null
+    ];
 
-  // Красная точка (пик 2022)
-  const peak2022 = [
-    null, null, 140, null, null,
-    null, null, null, null, null, null
-  ];
+    const peak2022 = [
+      null, null, 140, null, null,
+      null, null, null, null, null, null
+    ];
 
-  const ctx = document.getElementById('usdRubChart').getContext('2d');
+    return { historyData, scenarioData, currentPointData, peak2022 };
+  }
 
-  const usdRubChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: years,
-      datasets: [
-        // 1) ІСТОРИЧНИЙ КУРС — СПЛОШНАЯ ГОЛУБАЯ ЛИНИЯ БЕЗ ТОЧЕК
-        {
-          label: 'Історичний курс',
-          data: historyData,
-          tension: 0.45,
-          borderWidth: 2,
-          borderColor: '#4ba3ff',
-          fill: false,
-          pointRadius: 0,
-          pointHoverRadius: 0,
-          pointStyle: 'line'
-        },
-        // 2) СЦЕНАРІЙ — ТОНКИЙ ГОЛУБОЙ ПУНКТИР БЕЗ ТОЧЕК
-        {
-          label: 'Сценарій 2025–2030',
-          data: scenarioData,
-          tension: 0.35,
-          borderWidth: 2,
-          borderColor: '#4ba3ff',
-          borderDash: [6, 4],
-          fill: false,
-          spanGaps: false,   // ← НЕ соединять через null
-          pointRadius: 0,
-          pointHoverRadius: 0,
-          pointStyle: 'line'
-        },
-        // 3) ПОТОЧНИЙ КУРС — ЖЁЛТАЯ ТОЧКА
-        {
-          label: `Поточний курс (${currentRate.toFixed(2)})`,
-          data: currentPointData,
-          borderWidth: 0,
-          pointRadius: 6,
-          pointHoverRadius: 8,
-          pointBackgroundColor: '#ffd54a',
-          pointBorderColor: '#ffd54a',
-          pointStyle: 'circle'
-        },
-        // 4) ПІК 2022 — КРАСНАЯ ТОЧКА
-        {
-          label: 'Пік 2022 року (140)',
-          data: peak2022,
-          borderWidth: 0,
-          pointRadius: 7,
-          pointHoverRadius: 9,
-          pointBackgroundColor: '#ff4b4b',
-          pointBorderColor: '#ff4b4b',
-          pointStyle: 'circle'
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          display: false   // <– выключаем стандартную легенду
-        },
-        tooltip: {
-          callbacks: {
-            label: function (context) {
-              const v = context.parsed.y;
-              if (!v) return '';
-              return `${context.dataset.label}: ${v.toFixed(2)} RUB`;
+  function updateDomWithCurrentRate() {
+    // ВЕРХНЯ КАРТКА "Ціна ARUB"
+    const arubPriceEl = document.getElementById('arubPriceValue');
+    if (arubPriceEl) {
+      arubPriceEl.textContent = currentRate.toFixed(2);
+    }
+
+    // Текст у картці графіка
+    const currentRateSpan = document.getElementById('currentRateText');
+    if (currentRateSpan) {
+      currentRateSpan.textContent = currentRate.toFixed(2);
+    }
+
+    const legendCurrentRateText = document.getElementById('legendCurrentRateText');
+    if (legendCurrentRateText) {
+      legendCurrentRateText.textContent = `Поточний курс (${currentRate.toFixed(2)})`;
+    }
+
+    // 🔹 Плашка "Джерело даних"
+    const sourceEl = document.getElementById('rateSourceIndicator');
+    if (sourceEl) {
+      sourceEl.textContent = 'Джерело даних: ' + (window.currentRateSourceLabel || '—');
+    }
+
+    // Якщо графік вже є – оновлюємо датасети для 2025 року
+    if (usdRubChart) {
+      usdRubChart.data.datasets[0].data[5] = currentRate; // історія 2025
+      usdRubChart.data.datasets[1].data[5] = currentRate; // сценарій 2025
+      usdRubChart.data.datasets[2].data[5] = currentRate; // жовта точка
+      usdRubChart.data.datasets[2].label = `Поточний курс (${currentRate.toFixed(2)})`;
+
+      usdRubChart.update();
+    }
+  }
+
+  function initUsdRubChart() {
+    const ctxEl = document.getElementById('usdRubChart');
+    if (!ctxEl) return;
+
+    const ctx = ctxEl.getContext('2d');
+
+    const { historyData, scenarioData, currentPointData, peak2022 } = buildUsdRubDatasets();
+
+    usdRubChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: years,
+        datasets: [
+          {
+            label: 'Історичний курс',
+            data: historyData,
+            tension: 0.45,
+            borderWidth: 2,
+            borderColor: '#4ba3ff',
+            fill: false,
+            pointRadius: 0,
+            pointHoverRadius: 0,
+            pointStyle: 'line'
+          },
+          {
+            label: 'Сценарій 2025–2030',
+            data: scenarioData,
+            tension: 0.35,
+            borderWidth: 2,
+            borderColor: '#4ba3ff',
+            borderDash: [6, 4],
+            fill: false,
+            spanGaps: false,
+            pointRadius: 0,
+            pointHoverRadius: 0,
+            pointStyle: 'line'
+          },
+          {
+            label: `Поточний курс (${currentRate.toFixed(2)})`,
+            data: currentPointData,
+            borderWidth: 0,
+            pointRadius: 6,
+            pointHoverRadius: 8,
+            pointBackgroundColor: '#ffd54a',
+            pointBorderColor: '#ffd54a',
+            pointStyle: 'circle'
+          },
+          {
+            label: 'Пік 2022 року (140)',
+            data: peak2022,
+            borderWidth: 0,
+            pointRadius: 7,
+            pointHoverRadius: 9,
+            pointBackgroundColor: '#ff4b4b',
+            pointBorderColor: '#ff4b4b',
+            pointStyle: 'circle'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                const v = context.parsed.y;
+                if (!v) return '';
+                return `${context.dataset.label}: ${v.toFixed(2)} RUB`;
+              }
             }
           }
-        }
-      },
-      scales: {
-        y: {
-          beginAtZero: false
+        },
+        scales: {
+          y: { beginAtZero: false }
         }
       }
+    });
+
+    updateDomWithCurrentRate();
+  }
+
+  // ---------- ДЖЕРЕЛА ДАНИХ ----------
+
+  // 1) Forex API #1: open.er-api.com
+  async function fetchFromPrimaryForex() {
+    try {
+      const url = "https://open.er-api.com/v6/latest/USD";
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("Primary forex error");
+      const data = await res.json();
+
+      if (!data || data.result !== "success" || !data.rates || !data.rates.RUB) {
+        throw new Error("Primary forex: RUB missing");
+      }
+
+      const rate = parseFloat(data.rates.RUB);
+      if (!rate || isNaN(rate)) throw new Error("Primary forex: NaN");
+
+      return rate;
+    } catch (e) {
+      console.warn("[Primary forex] fail:", e.message || e);
+      return null;
     }
+  }
+
+  // 2) DexScreener – ціна ARUB в USD
+  async function fetchFromDexScreener() {
+    try {
+      const url = "https://api.dexscreener.com/latest/dex/tokens/0x98fFc1A4Ff6eAD8EebFd02cDA54852Bb69744788";
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("DexScreener error");
+      const data = await res.json();
+
+      if (!data.pairs || !data.pairs.length) {
+        throw new Error("DexScreener: no pairs");
+      }
+
+      const p = data.pairs[0];
+      if (!p.priceUsd) throw new Error("DexScreener: no priceUsd");
+
+      const price = parseFloat(p.priceUsd);
+      if (!price || isNaN(price)) throw new Error("DexScreener: NaN");
+
+      return price;
+    } catch (e) {
+      console.warn("[DexScreener] fail:", e.message || e);
+      return null;
+    }
+  }
+
+  // 3) Forex API #2: exchangerate.host
+  async function fetchFromSecondaryForex() {
+    try {
+      const url = "https://api.exchangerate.host/latest?base=USD&symbols=RUB";
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("Secondary forex error");
+      const data = await res.json();
+
+      if (!data || !data.rates || !data.rates.RUB) {
+        throw new Error("Secondary forex: RUB missing");
+      }
+
+      const rate = parseFloat(data.rates.RUB);
+      if (!rate || isNaN(rate)) throw new Error("Secondary forex: NaN");
+
+      return rate;
+    } catch (e) {
+      console.warn("[Secondary forex] fail:", e.message || e);
+      return null;
+    }
+  }
+
+  // Ланцюжок джерел: повертаємо число, а мітку джерела пишемо в window.currentRateSourceLabel
+  async function resolveRateFromAllSources() {
+    // 1) Основний форекс
+    let rate = await fetchFromPrimaryForex();
+    if (rate) {
+      window.currentRateSourceLabel = 'Forex #1 (open.er-api.com)';
+      return rate;
+    }
+
+    // 2) DexScreener
+    rate = await fetchFromDexScreener();
+    if (rate) {
+      window.currentRateSourceLabel = 'DexScreener (ARUB токен)';
+      return rate;
+    }
+
+    // 3) Другий форекс
+    rate = await fetchFromSecondaryForex();
+    if (rate) {
+      window.currentRateSourceLabel = 'Forex #2 (exchangerate.host)';
+      return rate;
+    }
+
+    // Якщо всі впали – не змінюємо currentRateSourceLabel
+    return null;
+  }
+
+  async function fetchRateAndUpdate() {
+    try {
+      const newRate = await resolveRateFromAllSources();
+      if (!newRate) {
+        console.warn("All sources failed, keeping previous currentRate =", currentRate);
+        updateDomWithCurrentRate(); // оновимо плашку хоч би з дефолтом
+        return;
+      }
+
+      currentRate = newRate;
+      updateDomWithCurrentRate();
+      console.log("Rate updated from sources chain:", currentRate.toFixed(4), "| source:", window.currentRateSourceLabel);
+    } catch (err) {
+      console.error("Unexpected error in fetchRateAndUpdate:", err);
+    }
+  }
+
+  window.addEventListener('load', () => {
+    initUsdRubChart();
+    fetchRateAndUpdate();                  // перше оновлення одразу
+    setInterval(fetchRateAndUpdate, 60000); // далі – кожну хвилину
   });
-
-  // Обновление, если цена ARUB меняется динамически
-  window.updateUsdRubPointFromArub = function () {
-    const newRate = getCurrentRateFromArub();
-    if (newRate === null) return;
-
-    if (currentRateSpan) {
-      currentRateSpan.textContent = newRate.toFixed(2);
-    }
-
-    if (legendCurrentRateText) {
-      legendCurrentRateText.textContent = `Поточний курс (${newRate.toFixed(2)})`;
-    }
-
-    usdRubChart.data.datasets[0].data[5] = newRate; // історія 2025
-    usdRubChart.data.datasets[1].data[5] = newRate; // сценарій 2025
-    usdRubChart.data.datasets[2].data[5] = newRate; // жовта точка
-    usdRubChart.data.datasets[2].label =
-      `Поточний курс (${newRate.toFixed(2)})`;
-
-    usdRubChart.update();
-  };
 </script>
+
 
 <script>
     window.addEventListener("load", () => {
