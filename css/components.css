@@ -618,3 +618,18 @@
 .page-card .action-btn {
     margin-top: auto;
 }
+/* === FIX 2: ровняем кнопки только в секции Add Tokens === */
+#add-token-guide .page-panel-grid {
+    display: flex !important;      /* вместо grid, только тут */
+    gap: 30px;
+}
+
+#add-token-guide .page-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+#add-token-guide .page-card .action-btn {
+    margin-top: auto;              /* прижимает кнопку к низу карточки */
+}
