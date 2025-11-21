@@ -1120,9 +1120,9 @@
             margin-bottom: 24px;
         }
         .page-panel-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            display: flex;
             gap: 18px;
+            align-items: stretch;      /* карточки одинаковой высоты */
         }
         .page-pill {
             display: inline-flex;
@@ -1138,11 +1138,28 @@
             margin-bottom: 10px;
             background: rgba(0,0,0,0.2);
         }
+        /* каждая карточка – колонка, чтобы кнопку прижать вниз */
         .page-card {
+            flex: 1 1 0;
+            display: flex;
+            flex-direction: column;
+
             background: rgba(0,0,0,0.72);
             border-radius: 18px;
             border: 1px solid rgba(255,255,255,0.12);
             padding: 18px 18px 16px;
+        }
+
+        /* кнопка внизу карточки (для тех карточек, где она есть) */
+        .page-card .action-btn {
+            margin-top: auto;
+        }
+
+        /* на телефоне – обратно в колонку */
+        @media (max-width: 900px) {
+            .page-panel-grid {
+                flex-direction: column;
+            }
         }
         .page-card-header {
             display: flex;
