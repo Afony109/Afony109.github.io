@@ -64,6 +64,10 @@ let readOnlyTokenContract = null;
 // Cache for USD/RUB exchange rate
 let cachedUsdRubRate = null;
 let lastRateFetchTime = 0;
+
+// CACHE DURATION: 1 minute
+const RATE_CACHE_DURATION = 60 * 1000;
+
 const RPC_FALLBACKS = [
     'https://ethereum-sepolia-rpc.publicnode.com',
     'https://rpc.sepolia.org',
@@ -347,7 +351,7 @@ async function fetchUsdRubRate() {
 
 /**
  * Get current ARUB price from contract
- * @returns {Promise<number>} Price in USDT (привязано до курсу USD/RUB)
+ * @returns {Promise<{price:number, source:string}>} Price in USDT (привязано до курсу USD/RUB)
  */
 export async function getArubPrice() {
     const contract = tokenContract || readOnlyTokenContract;
@@ -362,38 +366,53 @@ export async function getArubPrice() {
         }
     };
 
+    // 1) Пытаемся взять цену из контракта (on-chain oracle)
     if (contract) {
-        try {
-            if (contract.currentRate) {
+        // currentRate()
+        if (contract.currentRate) {
+            try {
                 const rateBn = await contract.currentRate();
                 const rate = formatRate(rateBn);
                 if (rate !== null) {
+                    console.log('[CONTRACTS] Using on-chain currentRate()');
                     return { price: rate, source: 'oracle' };
                 }
+            } catch (error) {
+                console.error('[CONTRACTS] currentRate() failed', {
+                    code: error?.code,
+                    data: error?.data,
+                    message: error?.message
+                });
             }
+        }
 
-            if (contract.oraclePrice) {
+        // oraclePrice()
+        if (contract.oraclePrice) {
+            try {
                 const rateBn = await contract.oraclePrice();
                 const rate = formatRate(rateBn);
                 if (rate !== null) {
+                    console.log('[CONTRACTS] Using on-chain oraclePrice()');
                     return { price: rate, source: 'oracle' };
                 }
+            } catch (error) {
+                console.error('[CONTRACTS] oraclePrice() failed', {
+                    code: error?.code,
+                    data: error?.data,
+                    message: error?.message
+                });
             }
-        } catch (error) {
-            console.error('[CONTRACTS] On-chain rate fetch failed', {
-                code: error?.code,
-                data: error?.data,
-                message: error?.message
-            });
         }
     }
 
+    // 2) Forex API
     const liveRate = await fetchUsdRubRate();
     if (liveRate) {
         return { price: liveRate, source: 'api' };
     }
 
-    console.warn('[CONTRACTS] Using fallback USD/RUB rate:', CONFIG.FALLBACK.ARUB_PRICE_USDT);
+    // 3) Жёсткий fallback из конфигурации
+    console.warn('[CONTRACTS] Using fallback USD/RUB rate from CONFIG:', CONFIG.FALLBACK.ARUB_PRICE_USDT);
     return { price: CONFIG.FALLBACK.ARUB_PRICE_USDT, source: 'fallback' };
 }
 
