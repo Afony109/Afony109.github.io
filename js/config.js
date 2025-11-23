@@ -11,7 +11,7 @@ export const CONFIG = {
     // ✅ VERIFIED ADDRESSES - These are the correct contracts
     USDT_ADDRESS: '0x803ce0BDEb8C811E1Dd12a7ed6765FC2ACe46EcA',
     TOKEN_ADDRESS: '0x1B1196164AF755a24A04B5141c4Ba6ee2694fb8E', // ARUB Token
-    STAKING_ADDRESS: '0xbcc586b6378b53042bE6412F1A3020E7DDAAE106',
+    STAKING_ADDRESS: '0xbcc586b6378b53042bE6412F1A3020E7DDAAE106', // ARUB Staking V2
 
     // ===== NETWORK CONFIGURATION =====
     NETWORK: {
@@ -73,17 +73,18 @@ export const CONFIG = {
 
     // ===== EXTERNAL LINKS =====
     LINKS: {
-        ARUB_ETHERSCAN: 'https://sepolia.etherscan.io/address/0xe4A39E3D2C64C2D3a1d9c7C6B9eB63db55277b71',
-        STAKING_ETHERSCAN: 'https://sepolia.etherscan.io/address/0x5360400F8B80382017AEE6e4C09c8a935526757B',
-        USDT_ETHERSCAN: 'https://sepolia.etherscan.io/address/0x4e6175f449b04e20437b2A2AD8221884Bda38f39',
+        // Привязал ссылки к тем же адресам, что и в CONFIG выше
+        ARUB_ETHERSCAN: 'https://sepolia.etherscan.io/address/0x1B1196164AF755a24A04B5141c4Ba6ee2694fb8E',
+        STAKING_ETHERSCAN: 'https://sepolia.etherscan.io/address/0xbcc586b6378b53042bE6412F1A3020E7DDAAE106',
+        USDT_ETHERSCAN: 'https://sepolia.etherscan.io/address/0x803ce0BDEb8C811E1Dd12a7ed6765FC2ACe46EcA',
         DEXSCREENER: 'https://dexscreener.com/ethereum/sepolia',
         GITHUB: 'https://github.com/afony109/antirub-staking'
     },
 
     // ===== FALLBACK VALUES =====
     FALLBACK: {
-        ARUB_PRICE_USDT: 81.22,  // Fallback USD/RUB rate if live API fails
-        APY: 2400                 // Fallback APY (24%)
+        ARUB_PRICE_USDT: 81.22,  // Fallback ARUB price in USDT if live APIs fail
+        APY: 2400                // Fallback APY (24%)
     }
 };
 
