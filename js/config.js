@@ -7,10 +7,10 @@
  */
 
 export const CONFIG = {
-   // ===== CONTRACT ADDRESSES (Sepolia Testnet) =====
+ // ===== CONTRACT ADDRESSES (Sepolia Testnet) =====
 USDT_ADDRESS: '0x803ce0BDEb8C811E1Dd12a7ed6765FC2ACe46EcA',
 TOKEN_ADDRESS: '0x1B1196164AF755a24A04B5141c4Ba6ee2694fb8E', // ARUB Token
-STAKING_ADDRESS: '0xc773B28eaB28cD701EfB16Ce16f269e678BD9119', // ARUB Staking Final
+STAKING_ADDRESS: '0xc773B28eaB28cD701EfB16Ce16f269e678BD9119', // ARUB Staking V2
 
     // ===== NETWORK CONFIGURATION =====
     NETWORK: {
@@ -70,16 +70,14 @@ STAKING_ADDRESS: '0xc773B28eaB28cD701EfB16Ce16f269e678BD9119', // ARUB Staking F
         STATS_UPDATE_INTERVAL: 30000  // 30 seconds
     },
 
-    // ===== EXTERNAL LINKS =====
-   LINKS: {
+ // ===== EXTERNAL LINKS =====
+LINKS: {
     ARUB_ETHERSCAN: 'https://sepolia.etherscan.io/address/0x1B1196164AF755a24A04B5141c4Ba6ee2694fb8E',
     STAKING_ETHERSCAN: 'https://sepolia.etherscan.io/address/0xc773B28eaB28cD701EfB16Ce16f269e678BD9119',
     USDT_ETHERSCAN: 'https://sepolia.etherscan.io/address/0x803ce0BDEb8C811E1Dd12a7ed6765FC2ACe46EcA',
-    ...
-}
-        DEXSCREENER: 'https://dexscreener.com/ethereum/sepolia',
-        GITHUB: 'https://github.com/afony109/antirub-staking'
-    },
+    DEXSCREENER: 'https://dexscreener.com/ethereum/sepolia',
+    GITHUB: 'https://github.com/afony109/antirub-staking'
+},
 
     // ===== FALLBACK VALUES =====
     FALLBACK: {
