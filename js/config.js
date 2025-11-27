@@ -41,9 +41,13 @@ STAKING_ADDRESS: '0xc773B28eaB28cD701EfB16Ce16f269e678BD9119', // ARUB Staking V
         MIN_STAKE_USDT: 10,     // Minimum 10 USDT
         MIN_STAKE_ARUB: 0.1,    // Minimum 0.1 ARUB
 
-        // APY Tier System (in basis points: 2400 = 24%)
-        TIER_THRESHOLDS_USD: [100000, 200000, 400000, 800000], // $100k, $200k, $400k, $800k
-        TIER_APYS: [2400, 2000, 1600, 1200, 800],              // 24%, 20%, 16%, 12%, 8%
+        // APY Tier System (in basis points, aligned with ARUBStakingV2: 1200 = 12%)
+        // TVL < 100k  -> 12%
+        // TVL < 200k  -> 10%
+        // TVL < 400k  -> 8%
+        // TVL >= 400k -> 6%
+        TIER_THRESHOLDS_USD: [100000, 200000, 400000],
+        TIER_APYS:          [1200,   1000,   800,   600],
 
         // Pool types
         POOL_USDT: 'usdt',
@@ -67,7 +71,7 @@ STAKING_ADDRESS: '0xc773B28eaB28cD701EfB16Ce16f269e678BD9119', // ARUB Staking V
     UI: {
         NOTIFICATION_DURATION: 5000,  // 5 seconds
         PRICE_UPDATE_INTERVAL: 30000, // 30 seconds
-        STATS_UPDATE_INTERVAL: 30000  // 30 seconds
+        STATS_UPDATE_INTERVAL: 60000  // 60 seconds
     },
 
  // ===== EXTERNAL LINKS =====
@@ -82,7 +86,7 @@ LINKS: {
     // ===== FALLBACK VALUES =====
     FALLBACK: {
         ARUB_PRICE_USDT: 81.22,  // Fallback ARUB price in USDT if live APIs fail
-        APY: 2400                // Fallback APY (24%)
+        APY: 1200                // Fallback APY (12%)
     }
 };
 
