@@ -12,7 +12,7 @@ import { initTradingModule, buyTokens, sellTokens, setMaxBuy, setMaxSell } from 
 import { initStakingModule } from './staking.js';
 import { initFaucetModule, claimFromFaucet } from './faucet.js';
 import { showNotification, copyToClipboard, formatUSD, formatTokenAmount } from './ui.js';
-import { getPoolStats, getArubPrice, initReadOnlyContracts, getTotalSupplyArub, getDetailedStats } from './contracts.js';
+import { getPoolStats, getArubPrice, initReadOnlyContracts, getTotalSupplyArub, getDetailedStats, getApyTiersOnChain } from './contracts.js';
 import {
     stakeUsdtTokens,
     stakeArubTokens,
@@ -492,11 +492,9 @@ async function updateGlobalStats() {
         const arubPriceSource = arubPriceInfo.source;
 
         // 2. TVL в USD (USDT + ARUB)
-        const tvlUsd =
-            detailedStats.totalStakedUsdt +
-            detailedStats.totalStakedArub * arubPrice;
+        const tvlUsd = detailedStats.totalStakedUsdt + detailedStats.totalStakedArub * arubPrice;
 
-        // 3. Текущий tier по TVL (для подсветки строк Tier 1 / 2 / 3 / 4)
+        // 3. Текущий tier по TVL (для подсветки уровней)
         const tierInfo = getCurrentTier(tvlUsd);
 
         // 4. APY всегда берём из КОНТРАКТА (basis points)
@@ -504,27 +502,28 @@ async function updateGlobalStats() {
         const apyPercent = (apyBps / 100).toFixed(1);             // '12.0'
         const apyNum = parseFloat(apyPercent);
 
-        // --- СТАРЫЙ UI / другие страницы ---
+        // --- СТАРЫЙ UI / другие страницы (как у тебя было) ---
 
         const elements = {
-            globalTvl:          document.getElementById('globalTvl'),
-            globalApy:          document.getElementById('globalApy'),
-            globalStakers:      document.getElementById('globalStakers'),
-            globalArubPrice:    document.getElementById('globalArubPrice'),
-            totalSupplyArub:    document.getElementById('totalSupplyArub'),
-            totalStakedArub:    document.getElementById('totalStakedArub'),
-            totalStakedUsdt:    document.getElementById('totalStakedUsdt'),
-            totalRewards:       document.getElementById('totalRewards'),
-            arubPriceSource:    document.getElementById('arubPriceSource')
+            globalTvl: document.getElementById('globalTvl'),
+            globalApy: document.getElementById('globalApy'),
+            globalStakers: document.getElementById('globalStakers'),
+            globalArubPrice: document.getElementById('globalArubPrice'),
+            totalSupplyArub: document.getElementById('totalSupplyArub'),
+            totalStakedArub: document.getElementById('totalStakedArub'),
+            totalStakedUsdt: document.getElementById('totalStakedUsdt'),
+            totalRewards: document.getElementById('totalRewards'),
+            arubPriceSource: document.getElementById('arubPriceSource')
         };
 
         const stakingElements = {
-            totalTvl:     document.getElementById('totalTvl'),
-            currentApy:   document.getElementById('currentApy'),
+            totalTvl: document.getElementById('totalTvl'),
+            currentApy: document.getElementById('currentApy'),
             totalStakers: document.getElementById('totalStakers'),
-            arubPrice:    document.getElementById('arubPrice')
+            arubPrice: document.getElementById('arubPrice')
         };
 
+        // Обновляем блоки, которые уже были в твоём UI
         if (elements.globalTvl) {
             elements.globalTvl.textContent = formatUSD(tvlUsd);
         }
@@ -544,8 +543,7 @@ async function updateGlobalStats() {
         if (elements.arubPriceSource) {
             const isOracle = arubPriceSource === 'oracle';
             const label = isOracle ? 'Oracle' : 'Backup';
-            elements.arubPriceSource.textContent =
-                `Джерело курсу: ${label}${isOracle ? '' : ' ⚠️'}`;
+            elements.arubPriceSource.textContent = `Джерело курсу: ${label}${isOracle ? '' : ' ⚠️'}`;
             elements.arubPriceSource.style.color = isOracle ? '#80e29d' : '#fbbf24';
         }
 
@@ -566,44 +564,38 @@ async function updateGlobalStats() {
         }
 
         if (elements.totalSupplyArub) {
-            elements.totalSupplyArub.textContent =
-                formatTokenAmount(totalSupply) + ' ARUB';
+            elements.totalSupplyArub.textContent = formatTokenAmount(totalSupply) + ' ARUB';
         }
 
         if (elements.totalStakedArub) {
-            elements.totalStakedArub.textContent =
-                formatTokenAmount(detailedStats.totalStakedArub) + ' ARUB';
+            elements.totalStakedArub.textContent = formatTokenAmount(detailedStats.totalStakedArub) + ' ARUB';
         }
 
         if (elements.totalStakedUsdt) {
-            elements.totalStakedUsdt.textContent =
-                formatTokenAmount(detailedStats.totalStakedUsdt) + ' USDT';
+            elements.totalStakedUsdt.textContent = formatTokenAmount(detailedStats.totalStakedUsdt) + ' USDT';
         }
 
         if (elements.totalRewards && poolStats.totalRewardsDistributed) {
             const rewardsArub = parseFloat(
-                ethers.utils.formatUnits(
-                    poolStats.totalRewardsDistributed,
-                    CONFIG.DECIMALS.ARUB
-                )
+                ethers.utils.formatUnits(poolStats.totalRewardsDistributed, CONFIG.DECIMALS.ARUB)
             );
-            elements.totalRewards.textContent =
-                formatTokenAmount(rewardsArub) + ' ARUB';
+            elements.totalRewards.textContent = formatTokenAmount(rewardsArub) + ' ARUB';
         }
 
-        // --- НОВЫЙ DASHBOARD (hero + нижние карточки) ---
+        // --- НОВЫЙ DASHBOARD, КАК В index (42).html) ---
 
         const setText = (id, val) => {
             const el = document.getElementById(id);
             if (el) el.textContent = val;
         };
 
-        const stakersCount =
-            typeof poolStats.totalStakers === 'number'
-                ? poolStats.totalStakers
-                : 0;
+        // Число стейкеров
+        const stakersCount = typeof poolStats.totalStakers === 'number'
+            ? poolStats.totalStakers
+            : 0;
         const stakersText = stakersCount.toLocaleString('en-US');
 
+        // Данные для карточек (используем твои уже отформатированные числа)
         const stakedTokens = detailedStats.totalStakedArub;
         const stakedUsd = stakedTokens * arubPrice;
 
@@ -615,30 +607,24 @@ async function updateGlobalStats() {
         setText('dashHeroStakers', stakersText);
         setText('dashHeroTvl', formatUSD(tvlUsd));
 
-        // Обновить точку на USD/RUB графике
+        // Перерасчёт USD/RUB графика от цены ARUB
         if (window.updateUsdRubPointFromArub) {
             window.updateUsdRubPointFromArub();
         }
 
-        // Жёлтая подпись в hero
+        // Жёлтая подпись под заголовком
         const apyNoteEl = document.getElementById('apy-note');
         if (apyNoteEl) {
             let apyLabel = '';
             if (apyNum >= 20) {
-                apyLabel =
-                    'APY: <strong style="font-weight:600;">' +
-                    apyPercent +
-                    '%</strong> для ранніх користувачів';
+                apyLabel = 'APY: <strong style="font-weight:600;">' + apyPercent + '%</strong> для ранніх користувачів';
             } else {
-                apyLabel =
-                    'APY: <strong style="font-weight:600;">' +
-                    apyPercent +
-                    '%</strong> річних';
+                apyLabel = 'APY: <strong style="font-weight:600;">' + apyPercent + '%</strong> річних';
             }
             apyNoteEl.innerHTML = apyLabel;
         }
 
-        // Нижние карточки
+        // Нижний блок статистики (випущено / застейкано / тощо)
 
         // 1. Total Supply ARUB
         setText('arub-supply', formatTokenAmount(supplyTokens) + ' ARUB');
@@ -665,13 +651,16 @@ async function updateGlobalStats() {
             apyPercent
         );
 
-        // Статус загрузки
+        // Плашка "дані успішно оновлено"
         const loading = document.getElementById('dashLoadingText');
         const grid = document.getElementById('stats');
         if (loading) loading.textContent = 'Дані успішно оновлено.';
         if (grid) grid.style.display = 'grid';
 
-        // Логи
+        // Обновляем правую карточку уровней стейкінгу на основе on-chain tiers
+        updateStakingLevelsUI();
+
+        // Логи для дебага
         console.log('[APP] ✅ Global stats updated successfully!');
         console.log('[APP] 📊 TVL:', formatUSD(tvlUsd));
         console.log('[APP] 📈 APY (on-chain):', `${apyPercent}%`);
@@ -686,20 +675,80 @@ async function updateGlobalStats() {
         console.error('[APP] ❌ Error updating global stats:', error);
 
         const elements = {
-            globalTvl:       document.getElementById('globalTvl'),
-            globalApy:       document.getElementById('globalApy'),
+            globalTvl: document.getElementById('globalTvl'),
+            globalApy: document.getElementById('globalApy'),
             globalArubPrice: document.getElementById('globalArubPrice'),
-            globalStakers:   document.getElementById('globalStakers'),
+            globalStakers: document.getElementById('globalStakers'),
             totalSupplyArub: document.getElementById('totalSupplyArub'),
             totalStakedArub: document.getElementById('totalStakedArub'),
             totalStakedUsdt: document.getElementById('totalStakedUsdt'),
-            totalRewards:    document.getElementById('totalRewards')
+            totalRewards: document.getElementById('totalRewards')
         };
 
-        if (elements.globalTvl)       elements.globalTvl.textContent       = '—';
-        if (elements.globalApy)       elements.globalApy.textContent       = '—';
+        if (elements.globalTvl) elements.globalTvl.textContent = '—';
+        if (elements.globalApy) elements.globalApy.textContent = '—';
         if (elements.globalArubPrice) elements.globalArubPrice.textContent = '—';
-        if (elements.globalStakers)   elements.globalStakers.textContent   = '—';
+        if (elements.globalStakers) elements.globalStakers.textContent = '—';
+    }
+}
+
+/**
+ * Update staking levels card ("Рівні стейкінгу") using on-chain APY tiers.
+ * Falls back to CONFIG.STAKING if on-chain data is unavailable.
+ */
+async function updateStakingLevelsUI() {
+    try {
+        const onChain = await getApyTiersOnChain();
+
+        let thresholds;
+        let apys;
+
+        if (onChain && Array.isArray(onChain.apys) && onChain.apys.length > 0) {
+            thresholds = onChain.thresholds; // [100000, 200000, 400000]
+            apys = onChain.apys;             // [12.0, 10.0, 8.0, 6.0]
+        } else {
+            thresholds = CONFIG.STAKING.TIER_THRESHOLDS_USD;
+            apys = CONFIG.STAKING.TIER_APYS.map(v => v / 100);
+        }
+
+        const items = [
+            document.getElementById('tier-1'),
+            document.getElementById('tier-2'),
+            document.getElementById('tier-3'),
+            document.getElementById('tier-4'),
+            document.getElementById('tier-5')
+        ];
+
+        const formatNumber = (value) => '$' + Math.round(value).toLocaleString('en-US');
+
+        for (let i = 0; i < items.length; i++) {
+            const li = items[i];
+            if (!li) continue;
+
+            if (i >= apys.length) {
+                // Скрываем лишние уровни, если в контракте меньше уровней, чем li в верстке
+                li.style.display = 'none';
+                continue;
+            }
+
+            li.style.display = '';
+
+            const start = i === 0 ? 0 : thresholds[Math.min(i - 1, thresholds.length - 1)];
+            const end = i < thresholds.length ? thresholds[i] : null;
+
+            let rangeText;
+            if (end === null || typeof end === 'undefined') {
+                rangeText = `> ${formatNumber(start)}`;
+            } else {
+                rangeText = `${formatNumber(start)} — ${formatNumber(end)}`;
+            }
+
+            const apyStr = apys[i].toFixed(1);
+
+            li.innerHTML = `Tier ${i + 1}: ${rangeText} → <b>${apyStr}% APY</b>`;
+        }
+    } catch (error) {
+        console.error('[APP] Error updating staking levels UI:', error);
     }
 }
 /**
