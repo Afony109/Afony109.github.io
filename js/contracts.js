@@ -303,14 +303,12 @@ export async function getPoolStats() {
 }
 
 
-
 /**
  * Get APY tiers directly from the staking contract.
  * Returns thresholds in USD (plain numbers) and APY values in percents.
  * If on-chain call is not available, caller should fallback to CONFIG.STAKING.
  */
 export async function getApyTiersOnChain() {
-    // Try to use regular contract first, fallback to read-only
     const contract = stakingContract || readOnlyStakingContract;
 
     if (!contract || typeof contract.getAPYTiers !== 'function') {
@@ -321,25 +319,22 @@ export async function getApyTiersOnChain() {
     try {
         const res = await contract.getAPYTiers();
 
-        // Ethers.js may return either array [thresholds, apys] or an object
         const thresholdsRaw = res[0] || res.thresholds;
-        const apysRaw = res[1] || res.apys;
+        const apysRaw       = res[1] || res.apys;
 
         if (!thresholdsRaw || !apysRaw) {
             console.warn('[CONTRACTS] getAPYTiers returned empty data');
             return null;
         }
 
-        // thresholds are stored in 6‑decimals (e.g. 100_000e6)
         const thresholds = thresholdsRaw.map((v) => {
             const n = v.toString ? Number(v.toString()) : Number(v);
-            return n / 1e6;
+            return n / 1e6; // contract stores in 6 decimals -> USD
         });
 
-        // APY tiers are stored in basis points (e.g. 1200 = 12%)
         const apys = apysRaw.map((v) => {
             const n = v.toNumber ? v.toNumber() : Number(v);
-            return n / 100;
+            return n / 100; // 1200 -> 12.0
         });
 
         return { thresholds, apys };

@@ -364,3 +364,23 @@
         padding: 0 16px;
     }
 }
+
+
+/* Правый блок "Рівні стейкінгу (USD)" стилизуем как hero-мэтрик */
+.tiers-card {
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid rgba(255,255,255,0.16);
+    background: radial-gradient(
+        circle at top left,
+        rgba(0,87,183,0.3),
+        rgba(10,14,26,0.95)
+    );
+    box-shadow: var(--shadow-sm);
+}
+
+/* Подсветка активного тира */
+.tiers-list li.active-tier {
+    color: var(--ukraine-yellow);
+    font-weight: 600;
+}
