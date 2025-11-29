@@ -33,13 +33,22 @@ export const TOKEN_ABI = [
     'function totalSupply() view returns (uint256)'
 ];
 
-export const const STAKING_ABI = [
+// ВАЖНО: здесь была синтаксическая ошибка (export const const ...)
+// Исправлено на корректный экспорт:
+export const STAKING_ABI = [
     'function stakeUsdt(uint256 amount) external',
     'function stakeArub(uint256 amount) external',
     'function unstakeUsdt(uint256 amount) external',
     'function unstakeArub(uint256 amount) external',
     'function claimRewards(bool compound) external',
+    // Новый формат getUserInfo:
+    // (uint256 usdtStaked_, uint256 arubStaked_, uint256 pendingRewards_,
+    //  uint256 totalClaimed_, uint256 lastStakeTime_, uint256 currentAPY_)
     'function getUserInfo(address user) view returns (uint256 usdtStaked_, uint256 arubStaked_, uint256 pendingRewards_, uint256 totalClaimed_, uint256 lastStakeTime_, uint256 currentAPY_)',
+    // Новый формат getPoolStats:
+    // (uint256 totalUsdtStaked_, uint256 totalArubStaked_, uint256 totalUsdtStakers_,
+    //  uint256 totalArubStakers_, uint256 totalStakers_, uint256 totalRewardsDistributed_,
+    //  uint256 currentAPY_)
     'function getPoolStats() view returns (uint256 totalUsdtStaked_, uint256 totalArubStaked_, uint256 totalUsdtStakers_, uint256 totalArubStakers_, uint256 totalStakers_, uint256 totalRewardsDistributed_, uint256 currentAPY_)',
     'function getAPYTiers() view returns (uint256[] memory thresholds, uint256[] memory apys)',
     'function getCurrentAPYTier() view returns (uint256 tier, uint256 threshold, uint256 apy, string memory description)',
@@ -219,6 +228,14 @@ export async function getUserBalances(address) {
  * Get user staking information
  * @param {string} address - User address
  * @returns {Promise<Object>} Staking info
+ *
+ * Формат getUserInfo в новом контракте:
+ * 0: usdtStaked
+ * 1: arubStaked
+ * 2: pendingRewards
+ * 3: totalClaimed
+ * 4: lastStakeTime
+ * 5: currentAPY (basis points)
  */
 export async function getUserStakingInfo(address) {
     if (!stakingContract) {
@@ -228,24 +245,35 @@ export async function getUserStakingInfo(address) {
     try {
         const userInfo = await stakingContract.getUserInfo(address);
 
+        const usdtStaked = userInfo[0];
+        const arubStaked = userInfo[1];
+        const pendingRewards = userInfo[2];
+        const totalClaimed = userInfo[3];
+        const lastStakeTime = userInfo[4];
+        const currentAPY = userInfo[5];
+
         return {
-            stakedAmount: userInfo[0],
-            pendingRewards: userInfo[1],
-            totalClaimed: userInfo[2],
-            lastStakeTime: userInfo[3],
-            currentAPY: userInfo[4],
-            stakedAmountFormatted: ethers.utils.formatUnits(userInfo[0], CONFIG.DECIMALS.ARUB),
-            pendingRewardsFormatted: ethers.utils.formatUnits(userInfo[1], CONFIG.DECIMALS.ARUB)
+            usdtStaked,
+            arubStaked,
+            pendingRewards,
+            totalClaimed,
+            lastStakeTime,
+            currentAPY,
+            usdtStakedFormatted: ethers.utils.formatUnits(usdtStaked, CONFIG.DECIMALS.USDT),
+            arubStakedFormatted: ethers.utils.formatUnits(arubStaked, CONFIG.DECIMALS.ARUB),
+            pendingRewardsFormatted: ethers.utils.formatUnits(pendingRewards, CONFIG.DECIMALS.ARUB)
         };
     } catch (error) {
         console.error('[CONTRACTS] Error getting staking info:', error);
         return {
-            stakedAmount: ethers.BigNumber.from(0),
+            usdtStaked: ethers.BigNumber.from(0),
+            arubStaked: ethers.BigNumber.from(0),
             pendingRewards: ethers.BigNumber.from(0),
             totalClaimed: ethers.BigNumber.from(0),
             lastStakeTime: 0,
             currentAPY: 0,
-            stakedAmountFormatted: '0',
+            usdtStakedFormatted: '0',
+            arubStakedFormatted: '0',
             pendingRewardsFormatted: '0'
         };
     }
@@ -362,7 +390,7 @@ async function fetchUsdRubRate() {
 
 /**
  * Get current ARUB price from contract
- * @returns {Promise<number>} Price in USDT (привязано до курсу USD/RUB)
+ * @returns {Promise<{price:number, source:string}>} Price in USDT (привязано до курсу USD/RUB)
  */
 export async function getArubPrice() {
     // 1) Основний варіант — живий форекс USD/RUB
@@ -414,6 +442,7 @@ export async function getArubPrice() {
     console.warn('[CONTRACTS] Using fallback USD/RUB rate:', CONFIG.FALLBACK.ARUB_PRICE_USDT);
     return { price: CONFIG.FALLBACK.ARUB_PRICE_USDT, source: 'fallback' };
 }
+
 /**
  * Get total supply of ARUB tokens
  * @returns {Promise<number>} Total supply
