@@ -349,13 +349,13 @@ async function fetchUsdRubRate() {
  * @returns {Promise<number>} Price in USDT (привязано до курсу USD/RUB)
  */
 export async function getArubPrice() {
-    // 1) Основное значение — живой форекс USD/RUB
+    // 1) Основний варіант — живий форекс USD/RUB
     const liveRate = await fetchUsdRubRate();
     if (liveRate) {
         return { price: liveRate, source: 'forex-api' };
     }
 
-    // 2) Резервный вариант — ончейн-оракул (если по какой-то причине API недоступен)
+    // 2) Резервний варіант — ончейн-оракул з токен-контракту (якщо доступний)
     const contract = tokenContract || readOnlyTokenContract;
 
     const formatRate = (bn) => {
@@ -394,10 +394,10 @@ export async function getArubPrice() {
         }
     }
 
+    // 3) Якщо все впало — беремо статичний fallback з конфига
     console.warn('[CONTRACTS] Using fallback USD/RUB rate:', CONFIG.FALLBACK.ARUB_PRICE_USDT);
     return { price: CONFIG.FALLBACK.ARUB_PRICE_USDT, source: 'fallback' };
 }
-
 /**
  * Get total supply of ARUB tokens
  * @returns {Promise<number>} Total supply
