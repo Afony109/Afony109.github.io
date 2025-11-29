@@ -1,160 +1,197 @@
-/**
- * Trading Module
- * Handles buying and selling of ARUB tokens
- */
+/* TRADING.JS — WORKING FIXED VERSION */
 
-// Import ethers.js as ES module
 import { ethers } from 'https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.esm.min.js';
 
 import { CONFIG, calculateBuyAmount, calculateSellAmount } from './config.js';
-import { showNotification, showLoading, showLockedState, formatTokenAmount, formatUSD, getErrorMessage } from './ui.js';
+import { showNotification, showLoading, showLockedState, formatTokenAmount, getErrorMessage } from './ui.js';
 import { getContracts, getUserBalances, getArubPrice, checkUsdtAllowance, approveUsdt } from './contracts.js';
 
 let currentRate = CONFIG.FALLBACK.ARUB_PRICE_USDT;
 
-/**
- * Initialize trading module
- */
+/* INIT */
 export function initTradingModule() {
-    console.log('[TRADING] Initializing trading module...');
-
-    // Listen for contract initialization
     window.addEventListener('contractsInitialized', async (event) => {
-        const { userAddress } = event.detail;
-        console.log('[TRADING] Contracts initialized, updating trading UI...');
-        await updateTradingUI(userAddress);
+        await updateTradingUI(event.detail.userAddress);
     });
 
-    // Update price periodically
     setInterval(async () => {
         try {
             const priceInfo = await getArubPrice();
             currentRate = priceInfo.price;
-            console.log('[TRADING] Updated ARUB price:', currentRate);
-        } catch (error) {
-            console.error('[TRADING] Error updating price:', error);
+        } catch (e) {
+            console.error(e);
         }
     }, CONFIG.UI.PRICE_UPDATE_INTERVAL);
 }
 
-/**
- * Update trading UI with user balances and trading interface
- * @param {string} userAddress - User wallet address
- */
+/* UPDATE UI */
 export async function updateTradingUI(userAddress) {
-    const tradingInterface = document.getElementById('tradingInterface');
-    if (!tradingInterface) {
-        console.warn('[TRADING] Trading interface element not found');
-        return;
-    }
+    const el = document.getElementById('tradingInterface');
+    if (!el) return;
 
     if (!userAddress) {
-        showLockedState(tradingInterface, 'Підключіть гаманець для торгівлі токенами');
+        showLockedState(el, 'Підключіть гаманець для торгівлі токенами');
         return;
     }
 
-    showLoading(tradingInterface, 'Завантаження даних торгівлі...');
+    showLoading(el, 'Завантаження даних торгівлі...');
 
     try {
         const { usdtBalance, arubBalance } = await getUserBalances(userAddress);
         const priceInfo = await getArubPrice();
         currentRate = priceInfo.price;
 
-        tradingInterface.innerHTML = `
+        el.innerHTML = `
             <div class="staking-grid">
-                <!-- Buy ARUB Card -->
+
+                <!-- BUY CARD -->
                 <div class="staking-card">
-                    <div class="card-header">
-                        <div class="card-icon">💰</div>
-                        <h3 class="card-title">Купити ARUB</h3>
-                    </div>
+                    <div class="card-header"><h3 class="card-title">Купити ARUB</h3></div>
 
                     <div class="input-group">
-                        <label class="input-label">Сума USDT для купівлі</label>
+                        <label class="input-label">Сума USDT</label>
                         <div class="input-wrapper">
-                            <input type="number"
-                                   class="input-field"
-                                   id="buyAmount"
-                                   placeholder="0.00"
-                                   step="0.01"
-                                   min="1">
+                            <input id="buyAmount" type="number" step="0.01" min="1" class="input-field" placeholder="0.00">
                             <button class="max-btn" onclick="window.setMaxBuy()">MAX</button>
                         </div>
                     </div>
 
-                    <div class="info-row">
-                        <span class="info-label">Отримаєте ARUB:</span>
-                        <span class="info-value" id="buyReceiveAmount">0</span>
-                    </div>
+                    <div class="info-row"><span>Отримаєте:</span><span id="buyReceiveAmount">0 ARUB</span></div>
+                    <div class="info-row"><span>Комісія:</span><span id="buyFeeAmount">0 USDT</span></div>
+                    <div class="info-row"><span>Ваш баланс USDT:</span><span>${formatTokenAmount(usdtBalance,6)}</span></div>
+                    <div class="info-row"><span>Ціна ARUB:</span><span>${currentRate.toFixed(2)} USDT</span></div>
 
-                    <div class="info-row">
-                        <span class="info-label">Комісія (0.5%):</span>
-                        <span class="info-value" id="buyFeeAmount">0 USDT</span>
-                    </div>
-
-                    <div class="info-row">
-                        <span class="info-label">Ваш баланс USDT:</span>
-                        <span class="info-value">${formatTokenAmount(usdtBalance, CONFIG.DECIMALS.USDT)} USDT</span>
-                    </div>
-
-                    <div class="info-row">
-                        <span class="info-label">Ціна ARUB:</span>
-                        <span class="info-value">${currentRate.toFixed(2)} USDT</span>
-                    </div>
-
-                    <div style="background: rgba(0,87,183,0.1); padding: 15px; border-radius: 10px; margin: 15px 0;">
-                        <p style="color: var(--gray); font-size: 0.9em; line-height: 1.6; margin: 0;">
-                            💡 <strong style="color: white;">Як це працює:</strong> При купівлі ARUB використовується функція <code style="color: var(--ukraine-yellow);">mint()</code>.
-                            Ваші USDT переводяться на контракт токена, і ви отримуєте ARUB за поточним курсом USDT/RUB.
-                            Комісія ${CONFIG.FEES.BUY_FEE * 100}% йде на розвиток проекту.
-                        </p>
-                    </div>
-
-                    <button class="action-btn" onclick="window.buyTokens()">
-                        💰 Купити ARUB
-                    </button>
+                    <button class="action-btn" onclick="window.buyTokens()">Купити ARUB</button>
                 </div>
 
-                <!-- Sell ARUB Card -->
+                <!-- SELL CARD -->
                 <div class="staking-card">
-                    <div class="card-header">
-                        <div class="card-icon">💵</div>
-                        <h3 class="card-title">Продати ARUB</h3>
-                    </div>
+                    <div class="card-header"><h3 class="card-title">Продати ARUB</h3></div>
 
                     <div class="input-group">
-                        <label class="input-label">Кількість ARUB для продажу</label>
+                        <label class="input-label">Кількість ARUB</label>
                         <div class="input-wrapper">
-                            <input type="number"
-                                   class="input-field"
-                                   id="sellAmount"
-                                   placeholder="0.00"
-                                   step="0.01"
-                                   min="0">
+                            <input id="sellAmount" type="number" step="0.01" min="0" class="input-field" placeholder="0.00">
                             <button class="max-btn" onclick="window.setMaxSell()">MAX</button>
                         </div>
                     </div>
 
-                    <div class="info-row">
-                        <span class="info-label">Отримаєте USDT:</span>
-                        <span class="info-value" id="sellReceiveAmount">0</span>
-                    </div>
+                    <div class="info-row"><span>Отримаєте:</span><span id="sellReceiveAmount">0 USDT</span></div>
+                    <div class="info-row"><span>Комісія:</span><span id="sellFeeAmount">0 USDT</span></div>
+                    <div class="info-row"><span>Ваш баланс ARUB:</span><span>${formatTokenAmount(arubBalance,6)}</span></div>
+                    <div class="info-row"><span>Ціна ARUB:</span><span>${currentRate.toFixed(2)} USDT</span></div>
 
-                    <div class="info-row">
-                        <span class="info-label">Комісія (1%):</span>
-                        <span class="info-value" id="sellFeeAmount">0 USDT</span>
-                    </div>
+                    <button class="action-btn" onclick="window.sellTokens()">Продати ARUB</button>
+                </div>
 
-                    <div class="info-row">
-                        <span class="info-label">Ваш баланс ARUB:</span>
-                        <span class="info-value">${formatTokenAmount(arubBalance, CONFIG.DECIMALS.ARUB)} ARUB</span>
-                    </div>
+            </div>
+        `;
 
-                    <div class="info-row">
-                        <span class="info-label">Ціна ARUB:</span>
-                        <span class="info-value">${currentRate.toFixed(2)} USDT</span>
-                    </div>
+        document.getElementById('buyAmount').addEventListener('input', updateBuyCalc);
+        document.getElementById('sellAmount').addEventListener('input', updateSellCalc);
 
-                    <div style="background: rgba(255,215,0,0.1); padding: 15px; border-radius: 10px; margin: 15px 0;">
-                        <p style="color: var(--gray); font-size: 0.9em; line-height: 1.6; margin: 0;">
-                            💡 <strong style="color: white;">Як це працює:</strong> При продажу ARUB використовується функція <code style="color: var(--ukraine-yellow);">burn
+    } catch (error) {
+        el.innerHTML = `<p style="color:red">${getErrorMessage(error)}</p>`;
+        console.error(error);
+    }
+}
+
+/* CALCULATIONS */
+function updateBuyCalc() {
+    const input = parseFloat(document.getElementById('buyAmount').value) || 0;
+    const out = document.getElementById('buyReceiveAmount');
+    const fee = document.getElementById('buyFeeAmount');
+
+    if (input <= 0) {
+        out.textContent = '0 ARUB';
+        fee.textContent = '0 USDT';
+        return;
+    }
+
+    const calc = calculateBuyAmount(input, currentRate);
+    out.textContent = calc.arubReceived.toFixed(6) + ' ARUB';
+    fee.textContent = calc.fee.toFixed(4) + ' USDT';
+}
+
+function updateSellCalc() {
+    const input = parseFloat(document.getElementById('sellAmount').value) || 0;
+    const out = document.getElementById('sellReceiveAmount');
+    const fee = document.getElementById('sellFeeAmount');
+
+    if (input <= 0) {
+        out.textContent = '0 USDT';
+        fee.textContent = '0 USDT';
+        return;
+    }
+
+    const calc = calculateSellAmount(input, currentRate);
+    out.textContent = calc.usdtReceived.toFixed(4) + ' USDT';
+    fee.textContent = calc.fee.toFixed(4) + ' USDT';
+}
+
+/* MAX BUTTONS */
+export async function setMaxBuy() {
+    const { usdtContract } = getContracts();
+    const { userAddress } = window;
+
+    const bal = await usdtContract.balanceOf(userAddress);
+    const amt = ethers.utils.formatUnits(bal,6);
+
+    document.getElementById('buyAmount').value = amt;
+    updateBuyCalc();
+}
+
+export async function setMaxSell() {
+    const { tokenContract } = getContracts();
+    const { userAddress } = window;
+
+    const bal = await tokenContract.balanceOf(userAddress);
+    const amt = ethers.utils.formatUnits(bal,6);
+
+    document.getElementById('sellAmount').value = amt;
+    updateSellCalc();
+}
+
+/* BUY TOKENS */
+export async function buyTokens() {
+    const amount = parseFloat(document.getElementById('buyAmount').value);
+    if (!amount || amount < 1) return showNotification('❌ Мінімум 1 USDT','error');
+
+    const { userAddress } = window;
+    const { tokenContract } = getContracts();
+
+    /* считаем по той же формуле, что UI */
+    const calc = calculateBuyAmount(amount, currentRate);
+    const arub = calc.arubReceived;
+
+    const arubWei = ethers.utils.parseUnits(arub.toFixed(6),6);
+
+    const tx = await tokenContract.mintTo(userAddress, arubWei);
+    await tx.wait();
+
+    showNotification('✅ Куплено!', 'success');
+    document.getElementById('buyAmount').value = '';
+    updateBuyCalc();
+}
+
+/* SELL TOKENS */
+export async function sellTokens() {
+    const amount = parseFloat(document.getElementById('sellAmount').value);
+    if (!amount || amount <= 0) return showNotification('❌ Некоректно', 'error');
+
+    const { tokenContract } = getContracts();
+    const arubWei = ethers.utils.parseUnits(amount.toFixed(6),6);
+
+    const tx = await tokenContract.burn(arubWei);
+    await tx.wait();
+
+    showNotification('🔥 Спалено!', 'success');
+    document.getElementById('sellAmount').value = '';
+    updateSellCalc();
+}
+
+/* expose */
+window.buyTokens = buyTokens;
+window.sellTokens = sellTokens;
+window.setMaxBuy = setMaxBuy;
+window.setMaxSell = setMaxSell;
