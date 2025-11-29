@@ -33,22 +33,20 @@ export const TOKEN_ABI = [
     'function totalSupply() view returns (uint256)'
 ];
 
-export const STAKING_ABI = [
-    'function stakeUsdt(uint256 _amount) external',
-    'function stakeArub(uint256 _amount) external',
-    'function unstakeUsdt(uint256 _amount) external',
-    'function unstakeArub(uint256 _amount) external',
-    'function claimRewards(bool _compound) external',
-    'function getUserInfo(address _user) view returns (uint256 stakedAmount, uint256 pendingRewards, uint256 totalClaimed, uint256 lastStakeTime, uint256 currentAPY_)',
-    'function getPoolStats() view returns (uint256 totalStaked_, uint256 totalStakers_, uint256 totalRewardsDistributed_, uint256 currentAPY_, uint256 totalStakes_, uint256 totalUnstakes_, uint256 totalClaims_)',
+export const const STAKING_ABI = [
+    'function stakeUsdt(uint256 amount) external',
+    'function stakeArub(uint256 amount) external',
+    'function unstakeUsdt(uint256 amount) external',
+    'function unstakeArub(uint256 amount) external',
+    'function claimRewards(bool compound) external',
+    'function getUserInfo(address user) view returns (uint256 usdtStaked_, uint256 arubStaked_, uint256 pendingRewards_, uint256 totalClaimed_, uint256 lastStakeTime_, uint256 currentAPY_)',
+    'function getPoolStats() view returns (uint256 totalUsdtStaked_, uint256 totalArubStaked_, uint256 totalUsdtStakers_, uint256 totalArubStakers_, uint256 totalStakers_, uint256 totalRewardsDistributed_, uint256 currentAPY_)',
     'function getAPYTiers() view returns (uint256[] memory thresholds, uint256[] memory apys)',
     'function getCurrentAPYTier() view returns (uint256 tier, uint256 threshold, uint256 apy, string memory description)',
-    'function totalStaked() view returns (uint256)',
-    'function currentAPY() view returns (uint256)',
-    'function minStakeAmount() view returns (uint256)',
-    'function totalStakedUsdt() view returns (uint256)',
-    'function totalStakedArub() view returns (uint256)'
+    'function minStakeAmountUsdt() view returns (uint256)',
+    'function minStakeAmountArub() view returns (uint256)'
 ];
+
 
 // Contract instances (initialized after wallet connection)
 export let usdtContract = null;
@@ -63,6 +61,7 @@ let readOnlyTokenContract = null;
 // Cache for USD/RUB exchange rate
 let cachedUsdRubRate = null;
 let lastRateFetchTime = 0;
+const RATE_CACHE_DURATION = 10 * 60 * 1000; // 10 minutes cache
 const RPC_FALLBACKS = [
     'https://ethereum-sepolia-rpc.publicnode.com',
     'https://rpc.sepolia.org',
@@ -277,15 +276,32 @@ export async function getPoolStats() {
     try {
         const stats = await contract.getPoolStats();
 
+        // Новий контракт ARUBStakingV2:
+        // getPoolStats() returns:
+        // 0: totalUsdtStaked
+        // 1: totalArubStaked
+        // 2: totalUsdtStakers
+        // 3: totalArubStakers
+        // 4: totalStakers
+        // 5: totalRewardsDistributed
+        // 6: currentAPY (basis points)
+        const totalUsdtStaked = stats[0];
+        const totalArubStaked = stats[1];
+        const totalStakers = stats[4].toNumber();
+        const totalRewardsDistributed = stats[5];
+        const currentAPY = stats[6].toNumber();
+
+        const totalStakedCombined = totalUsdtStaked.add(totalArubStaked);
+
         return {
-            totalStaked: stats[0],
-            totalStakers: stats[1].toNumber(),
-            totalRewardsDistributed: stats[2],
-            currentAPY: stats[3].toNumber(),
-            totalStakes: stats[4].toNumber(),
-            totalUnstakes: stats[5].toNumber(),
-            totalClaims: stats[6].toNumber(),
-            totalStakedFormatted: ethers.utils.formatUnits(stats[0], CONFIG.DECIMALS.ARUB)
+            totalStaked: totalStakedCombined,
+            totalStakers,
+            totalRewardsDistributed,
+            currentAPY,
+            totalStakes: 0,
+            totalUnstakes: 0,
+            totalClaims: 0,
+            totalStakedFormatted: ethers.utils.formatUnits(totalStakedCombined, CONFIG.DECIMALS.ARUB)
         };
     } catch (error) {
         console.error('[CONTRACTS] Error getting pool stats:', error);
