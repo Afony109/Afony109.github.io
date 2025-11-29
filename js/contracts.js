@@ -302,48 +302,6 @@ export async function getPoolStats() {
     }
 }
 
-
-/**
- * Get APY tiers directly from the staking contract.
- * Returns thresholds in USD (plain numbers) and APY values in percents.
- * If on-chain call is not available, caller should fallback to CONFIG.STAKING.
- */
-export async function getApyTiersOnChain() {
-    const contract = stakingContract || readOnlyStakingContract;
-
-    if (!contract || typeof contract.getAPYTiers !== 'function') {
-        console.warn('[CONTRACTS] getAPYTiers not available on contract');
-        return null;
-    }
-
-    try {
-        const res = await contract.getAPYTiers();
-
-        const thresholdsRaw = res[0] || res.thresholds;
-        const apysRaw       = res[1] || res.apys;
-
-        if (!thresholdsRaw || !apysRaw) {
-            console.warn('[CONTRACTS] getAPYTiers returned empty data');
-            return null;
-        }
-
-        const thresholds = thresholdsRaw.map((v) => {
-            const n = v.toString ? Number(v.toString()) : Number(v);
-            return n / 1e6; // contract stores in 6 decimals -> USD
-        });
-
-        const apys = apysRaw.map((v) => {
-            const n = v.toNumber ? v.toNumber() : Number(v);
-            return n / 100; // 1200 -> 12.0
-        });
-
-        return { thresholds, apys };
-    } catch (error) {
-        console.error('[CONTRACTS] Error getting APY tiers:', error);
-        return null;
-    }
-}
-
 /**
  * Fetch current USD/RUB exchange rate from API
  * @returns {Promise<number|null>} Exchange rate or null if failed
@@ -391,6 +349,13 @@ async function fetchUsdRubRate() {
  * @returns {Promise<number>} Price in USDT (привязано до курсу USD/RUB)
  */
 export async function getArubPrice() {
+    // 1) Основное значение — живой форекс USD/RUB
+    const liveRate = await fetchUsdRubRate();
+    if (liveRate) {
+        return { price: liveRate, source: 'forex-api' };
+    }
+
+    // 2) Резервный вариант — ончейн-оракул (если по какой-то причине API недоступен)
     const contract = tokenContract || readOnlyTokenContract;
 
     const formatRate = (bn) => {
@@ -427,11 +392,6 @@ export async function getArubPrice() {
                 message: error?.message
             });
         }
-    }
-
-    const liveRate = await fetchUsdRubRate();
-    if (liveRate) {
-        return { price: liveRate, source: 'api' };
     }
 
     console.warn('[CONTRACTS] Using fallback USD/RUB rate:', CONFIG.FALLBACK.ARUB_PRICE_USDT);
