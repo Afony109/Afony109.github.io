@@ -2283,9 +2283,33 @@
     return null;
   }
 
+
+  // Беремо курс прямо з карточки "ЦІНА ARUB" (якщо вона вже оновлена)
+  function getRateFromArubCard() {
+    const el = document.getElementById('arubPriceValue');
+    if (!el) return null;
+
+    const raw = (el.textContent || '')
+      .trim()
+      .replace(',', '.')
+      .replace(/[^0-9.]/g, '');
+
+    const value = parseFloat(raw);
+    if (!value || isNaN(value)) return null;
+
+    return value;
+  }
+
   async function fetchRateAndUpdate() {
     try {
-      const newRate = await resolveRateFromAllSources();
+      // 1️⃣ Спочатку пробуємо взяти курс безпосередньо з карточки ARUB
+      let newRate = getRateFromArubCard();
+
+      // 2️⃣ Якщо карточка ще не оновилась – падаємо назад на ланцюжок джерел
+      if (!newRate) {
+        newRate = await resolveRateFromAllSources();
+      }
+
       if (!newRate) {
         console.warn("All sources failed, keeping previous currentRate =", currentRate);
         updateDomWithCurrentRate(); // оновимо плашку хоч би з дефолтом
@@ -2294,7 +2318,7 @@
 
       currentRate = newRate;
       updateDomWithCurrentRate();
-      console.log("Rate updated from sources chain:", currentRate.toFixed(4), "| source:", window.currentRateSourceLabel);
+      console.log("Rate updated from sources chain:", currentRate.toFixed(4), "| source:", window.currentRateSourceLabel || 'ARUB card');
     } catch (err) {
       console.error("Unexpected error in fetchRateAndUpdate:", err);
     }
