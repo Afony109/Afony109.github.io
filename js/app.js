@@ -3,7 +3,6 @@
  * Initializes all modules and manages global state
  */
 
-// Import ethers.js as ES module
 import { ethers } from 'https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.esm.min.js';
 
 import { CONFIG, getCurrentTier } from './config.js';
@@ -29,11 +28,11 @@ import {
 let stakedChart = null;
 let usdRubChart = null;
 
-// Початкові статичні дані для графіка (плавний ріст TVL)
+// История TVL (для плавного старта)
 const chartLabels = [
-    "01.09", "10.09", "20.09",
-    "01.10", "10.10", "20.10",
-    "01.11"
+    '01.09', '10.09', '20.09',
+    '01.10', '10.10', '20.10',
+    '01.11'
 ];
 
 const chartStakedHistory = [
@@ -46,25 +45,26 @@ const chartStakedHistory = [
     277988
 ];
 
-// Данные USD/RUB 2020-2030
-// ИСТОРИЯ: красивая "горка" к 140 и плавный спуск
+// === USD/RUB CHART DATA HELPERS ===
+
+// История 2020–2025, последняя точка = текущий курс
 function getHistoryData(currentRate) {
     return [
         { x: new Date(2020, 0, 1).getTime(), y: 72.3 },
         { x: new Date(2021, 0, 1).getTime(), y: 73.7 },
-        { x: new Date(2022, 0, 1).getTime(), y: 140 },    // 2022 — линия доходит до пика
-        { x: new Date(2023, 0, 1).getTime(), y: 110 },    // 2023 — плавное снижение после пика
+        { x: new Date(2022, 0, 1).getTime(), y: 140 },
+        { x: new Date(2023, 0, 1).getTime(), y: 110 },
         { x: new Date(2024, 0, 1).getTime(), y: 92.8 },
         { x: new Date(2025, 0, 1).getTime(), y: currentRate }
     ];
 }
 
-// ПИК 2022 — 140 RUB (красная точка для подсветки)
+// Пик 2022 — отдельная красная точка
 const peak2022Data = [
     { x: new Date(2022, 0, 1).getTime(), y: 140 }
 ];
 
-// Сценарий 2025-2030 - функция будет обновлять для 2025
+// Сценарий 2025–2030 (первый год завязан на реальный курс)
 function getScenarioData(currentRate) {
     return [
         { x: new Date(2025, 0, 1).getTime(), y: currentRate },
@@ -77,20 +77,25 @@ function getScenarioData(currentRate) {
 }
 
 /**
- * Get current USD/RUB rate from ARUB price
+ * Читаем текущий курс USD/RUB из карточки цены ARUB
+ * (элемент #arubPriceValue, текст вида "77.91")
  */
 function getCurrentRateFromArub() {
     const el = document.getElementById('arubPriceValue');
     if (!el) return null;
 
-    const raw = el.textContent.trim().replace(',', '.').replace(/[^0-9.]/g, '');
+    const raw = el.textContent.trim()
+        .replace(',', '.')
+        .replace(/[^0-9.]/g, '');
     const value = parseFloat(raw);
 
-    return isNaN(value) ? null : value;
+    return Number.isFinite(value) ? value : null;
 }
 
 /**
- * Initialize USD/RUB chart with ApexCharts
+ * Инициализация графика USD/RUB (ApexCharts)
+ * Стартовая точка берётся из ARUB price, если она уже есть,
+ * иначе — fallback 80.98, но затем обновляется updateUsdRubPointFromArub().
  */
 function initUsdRubChart() {
     const chartElement = document.getElementById('dashPriceChart');
@@ -104,13 +109,11 @@ function initUsdRubChart() {
         return;
     }
 
-    // Получаем текущий курс из цены ARUB
     let currentRate = getCurrentRateFromArub();
     if (currentRate === null) {
-        currentRate = 80.98; // fallback
+        currentRate = 80.98; // fallback, пока не подтянули live-курс
     }
 
-    // Текущая точка (2025)
     const currentPointData = [
         { x: new Date(2025, 0, 1).getTime(), y: currentRate }
     ];
@@ -167,7 +170,7 @@ function initUsdRubChart() {
         },
         yaxis: {
             labels: {
-                formatter: (val) => val ? val.toFixed(0) : '',
+                formatter: (val) => (val ? val.toFixed(0) : ''),
                 style: {
                     colors: '#8b94a8',
                     fontSize: '11px'
@@ -185,7 +188,7 @@ function initUsdRubChart() {
             theme: 'dark',
             x: { format: 'yyyy' },
             y: {
-                formatter: (val) => val ? val.toFixed(2) + ' ₽' : ''
+                formatter: (val) => (val ? val.toFixed(2) + ' ₽' : '')
             }
         },
         grid: {
@@ -213,13 +216,14 @@ function initUsdRubChart() {
 
     usdRubChart = new ApexCharts(chartElement, options);
     usdRubChart.render();
-    console.log('[APP] ✅ USD/RUB chart initialized with current rate:', currentRate);
+    console.log('[APP] ✅ USD/RUB chart initialized with rate:', currentRate);
 }
 
 /**
- * Update USD/RUB chart current point from ARUB price
+ * Обновление графика USD/RUB при изменении цены ARUB
+ * (вызывается каждый раз из updateGlobalStats)
  */
-window.updateUsdRubPointFromArub = function() {
+window.updateUsdRubPointFromArub = function () {
     const newRate = getCurrentRateFromArub();
     if (newRate === null || !usdRubChart) return;
 
@@ -227,7 +231,6 @@ window.updateUsdRubPointFromArub = function() {
         { x: new Date(2025, 0, 1).getTime(), y: newRate }
     ];
 
-    // Update series
     usdRubChart.updateSeries([
         {
             name: 'Історичний курс',
@@ -251,7 +254,7 @@ window.updateUsdRubPointFromArub = function() {
 };
 
 /**
- * Update TVL chart (Chart.js)
+ * Обновление графика TVL (Chart.js)
  */
 function updateDashboardCharts(tvlUsd) {
     if (typeof Chart === 'undefined') {
@@ -274,11 +277,8 @@ function updateDashboardCharts(tvlUsd) {
     }
 
     const stakedCanvas = document.getElementById('tvlChart');
-    if (!stakedCanvas) {
-        return; // графики не на этой странице
-    }
+    if (!stakedCanvas) return;
 
-    // TVL chart
     if (!stakedChart) {
         stakedChart = new Chart(stakedCanvas.getContext('2d'), {
             type: 'line',
@@ -290,9 +290,9 @@ function updateDashboardCharts(tvlUsd) {
                     borderWidth: 2,
                     pointRadius: 3,
                     pointHoverRadius: 5,
-                    tension: 0.35, // згладжена лінія
-                    borderColor: 'rgba(0, 158, 247, 1)',      // синій колір лінії
-                    backgroundColor: 'rgba(0, 158, 247, 0.15)', // напівпрозора заливка
+                    tension: 0.35,
+                    borderColor: 'rgba(0, 158, 247, 1)',
+                    backgroundColor: 'rgba(0, 158, 247, 0.15)',
                     fill: true
                 }]
             },
@@ -303,7 +303,7 @@ function updateDashboardCharts(tvlUsd) {
                     legend: { display: false },
                     tooltip: {
                         callbacks: {
-                            label: function(context) {
+                            label(context) {
                                 return 'TVL: $' + context.parsed.y.toLocaleString('en-US');
                             }
                         }
@@ -334,121 +334,11 @@ function updateDashboardCharts(tvlUsd) {
 }
 
 /**
- * Initialize the application
- */
-async function initApp() {
-    console.log('='.repeat(60));
-    console.log('ANTI RUB - Staking Platform');
-    console.log('Initializing application...');
-    console.log('='.repeat(60));
-
-    try {
-        // Initialize read-only contracts first (for public data)
-        console.log('[APP] Initializing read-only contracts...');
-        const readOnlySuccess = await initReadOnlyContracts();
-
-        // Update stats immediately after read-only contracts are initialized
-        if (readOnlySuccess) {
-            console.log('[APP] Read-only contracts ready, fetching initial stats...');
-            // Small delay to ensure contracts are fully ready
-            setTimeout(() => {
-                updateGlobalStats();
-            }, 500);
-        }
-
-        // Initialize all modules
-        console.log('[APP] Initializing wallet module...');
-        initWalletModule();
-
-        console.log('[APP] Initializing trading module...');
-        initTradingModule();
-
-        console.log('[APP] Initializing staking module...');
-        initStakingModule();
-
-        console.log('[APP] Initializing faucet module...');
-        initFaucetModule();
-
-        console.log('[APP] ✅ All modules initialized successfully');
-
-        // Setup global event listeners
-        setupGlobalEventListeners();
-
-        // Setup scroll animations
-        setupScrollAnimations();
-
-        // Initialize USD/RUB chart (now using Chart.js in HTML)
-        // console.log('[APP] Initializing USD/RUB chart...');
-        // initUsdRubChart();
-
-        // Update global stats periodically (every 30 seconds)
-        setInterval(() => {
-            updateGlobalStats();
-        }, CONFIG.UI.STATS_UPDATE_INTERVAL);
-
-        // Display welcome message
-        console.log('[APP] 🎉 Application ready!');
-        console.log('[APP] Network:', CONFIG.NETWORK.name);
-        console.log('[APP] Chain ID:', CONFIG.NETWORK.chainIdDecimal);
-
-    } catch (error) {
-        console.error('[APP] ❌ Initialization error:', error);
-        showNotification('❌ Помилка ініціалізації додатку', 'error');
-    }
-}
-
-/**
- * Setup global event listeners
- */
-function setupGlobalEventListeners() {
-    // Smooth scroll for navigation links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({ behavior: 'smooth' });
-            }
-        });
-    });
-
-    // Language switcher (if implemented)
-    const langButtons = document.querySelectorAll('.lang-btn');
-    langButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            langButtons.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            // TODO: Implement actual language switching
-            showNotification('🌐 Мовна підтримка в розробці', 'info');
-        });
-    });
-
-    // Listen for faucet claims to update other UIs
-    window.addEventListener('faucetClaimed', () => {
-        console.log('[APP] Faucet claimed, updating UIs...');
-        const { userAddress } = window;
-        if (userAddress) {
-            // Trigger update for trading UI
-            window.dispatchEvent(new CustomEvent('contractsInitialized', {
-                detail: { userAddress }
-            }));
-        }
-    });
-
-    // Listen for contracts initialized to update global stats
-    window.addEventListener('contractsInitialized', () => {
-        console.log('[APP] Updating global stats...');
-        updateGlobalStats();
-    });
-}
-
-/**
- * Update tier display based on TVL
+ * Обновление текущего Tier по TVL
  */
 function updateTierUSD(stakedArub, stakedUsdt, priceArub, apy) {
     const stakedArubUsd = (stakedArub / 1e6) * priceArub;
     const stakedUsdtUsd = stakedUsdt / 1e6;
-
     const tvl = stakedArubUsd + stakedUsdtUsd;
 
     let tier = 1;
@@ -459,7 +349,6 @@ function updateTierUSD(stakedArub, stakedUsdt, priceArub, apy) {
     else if (tvl < 800000) tier = 4;
     else tier = 5;
 
-    // Update hero tier display
     const tierHeroEl = document.getElementById('dashHeroTier');
     if (tierHeroEl) {
         tierHeroEl.textContent = `Tier ${tier} (${apy}%)`;
@@ -468,19 +357,18 @@ function updateTierUSD(stakedArub, stakedUsdt, priceArub, apy) {
     for (let i = 1; i <= 5; i++) {
         const el = document.getElementById(`tier-${i}`);
         if (el) {
-            el.style.opacity = (i === tier) ? "1" : "0.45";
+            el.style.opacity = i === tier ? '1' : '0.45';
         }
     }
 }
 
 /**
- * Update global statistics
+ * Обновление глобальной статистики (TVL, APY, стейкеры, цена и т.п.)
  */
 async function updateGlobalStats() {
     console.log('[APP] 🔄 Updating global statistics...');
 
     try {
-        // 1. Получаем данные с блокчейна
         const [poolStats, arubPriceInfo, totalSupply, detailedStats] = await Promise.all([
             getPoolStats(),
             getArubPrice(),
@@ -491,14 +379,10 @@ async function updateGlobalStats() {
         const arubPrice = arubPriceInfo.price;
         const arubPriceSource = arubPriceInfo.source;
 
-        // 2. TVL в USD (USDT + ARUB)
         const tvlUsd = detailedStats.totalStakedUsdt + detailedStats.totalStakedArub * arubPrice;
-
-        // 3. Текущий tier (APY)
         const tierInfo = getCurrentTier(tvlUsd);
 
-        // --- СТАРЫЙ UI / другие страницы (как у тебя было) ---
-
+        // Старые элементы (другие страницы)
         const elements = {
             globalTvl: document.getElementById('globalTvl'),
             globalApy: document.getElementById('globalApy'),
@@ -518,31 +402,17 @@ async function updateGlobalStats() {
             arubPrice: document.getElementById('arubPrice')
         };
 
-        // Обновляем блоки, которые уже были в твоём UI
-        if (elements.globalTvl) {
-            elements.globalTvl.textContent = formatUSD(tvlUsd);
-        }
+        if (elements.globalTvl) elements.globalTvl.textContent = formatUSD(tvlUsd);
+        if (elements.globalApy) elements.globalApy.textContent = `${(tierInfo.apy / 100).toFixed(1)}%`;
+        if (elements.globalStakers) elements.globalStakers.textContent = poolStats.totalStakers.toLocaleString();
+        if (elements.globalArubPrice) elements.globalArubPrice.textContent = `${arubPrice.toFixed(2)} USDT`;
 
-        if (elements.globalApy) {
-            elements.globalApy.textContent = `${(tierInfo.apy / 100).toFixed(1)}%`;
-        }
-
-        if (elements.globalStakers) {
-            elements.globalStakers.textContent = poolStats.totalStakers.toLocaleString();
-        }
-
-        if (elements.globalArubPrice) {
-            elements.globalArubPrice.textContent = `${arubPrice.toFixed(2)} USDT`;
-        }
         if (elements.arubPriceSource) {
             let label = 'Backup ⚠️';
             let color = '#fbbf24';
 
-            if (arubPriceSource === 'oracle') {
-                label = 'Oracle';
-                color = '#80e29d';
-            } else if (arubPriceSource === 'forex-api') {
-                label = 'Forex';
+            if (arubPriceSource === 'oracle' || arubPriceSource === 'forex-api') {
+                label = arubPriceSource === 'oracle' ? 'Oracle' : 'Forex';
                 color = '#80e29d';
             }
 
@@ -550,21 +420,10 @@ async function updateGlobalStats() {
             elements.arubPriceSource.style.color = color;
         }
 
-        if (stakingElements.totalTvl) {
-            stakingElements.totalTvl.textContent = formatUSD(tvlUsd);
-        }
-
-        if (stakingElements.currentApy) {
-            stakingElements.currentApy.textContent = `${(tierInfo.apy / 100).toFixed(1)}%`;
-        }
-
-        if (stakingElements.totalStakers) {
-            stakingElements.totalStakers.textContent = poolStats.totalStakers.toLocaleString();
-        }
-
-        if (stakingElements.arubPrice) {
-            stakingElements.arubPrice.textContent = `${arubPrice.toFixed(2)} USDT`;
-        }
+        if (stakingElements.totalTvl) stakingElements.totalTvl.textContent = formatUSD(tvlUsd);
+        if (stakingElements.currentApy) stakingElements.currentApy.textContent = `${(tierInfo.apy / 100).toFixed(1)}%`;
+        if (stakingElements.totalStakers) stakingElements.totalStakers.textContent = poolStats.totalStakers.toLocaleString();
+        if (stakingElements.arubPrice) stakingElements.arubPrice.textContent = `${arubPrice.toFixed(2)} USDT`;
 
         if (elements.totalSupplyArub) {
             elements.totalSupplyArub.textContent = formatTokenAmount(totalSupply) + ' ARUB';
@@ -585,55 +444,45 @@ async function updateGlobalStats() {
             elements.totalRewards.textContent = formatTokenAmount(rewardsArub) + ' ARUB';
         }
 
-        // --- НОВЫЙ DASHBOARD, КАК В index (42).html) ---
+        // --- Новый дашборд на index.html ---
 
         const setText = (id, val) => {
             const el = document.getElementById(id);
             if (el) el.textContent = val;
         };
 
-        // Число стейкеров
         const stakersCount = typeof poolStats.totalStakers === 'number'
             ? poolStats.totalStakers
             : 0;
-        const stakersText = stakersCount.toLocaleString('en-US');
 
-        // Данные для карточек (используем твои уже отформатированные числа)
         const stakedTokens = detailedStats.totalStakedArub;
         const stakedUsd = stakedTokens * arubPrice;
 
         const supplyTokens = totalSupply;
         const supplyUsd = supplyTokens * arubPrice;
 
-        // HERO
         setText('arubPriceValue', arubPrice.toFixed(2));
-        setText('dashHeroStakers', stakersText);
+        setText('dashHeroStakers', stakersCount.toLocaleString('en-US'));
         setText('dashHeroTvl', formatUSD(tvlUsd));
 
-        // Update USD/RUB chart with new ARUB price
+        // Синхронизация графика USD/RUB с ценой ARUB
         if (window.updateUsdRubPointFromArub) {
             window.updateUsdRubPointFromArub();
         }
 
-        // APY из контракта
         const apyPercent = (tierInfo.apy / 100).toFixed(1);
         const apyNum = parseFloat(apyPercent);
 
-        // Обновляем жёлтую подпись под «Всього застейкано»
         const apyNoteEl = document.getElementById('apy-note');
         if (apyNoteEl) {
-            let apyLabel = '';
+            let apyLabel;
             if (apyNum >= 20) {
-                // 24% або 20% → для ранніх користувачів
                 apyLabel = 'APY: <strong style="font-weight:600;">' + apyPercent + '%</strong> для ранніх користувачів';
             } else {
-                // 16%, 12%, 8% → обычный APY
                 apyLabel = 'APY: <strong style="font-weight:600;">' + apyPercent + '%</strong> річних';
             }
             apyNoteEl.innerHTML = apyLabel;
         }
-
-        // Нижние карточки - новый порядок
 
         // 1. Total Supply ARUB
         setText('arub-supply', formatTokenAmount(supplyTokens) + ' ARUB');
@@ -652,21 +501,18 @@ async function updateGlobalStats() {
         setText('usdt-staked', formatTokenAmount(stakedUsdtTokens) + ' USDT');
         setText('usdt-staked-usd', '≈ ' + formatUSD(stakedUsdtTokens));
 
-        // Обновляем тиры на основе TVL
         updateTierUSD(
-            stakedArubTokens * 1e6, // конвертируем обратно в raw
-            stakedUsdtTokens * 1e6, // конвертируем обратно в raw
+            stakedArubTokens * 1e6,
+            stakedUsdtTokens * 1e6,
             arubPrice,
             apyPercent
         );
 
-        // статус загрузки
         const loading = document.getElementById('dashLoadingText');
         const grid = document.getElementById('stats');
         if (loading) loading.textContent = 'Дані успішно оновлено.';
         if (grid) grid.style.display = 'grid';
 
-        // Логи для дебага
         console.log('[APP] ✅ Global stats updated successfully!');
         console.log('[APP] 📊 TVL:', formatUSD(tvlUsd));
         console.log('[APP] 📈 APY:', `${(tierInfo.apy / 100).toFixed(1)}%`);
@@ -676,13 +522,10 @@ async function updateGlobalStats() {
         console.log('[APP] 🔒 Staked ARUB:', formatTokenAmount(detailedStats.totalStakedArub), 'ARUB');
         console.log('[APP] 💵 Staked USDT:', formatTokenAmount(detailedStats.totalStakedUsdt), 'USDT');
 
-        // Обновляем график TVL
         updateDashboardCharts(tvlUsd);
-
     } catch (error) {
         console.error('[APP] ❌ Error updating global stats:', error);
 
-        // в случае ошибки оставляем твой fallback (можно ничего не менять)
         const elements = {
             globalTvl: document.getElementById('globalTvl'),
             globalApy: document.getElementById('globalApy'),
@@ -702,7 +545,7 @@ async function updateGlobalStats() {
 }
 
 /**
- * Setup scroll animations
+ * Анимации при скролле
  */
 function setupScrollAnimations() {
     const observerOptions = {
@@ -719,7 +562,6 @@ function setupScrollAnimations() {
         });
     }, observerOptions);
 
-    // Observe all sections
     document.querySelectorAll('.staking-section, .stats-section').forEach(section => {
         section.style.opacity = '0';
         section.style.transform = 'translateY(30px)';
@@ -729,23 +571,121 @@ function setupScrollAnimations() {
 }
 
 /**
- * Global functions for HTML onclick handlers
+ * Инициализация всего приложения
  */
-// Wallet functions
+async function initApp() {
+    console.log('='.repeat(60));
+    console.log('ANTI RUB - Staking Platform');
+    console.log('Initializing application...');
+    console.log('='.repeat(60));
+
+    try {
+        console.log('[APP] Initializing read-only contracts...');
+        const readOnlySuccess = await initReadOnlyContracts();
+
+        if (readOnlySuccess) {
+            console.log('[APP] Read-only contracts ready, fetching initial stats...');
+            // Небольшая задержка, затем: сначала тянем статы, потом рисуем график уже с реальным курсом
+            setTimeout(async () => {
+                await updateGlobalStats();
+                console.log('[APP] Initializing USD/RUB chart...');
+                initUsdRubChart();
+            }, 500);
+        }
+
+        console.log('[APP] Initializing wallet module...');
+        initWalletModule();
+
+        console.log('[APP] Initializing trading module...');
+        initTradingModule();
+
+        console.log('[APP] Initializing staking module...');
+        initStakingModule();
+
+        console.log('[APP] Initializing faucet module...');
+        initFaucetModule();
+
+        console.log('[APP] ✅ All modules initialized successfully');
+
+        setupGlobalEventListeners();
+        setupScrollAnimations();
+
+        // Переодическое обновление статов
+        setInterval(() => {
+            updateGlobalStats();
+        }, CONFIG.UI.STATS_UPDATE_INTERVAL);
+
+        console.log('[APP] 🎉 Application ready!');
+        console.log('[APP] Network:', CONFIG.NETWORK.name);
+        console.log('[APP] Chain ID:', CONFIG.NETWORK.chainIdDecimal);
+    } catch (error) {
+        console.error('[APP] ❌ Initialization error:', error);
+        showNotification('❌ Помилка ініціалізації додатку', 'error');
+    }
+}
+
+/**
+ * Глобальные слушатели и хелперы
+ */
+function setupGlobalEventListeners() {
+    // Плавный скролл по якорям
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    });
+
+    // Переключатель языка (заглушка)
+    const langButtons = document.querySelectorAll('.lang-btn');
+    langButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            langButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            showNotification('🌐 Мовна підтримка в розробці', 'info');
+        });
+    });
+
+    // После faucet → обновляем UI
+    window.addEventListener('faucetClaimed', () => {
+        console.log('[APP] Faucet claimed, updating UIs...');
+        const { userAddress } = window;
+        if (userAddress) {
+            window.dispatchEvent(new CustomEvent('contractsInitialized', {
+                detail: { userAddress }
+            }));
+        }
+    });
+
+    // Контракты инициализировались → обновляем статы
+    window.addEventListener('contractsInitialized', () => {
+        console.log('[APP] Updating global stats (contractsInitialized)...');
+        updateGlobalStats();
+    });
+}
+
+/**
+ * Глобальные функции для HTML-обработчиков
+ */
+// Wallet
 window.connectWallet = connectWallet;
 window.disconnectWallet = disconnectWallet;
 window.addTokenToWallet = addTokenToWallet;
 window.addArubToMetaMask = () => addTokenToWallet('ARUB');
 window.addUsdtToMetaMask = () => addTokenToWallet('USDT');
-window.copyTokenAddress = () => copyToClipboard(CONFIG.TOKEN_ADDRESS, '✅ Адресу токена скопійовано!');
+window.copyTokenAddress = () =>
+    copyToClipboard(CONFIG.TOKEN_ADDRESS, '✅ Адресу токена скопійовано!');
 
-// Trading functions
+// Trading
 window.buyTokens = buyTokens;
 window.sellTokens = sellTokens;
 window.setMaxBuy = setMaxBuy;
 window.setMaxSell = setMaxSell;
 
-// Staking functions
+// Staking
 window.stakeUsdtTokens = stakeUsdtTokens;
 window.stakeArubTokens = stakeArubTokens;
 window.unstakeUsdtTokens = unstakeUsdtTokens;
@@ -756,10 +696,10 @@ window.setMaxStakeArub = setMaxStakeArub;
 window.setMaxUnstakeUsdt = setMaxUnstakeUsdt;
 window.setMaxUnstakeArub = setMaxUnstakeArub;
 
-// Faucet functions
+// Faucet
 window.claimFromFaucet = claimFromFaucet;
 
-// Helper function for scroll to section
+// Хелпер для скролла
 window.scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -767,14 +707,13 @@ window.scrollToSection = (sectionId) => {
     }
 };
 
-// Initialize app when DOM is ready
+// Старт приложения
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initApp);
 } else {
     initApp();
 }
 
-// Log version info
 console.log('[APP] Version: 2.0.0 (Modular Refactor)');
 console.log('[APP] Build: ' + new Date().toISOString());
 
