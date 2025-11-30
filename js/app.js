@@ -342,25 +342,31 @@ function updateTierUSD(stakedArub, stakedUsdt, priceArub, apy) {
     const tvl = stakedArubUsd + stakedUsdtUsd;
 
     let tier = 1;
-
     if (tvl < 100000) tier = 1;
     else if (tvl < 200000) tier = 2;
     else if (tvl < 400000) tier = 3;
     else if (tvl < 800000) tier = 4;
     else tier = 5;
 
+    // заголовок слева
     const tierHeroEl = document.getElementById('dashHeroTier');
     if (tierHeroEl) {
         tierHeroEl.textContent = `Tier ${tier} (${apy}%)`;
     }
 
+    // подсветка уровней справа
     for (let i = 1; i <= 5; i++) {
         const el = document.getElementById(`tier-${i}`);
-        if (el) {
-            el.style.opacity = i === tier ? '1' : '0.45';
+        if (!el) continue;
+
+        if (i === tier) {
+            el.classList.add('active');   // активный level
+        } else {
+            el.classList.remove('active');
         }
     }
 }
+
 
 /**
  * Обновление глобальной статистики (TVL, APY, стейкеры, цена и т.п.)
