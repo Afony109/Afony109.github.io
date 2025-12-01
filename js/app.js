@@ -27,11 +27,11 @@ import {
 // === DASHBOARD CHARTS STATE (TVL) ===
 let stakedChart = null;
 
-// История TVL (для плавного старта)
+// История TVL (стартовый сценарий, потом заменяем под реальный TVL)
 const chartLabels = [
-    '01.09', '10.09', '20.09',
-    '01.10', '10.10', '20.10',
-    '01.11'
+    'T-6', 'T-5', 'T-4',
+    'T-3', 'T-2', 'T-1',
+    'T0'
 ];
 
 const chartStakedHistory = [
@@ -43,6 +43,9 @@ const chartStakedHistory = [
     210000,
     277988
 ];
+
+// флаг: уже ли мы пересчитали стартовый сценарий под реальный TVL
+let tvlChartInitializedFromRealValue = false;
 
 /**
  * Синхронизация графика USD/RUB на index.html
@@ -74,6 +77,28 @@ function updateDashboardCharts(tvlUsd) {
         return;
     }
 
+    // 1️⃣ При первом реальном значении TVL перестраиваем "историю" как сценарий
+    if (!tvlChartInitializedFromRealValue && tvlUsd && Number.isFinite(tvlUsd) && tvlUsd > 0) {
+        const factors = [0.3, 0.45, 0.6, 0.75, 0.85, 0.95, 1.0];
+
+        for (let i = 0; i < factors.length; i++) {
+            chartStakedHistory[i] = Math.round(tvlUsd * factors[i]);
+        }
+
+        // Подправим подписи, чтобы выглядело как прошлые моменты времени
+        const now = new Date();
+        for (let i = factors.length - 1; i >= 0; i--) {
+            const ts = new Date(now.getTime() - (factors.length - 1 - i) * 60 * 60 * 1000);
+            chartLabels[i] = ts.toLocaleTimeString('uk-UA', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        tvlChartInitializedFromRealValue = true;
+    }
+
+    // 2️⃣ Добавляем свежую точку по времени
     const label = new Date().toLocaleTimeString('uk-UA', {
         hour: '2-digit',
         minute: '2-digit',
