@@ -24,9 +24,8 @@ import {
     setMaxUnstakeArub
 } from './staking-actions.js';
 
-// === DASHBOARD CHARTS STATE (TVL + USD/RUB) ===
+// === DASHBOARD CHARTS STATE (TVL) ===
 let stakedChart = null;
-let usdRubChart = null;
 
 // История TVL (для плавного старта)
 const chartLabels = [
@@ -45,213 +44,26 @@ const chartStakedHistory = [
     277988
 ];
 
-// === USD/RUB CHART DATA HELPERS ===
-
-// История 2020–2025, последняя точка = текущий курс
-function getHistoryData(currentRate) {
-    return [
-        { x: new Date(2020, 0, 1).getTime(), y: 72.3 },
-        { x: new Date(2021, 0, 1).getTime(), y: 73.7 },
-        { x: new Date(2022, 0, 1).getTime(), y: 140 },
-        { x: new Date(2023, 0, 1).getTime(), y: 110 },
-        { x: new Date(2024, 0, 1).getTime(), y: 92.8 },
-        { x: new Date(2025, 0, 1).getTime(), y: currentRate }
-    ];
-}
-
-// Пик 2022 — отдельная красная точка
-const peak2022Data = [
-    { x: new Date(2022, 0, 1).getTime(), y: 140 }
-];
-
-// Сценарий 2025–2030 (первый год завязан на реальный курс)
-function getScenarioData(currentRate) {
-    return [
-        { x: new Date(2025, 0, 1).getTime(), y: currentRate },
-        { x: new Date(2026, 0, 1).getTime(), y: 200 },
-        { x: new Date(2027, 0, 1).getTime(), y: 400 },
-        { x: new Date(2028, 0, 1).getTime(), y: 500 },
-        { x: new Date(2029, 0, 1).getTime(), y: 350 },
-        { x: new Date(2030, 0, 1).getTime(), y: 250 }
-    ];
-}
-
 /**
- * Читаем текущий курс USD/RUB из карточки цены ARUB
- * (элемент #arubPriceValue, текст вида "77.91")
+ * Синхронизация графика USD/RUB на index.html
+ * Использует глобальную функцию window.updateUsdRubPointFromArub(rate),
+ * которую определяет скрипт на странице (Chart.js).
  */
-function getCurrentRateFromArub() {
-    const el = document.getElementById('arubPriceValue');
-    if (!el) return null;
-
-    const raw = el.textContent.trim()
-        .replace(',', '.')
-        .replace(/[^0-9.]/g, '');
-    const value = parseFloat(raw);
-
-    return Number.isFinite(value) ? value : null;
-}
-
-/**
- * Инициализация графика USD/RUB (ApexCharts)
- * Стартовая точка берётся из ARUB price, если она уже есть,
- * иначе — fallback 80.98, но затем обновляется updateUsdRubPointFromArub().
- */
-function initUsdRubChart() {
-    const chartElement = document.getElementById('dashPriceChart');
-    if (!chartElement) {
-        console.warn('[APP] USD/RUB chart element not found');
-        return;
-    }
-
-    if (typeof ApexCharts === 'undefined') {
-        console.warn('[APP] ApexCharts is not loaded');
-        return;
-    }
-
-    let currentRate = getCurrentRateFromArub();
-    if (currentRate === null) {
-        currentRate = 80.98; // fallback, пока не подтянули live-курс
-    }
-
-    const currentPointData = [
-        { x: new Date(2025, 0, 1).getTime(), y: currentRate }
-    ];
-
-    const options = {
-        chart: {
-            type: 'line',
-            height: 220,
-            toolbar: { show: false },
-            background: 'transparent',
-            fontFamily: 'Inter, sans-serif'
-        },
-        series: [
-            {
-                name: 'Історичний курс',
-                data: getHistoryData(currentRate),
-                type: 'line'
-            },
-            {
-                name: 'Сценарій 2025–2030',
-                data: getScenarioData(currentRate),
-                type: 'line'
-            },
-            {
-                name: `Поточний курс (${currentRate.toFixed(2)})`,
-                data: currentPointData,
-                type: 'scatter'
-            },
-            {
-                name: 'Пік 2022 року (140)',
-                data: peak2022Data,
-                type: 'scatter'
-            }
-        ],
-        dataLabels: { enabled: false },
-        stroke: {
-            curve: 'smooth',
-            width: [2, 2, 0, 0],
-            dashArray: [0, 6, 0, 0]
-        },
-        colors: ['#4a90e2', '#60a5fa', '#ffd700', '#ef4444'],
-        xaxis: {
-            type: 'datetime',
-            labels: {
-                format: 'yyyy',
-                datetimeUTC: false,
-                style: {
-                    colors: '#8b94a8',
-                    fontSize: '11px'
-                }
-            },
-            axisBorder: { show: false },
-            axisTicks: { show: false }
-        },
-        yaxis: {
-            labels: {
-                formatter: (val) => (val ? val.toFixed(0) : ''),
-                style: {
-                    colors: '#8b94a8',
-                    fontSize: '11px'
-                }
-            },
-            title: {
-                text: 'Курс USD/RUB',
-                style: {
-                    color: '#8b94a8',
-                    fontSize: '11px'
-                }
-            }
-        },
-        tooltip: {
-            theme: 'dark',
-            x: { format: 'yyyy' },
-            y: {
-                formatter: (val) => (val ? val.toFixed(2) + ' ₽' : '')
-            }
-        },
-        grid: {
-            borderColor: 'rgba(255,255,255,0.06)',
-            strokeDashArray: 4
-        },
-        markers: {
-            size: [0, 0, 6, 7],
-            hover: {
-                size: [4, 4, 8, 9]
-            }
-        },
-        legend: {
-            show: true,
-            labels: {
-                colors: '#8b94a8'
-            },
-            markers: {
-                width: 12,
-                height: 2,
-                radius: 0
-            }
+function syncUsdRubChart(currentRate) {
+    if (
+        typeof window !== 'undefined' &&
+        typeof window.updateUsdRubPointFromArub === 'function' &&
+        typeof currentRate === 'number' &&
+        Number.isFinite(currentRate) &&
+        currentRate > 0
+    ) {
+        try {
+            window.updateUsdRubPointFromArub(currentRate);
+        } catch (err) {
+            console.warn('[APP] Failed to sync USD/RUB chart:', err);
         }
-    };
-
-    usdRubChart = new ApexCharts(chartElement, options);
-    usdRubChart.render();
-    console.log('[APP] ✅ USD/RUB chart initialized with rate:', currentRate);
+    }
 }
-
-/**
- * Обновление графика USD/RUB при изменении цены ARUB
- * (вызывается каждый раз из updateGlobalStats)
- */
-window.updateUsdRubPointFromArub = function () {
-    const newRate = getCurrentRateFromArub();
-    if (newRate === null || !usdRubChart) return;
-
-    const currentPointData = [
-        { x: new Date(2025, 0, 1).getTime(), y: newRate }
-    ];
-
-    usdRubChart.updateSeries([
-        {
-            name: 'Історичний курс',
-            data: getHistoryData(newRate)
-        },
-        {
-            name: 'Сценарій 2025–2030',
-            data: getScenarioData(newRate)
-        },
-        {
-            name: `Поточний курс (${newRate.toFixed(2)})`,
-            data: currentPointData
-        },
-        {
-            name: 'Пік 2022 року (140)',
-            data: peak2022Data
-        }
-    ]);
-
-    console.log('[APP] 📊 USD/RUB chart updated with new rate:', newRate);
-};
 
 /**
  * Обновление графика TVL (Chart.js)
@@ -471,10 +283,8 @@ async function updateGlobalStats() {
         setText('dashHeroStakers', stakersCount.toLocaleString('en-US'));
         setText('dashHeroTvl', formatUSD(tvlUsd));
 
-        // Синхронизация графика USD/RUB с ценой ARUB
-        if (window.updateUsdRubPointFromArub) {
-            window.updateUsdRubPointFromArub();
-        }
+        // Синхронизация графика USD/RUB з ончейн-курсом (ціна ARUB)
+        syncUsdRubChart(arubPrice);
 
         const apyPercent = (tierInfo.apy / 100).toFixed(1);
         const apyNum = parseFloat(apyPercent);
@@ -591,11 +401,9 @@ async function initApp() {
 
         if (readOnlySuccess) {
             console.log('[APP] Read-only contracts ready, fetching initial stats...');
-            // Небольшая задержка, затем: сначала тянем статы, потом рисуем график уже с реальным курсом
-            setTimeout(async () => {
-                await updateGlobalStats();
-                console.log('[APP] Initializing USD/RUB chart...');
-                initUsdRubChart();
+            // Небольшая задержка, чтобы провайдер успел подтянуться
+            setTimeout(() => {
+                updateGlobalStats();
             }, 500);
         }
 
