@@ -1,9 +1,9 @@
 /**
  * Wallet Connection Module
  * Handles wallet connection, network switching, and EIP-6963 wallet detection
+ * Исправлено: теперь на Android/iOS всегда показывается список кошельков
  */
 
-// Import ethers.js as ES module
 import { ethers } from 'https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.esm.min.js';
 
 import { CONFIG, shortenAddress, getEtherscanLink } from './config.js';
@@ -44,7 +44,6 @@ export function initWalletModule() {
 
 /**
  * Handle EIP-6963 wallet announcements
- * @param {Event} event - Announcement event
  */
 function handleWalletAnnouncement(event) {
     const { info, provider } = event.detail;
@@ -57,8 +56,7 @@ function handleWalletAnnouncement(event) {
 }
 
 /**
- * Show wallet selector modal
- * @returns {Promise<Object>} Selected wallet provider
+ * ПОЛНОСТЬЮ ИСПРАВЛЕННАЯ ФУНКЦИЯ — теперь работает на Android!
  */
 export async function showWalletSelector() {
     return new Promise((resolve) => {
@@ -74,125 +72,126 @@ export async function showWalletSelector() {
         title.textContent = 'Виберіть гаманець';
         modalContent.appendChild(title);
 
-        // Add detected EIP-6963 wallets
+        const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+
+        let hasOptions = false;
+
+        // 1. Добавляем все кошельки, найденные через EIP-6963
         detectedWallets.forEach((wallet, index) => {
-            const walletOption = document.createElement('div');
-            walletOption.className = 'wallet-option';
-            walletOption.dataset.walletIndex = index;
-
-            const walletIconDiv = document.createElement('div');
-            walletIconDiv.className = 'wallet-icon';
-
-            // Гарантируем строку без пробелов по краям
-            const iconStr = String(wallet.info.icon || '🦊').trim();
-
-            // Универсальная проверка, что это картинка
-            const isImageUrl =
-                iconStr.startsWith('data:') ||
-                iconStr.startsWith('http://') ||
-                iconStr.startsWith('https://');
-
-            console.log('[WALLET]', wallet.info.name, '- icon:', iconStr.substring(0, 30), '- isImageUrl:', isImageUrl);
-
-            // НИЧЕГО не пишем в textContent до проверки!
-
-            if (isImageUrl) {
-                const img = document.createElement('img');
-                img.src = iconStr;
-                img.alt = wallet.info.name || 'Wallet icon';
-
-                // Fallback if image fails to load
-                img.onerror = () => {
-                    console.warn('[WALLET] Failed to load icon for', wallet.info.name);
-                    walletIconDiv.innerHTML = '';
-                    const span = document.createElement('span');
-                    span.style.fontSize = '2em';
-                    span.textContent = '🦊';
-                    walletIconDiv.appendChild(span);
-                };
-
-                walletIconDiv.appendChild(img);
-            } else {
-                // Это emoji или короткий текст
-                const span = document.createElement('span');
-                span.style.fontSize = '2em';
-                span.textContent = iconStr;
-                walletIconDiv.appendChild(span);
-            }
-
-            const walletName = document.createElement('div');
-            walletName.className = 'wallet-name';
-
-            // Безопасное/красивое имя
-            let safeName = wallet.info.name || 'Wallet';
-
-            // Обрезаем слишком длинные названия (например, с мусором или версиями)
-            if (safeName.length > 30) {
-                safeName = safeName.substring(0, 27) + '...';
-            }
-
-            walletName.textContent = safeName;
-
-            walletOption.appendChild(walletIconDiv);
-            walletOption.appendChild(walletName);
+            hasOptions = true;
+            const walletOption = createWalletOption(wallet.info, index);
             modalContent.appendChild(walletOption);
         });
 
-        // Fallback to window.ethereum if no wallets detected
-        if (detectedWallets.length === 0 && window.ethereum) {
-            const walletOption = document.createElement('div');
-            walletOption.className = 'wallet-option';
-            walletOption.dataset.walletType = 'ethereum';
+        // 2. Fallback: если ничего не найдено — показываем популярные кошельки
+        if (!hasOptions) {
+            const mobileWallets = [
+                { name: 'MetaMask', icon: 'https://metamask.io/images/favicon-32.png', deeplink: 'metamask://' },
+                { name: 'Trust Wallet', icon: 'https://trustwallet.com/assets/images/favicon.png', deeplink: 'trust://' },
+                { name: 'Coinbase Wallet', icon: 'https://wallet.coinbase.com/assets/favicon.ico', deeplink: 'cbwallet://' },
+                { name: 'Rainbow', icon: 'https://rainbow.me/icon.png', deeplink: 'rainbow://' },
+                { name: 'SafePal', icon: 'https://safepal.io/favicon.ico', deeplink: 'safepal://' },
+                { name: 'Zerion', icon: 'https://zerion.io/favicon.ico', deeplink: 'zerion://' }
+            ];
 
-            const walletIconDiv = document.createElement('div');
-            walletIconDiv.className = 'wallet-icon';
-            walletIconDiv.textContent = '🦊';
+            const desktopWallets = [
+                { name: 'MetaMask', icon: 'https://metamask.io/images/favicon-32.png', provider: window.ethereum },
+                { name: 'Coinbase Wallet', icon: 'https://wallet.coinbase.com/assets/favicon.ico' },
+                { name: 'Trust Wallet', icon: 'https://trustwallet.com/assets/images/favicon.png' }
+            ];
 
-            const walletName = document.createElement('div');
-            walletName.className = 'wallet-name';
-            walletName.textContent = 'Browser Wallet (MetaMask)';
+            const walletsToShow = isMobile ? mobileWallets : desktopWallets;
 
-            walletOption.appendChild(walletIconDiv);
-            walletOption.appendChild(walletName);
-            modalContent.appendChild(walletOption);
+            walletsToShow.forEach((w) => {
+                hasOptions = true;
+                const option = document.createElement('div');
+                option.className = 'wallet-option';
+
+                const iconDiv = document.createElement('div');
+                iconDiv.className = 'wallet-icon';
+
+                const img = document.createElement('img');
+                img.src = w.icon;
+                img.alt = w.name;
+                img.style.width = '40px';
+                img.style.height = '40px';
+                img.onerror = () => {
+                    iconDiv.textContent = 'WALLET';
+                    iconDiv.style.fontSize = '1.2em';
+                };
+                iconDiv.appendChild(img);
+
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'wallet-name';
+                nameDiv.textContent = w.name;
+
+                option.appendChild(iconDiv);
+                option.appendChild(nameDiv);
+                modalContent.appendChild(option);
+
+                // Обработчик клика
+                option.addEventListener('click', () => {
+                    if (isMobile && w.deeplink) {
+                        // Пробуем открыть приложение
+                        const url = w.deeplink + (w.deeplink.includes('?') ? '&' : '?') + 'url=' + encodeURIComponent(window.location.href);
+                        window.location.href = url;
+
+                        // Если через 2 сек. браузер всё ещё открыт — показываем подсказку
+                        setTimeout(() => {
+                            if (document.hasFocus()) {
+                                showNotification(`Відкрийте сайт у додатку ${w.name}`, 'info');
+                            }
+                        }, 2000);
+
+                        modal.remove();
+                        resolve(null);
+                    } else if (w.provider) {
+                        modal.remove();
+                        resolve(w.provider);
+                    }
+                });
+            });
         }
 
-        // Cancel button
+        // Если вообще ничего не нашлось (крайне редко)
+        if (!hasOptions) {
+            const noWallet = document.createElement('div');
+            noWallet.style.textAlign = 'center';
+            noWallet.style.padding = '20px';
+            noWallet.style.color = '#aaa';
+            noWallet.innerHTML = 'Кошельки не найдены<br><small>Установите MetaMask или Trust Wallet</small>';
+            modalContent.appendChild(noWallet);
+        }
+
+        // Кнопка "Скасувати"
         const cancelBtn = document.createElement('button');
         cancelBtn.className = 'btn-secondary';
+        cancelBtn.textContent = 'Скасувати';
         cancelBtn.style.width = '100%';
         cancelBtn.style.marginTop = '20px';
-        cancelBtn.textContent = 'Скасувати';
-        cancelBtn.addEventListener('click', () => modal.remove());
+        cancelBtn.onclick = () => {
+            modal.remove();
+            resolve(null);
+        };
         modalContent.appendChild(cancelBtn);
 
         modal.appendChild(modalContent);
         document.body.appendChild(modal);
 
-        // ЕДИНЫЙ обработчик клика по опциям кошельков
+        // Общий обработчик для EIP-6963 кошельков
         modalContent.addEventListener('click', (e) => {
-            // Игнорируем клики по кнопкам
-            if (e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
-
             const option = e.target.closest('.wallet-option');
-            if (!option) return; // кликнули не по опции
+            if (!option) return;
+            if (e.target.closest('button')) return;
 
-            const walletIndex = option.dataset.walletIndex;
-            const walletType = option.dataset.walletType;
-
-            let selectedProvider = null;
-
-            if (walletIndex !== undefined) {
-                selectedProvider = detectedWallets[walletIndex].provider;
-            } else if (walletType === 'ethereum') {
-                selectedProvider = window.ethereum;
+            const index = option.dataset.walletIndex;
+            if (index !== undefined) {
+                modal.remove();
+                resolve(detectedWallets[index].provider);
             }
-
-            modal.remove();
-            resolve(selectedProvider);
         });
 
-        // Close on background click
+        // Закрытие по клику на фон
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
                 modal.remove();
@@ -202,6 +201,44 @@ export async function showWalletSelector() {
     });
 }
 
+// Вспомогательная функция для создания опции кошелька (EIP-6963)
+function createWalletOption(info, index) {
+    const walletOption = document.createElement('div');
+    walletOption.className = 'wallet-option';
+    walletOption.dataset.walletIndex = index;
+
+    const walletIconDiv = document.createElement('div');
+    walletIconDiv.className = 'wallet-icon';
+
+    const iconStr = String(info.icon || 'WALLET').trim();
+    const isImageUrl = iconStr.startsWith('data:') || iconStr.startsWith('http://') || iconStr.startsWith('https://');
+
+    if (isImageUrl) {
+        const img = document.createElement('img');
+        img.src = iconStr;
+        img.alt = info.name || 'Wallet';
+        img.onerror = () => {
+            walletIconDiv.innerHTML = '';
+            walletIconDiv.textContent = 'WALLET';
+        };
+        walletIconDiv.appendChild(img);
+    } else {
+        walletIconDiv.textContent = iconStr || 'WALLET';
+        walletIconDiv.style.fontSize = '2em';
+    }
+
+    const walletName = document.createElement('div');
+    walletName.className = 'wallet-name';
+    let safeName = info.name || 'Unknown Wallet';
+    if (safeName.length > 30) safeName = safeName.substring(0, 27) + '...';
+    walletName.textContent = safeName;
+
+    walletOption.appendChild(walletIconDiv);
+    walletOption.appendChild(walletName);
+
+    return walletOption;
+}
+
 /**
  * Connect wallet and initialize contracts
  */
@@ -209,7 +246,6 @@ export async function connectWallet() {
     try {
         console.log('[WALLET] Starting connection process...');
 
-        // Show wallet selector if no provider selected
         if (!selectedWalletProvider) {
             console.log('[WALLET] No provider selected, showing selector...');
             selectedWalletProvider = await showWalletSelector();
@@ -220,9 +256,8 @@ export async function connectWallet() {
             }
         }
 
-        showNotification('🔄 Підключення гаманця...', 'info');
+        showNotification('Підключення гаманця...', 'info');
 
-        // Request accounts
         const accounts = await selectedWalletProvider.request({
             method: 'eth_requestAccounts'
         });
@@ -234,11 +269,9 @@ export async function connectWallet() {
         userAddress = accounts[0];
         console.log('[WALLET] Connected:', userAddress);
 
-        // Create ethers provider and signer
         provider = new ethers.providers.Web3Provider(selectedWalletProvider);
         signer = provider.getSigner();
 
-        // Check network
         const network = await provider.getNetwork();
         console.log('[WALLET] Current network:', network.chainId);
 
@@ -247,21 +280,14 @@ export async function connectWallet() {
             await switchToEthereum();
         }
 
-        // Initialize contracts
         await initializeContracts(provider, signer, userAddress);
-
-        // Update UI
         updateConnectedUI();
 
-        // Setup account change listener
         selectedWalletProvider.on('accountsChanged', handleAccountsChanged);
-
-        // Setup network change listener
         selectedWalletProvider.on('chainChanged', handleChainChanged);
 
-        showNotification('✅ Гаманець підключено!', 'success');
+        showNotification('Гаманець підключено!', 'success');
 
-        // Export global variables for other modules
         window.userAddress = userAddress;
         window.provider = provider;
         window.signer = signer;
@@ -270,16 +296,11 @@ export async function connectWallet() {
         console.error('[WALLET] Connection error:', error);
 
         let errorMsg = 'Помилка підключення гаманця';
+        if (error.code === 4001) errorMsg = 'Підключення відхилено користувачем';
+        else if (error.code === -32002) errorMsg = 'Запит вже відкрито в гаманці';
+        else if (error.message) errorMsg = error.message;
 
-        if (error.code === 4001) {
-            errorMsg = 'Підключення відхилено користувачем';
-        } else if (error.code === -32002) {
-            errorMsg = 'Запит на підключення вже відкрито в гаманці';
-        } else if (error.message) {
-            errorMsg = error.message;
-        }
-
-        showNotification(`❌ ${errorMsg}`, 'error');
+        showNotification(`Помилка: ${errorMsg}`, 'error');
     }
 }
 
@@ -288,20 +309,12 @@ export async function connectWallet() {
  */
 export async function switchToEthereum() {
     try {
-        console.log('[WALLET] Switching to Sepolia...');
-
         await selectedWalletProvider.request({
             method: 'wallet_switchEthereumChain',
             params: [{ chainId: CONFIG.NETWORK.chainId }],
         });
-
-        console.log('[WALLET] ✅ Switched to Sepolia');
-        showNotification('✅ Мережу змінено на Sepolia', 'success');
-
+        showNotification('Мережу змінено на Sepolia', 'success');
     } catch (error) {
-        console.error('[WALLET] Switch network error:', error);
-
-        // If network doesn't exist, try to add it
         if (error.code === 4902) {
             try {
                 await selectedWalletProvider.request({
@@ -314,10 +327,8 @@ export async function switchToEthereum() {
                         blockExplorerUrls: [CONFIG.NETWORK.blockExplorer]
                     }]
                 });
-
-                showNotification('✅ Мережу Sepolia додано та активовано', 'success');
+                showNotification('Мережу Sepolia додано та активовано', 'success');
             } catch (addError) {
-                console.error('[WALLET] Add network error:', addError);
                 throw new Error('Не вдалося додати мережу Sepolia');
             }
         } else {
@@ -326,82 +337,44 @@ export async function switchToEthereum() {
     }
 }
 
-/**
- * Handle account changes
- * @param {Array} accounts - New accounts array
- */
 function handleAccountsChanged(accounts) {
-    console.log('[WALLET] Accounts changed:', accounts);
-
     if (accounts.length === 0) {
-        // User disconnected wallet
-        console.log('[WALLET] User disconnected');
-        showNotification('⚠️ Гаманець відключено', 'error');
+        showNotification('Гаманець відключено', 'error');
         resetWalletState();
     } else if (accounts[0] !== userAddress) {
-        // User switched accounts
-        console.log('[WALLET] Account switched from', userAddress, 'to', accounts[0]);
-        showNotification('🔄 Акаунт змінено, перезавантаження...', 'info');
-
-        // Reconnect with new account
+        showNotification('Акаунт змінено, перезавантаження...', 'info');
         selectedWalletProvider = null;
         connectWallet();
     }
 }
 
-/**
- * Handle network/chain changes
- * @param {string} chainId - New chain ID
- */
 function handleChainChanged(chainId) {
-    console.log('[WALLET] Chain changed to:', chainId);
-    showNotification('🔄 Мережу змінено, перезавантаження...', 'info');
-
-    // Reload page to reinitialize with new network
-    setTimeout(() => {
-        window.location.reload();
-    }, 1000);
+    showNotification('Мережу змінено, перезавантаження...', 'info');
+    setTimeout(() => window.location.reload(), 1000);
 }
 
-
-/**
- * Update UI to show connected state
- */
 function updateConnectedUI() {
     const connectBtn = document.getElementById('connectBtn');
-
     if (connectBtn && userAddress) {
         connectBtn.textContent = shortenAddress(userAddress);
     }
-
-    // Notify global wallet menu
     if (window.onWalletConnected && userAddress) {
         window.onWalletConnected(userAddress);
     }
 }
 
-/**
- * Manually disconnect wallet from dApp
- */
 export async function disconnectWallet() {
-    console.log('[WALLET] Manual disconnect requested');
-
     try {
         if (selectedWalletProvider && selectedWalletProvider.removeListener) {
             selectedWalletProvider.removeListener('accountsChanged', handleAccountsChanged);
             selectedWalletProvider.removeListener('chainChanged', handleChainChanged);
         }
-    } catch (err) {
-        console.warn('[WALLET] Error removing listeners on disconnect:', err);
-    }
+    } catch (err) { console.warn(err); }
 
     resetWalletState();
-    showNotification('⚠️ Гаманець відключено', 'info');
+    showNotification('Гаманець відключено', 'info');
 }
 
-/**
- * Reset wallet state on disconnect
- */
 function resetWalletState() {
     userAddress = null;
     provider = null;
@@ -413,82 +386,32 @@ function resetWalletState() {
     window.signer = null;
 
     const connectBtn = document.getElementById('connectBtn');
-    if (connectBtn) {
-        connectBtn.textContent = 'Підключити гаманець';
-    }
+    if (connectBtn) connectBtn.textContent = 'Підключити гаманець';
 
-    // Notify global wallet menu
-    if (window.onWalletDisconnected) {
-        window.onWalletDisconnected();
-    }
+    if (window.onWalletDisconnected) window.onWalletDisconnected();
 
-    // Reset UI to disconnected state
-    const tradingInterface = document.getElementById('tradingInterface');
-    if (tradingInterface) {
-        tradingInterface.innerHTML = `
-            <div style="text-align: center; padding: 60px; color: var(--gray);">
-                <div style="font-size: 3em; margin-bottom: 20px;">🔒</div>
-                <p style="font-size: 1.3em;">Підключіть гаманець для торгівлі токенами</p>
-            </div>
-        `;
-    }
-
-    const stakingInterface = document.getElementById('stakingInterface');
-    if (stakingInterface) {
-        stakingInterface.innerHTML = `
-            <div style="text-align: center; padding: 60px; color: var(--gray);">
-                <div style="font-size: 3em; margin-bottom: 20px;">🔒</div>
-                <p style="font-size: 1.3em;">Підключіть гаманець для стейкінгу</p>
-            </div>
-        `;
-    }
-
-    const faucetInterface = document.getElementById('faucetInterface');
-    if (faucetInterface) {
-        faucetInterface.innerHTML = `
-            <div style="text-align: center; padding: 60px; color: var(--gray);">
-                <div style="font-size: 3em; margin-bottom: 20px;">🔒</div>
-                <p style="font-size: 1.3em;">Підключіть гаманець для отримання тестових USDT</p>
-            </div>
-        `;
-    }
+    // Сброс интерфейсов
+    ['tradingInterface', 'stakingInterface', 'faucetInterface'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.innerHTML = `<div style="text-align:center;padding:60px;color:var(--gray)">
+                <div style="font-size:3em;margin-bottom:20px">Locked</div>
+                <p style="font-size:1.3em">Підключіть гаманець</p>
+            </div>`;
+        }
+    });
 }
 
-/**
- * Get current wallet state
- * @returns {Object} { userAddress, provider, signer, isConnected }
- */
 export function getWalletState() {
-    return {
-        userAddress,
-        provider,
-        signer,
-        selectedWalletProvider,
-        isConnected: !!userAddress
-    };
+    return { userAddress, provider, signer, selectedWalletProvider, isConnected: !!userAddress };
 }
 
-/**
- * Add token to wallet (MetaMask, Trust Wallet, etc.)
- * @param {string} tokenType - 'ARUB' or 'USDT'
- */
 export async function addTokenToWallet(tokenType) {
     try {
         let walletProvider = selectedWalletProvider;
-
-        // If not connected, show wallet selector
         if (!walletProvider) {
-            console.log('[WALLET] Not connected, showing selector...');
-            window.dispatchEvent(new Event('eip6963:requestProvider'));
-            await new Promise(resolve => setTimeout(resolve, 500));
-
             walletProvider = await showWalletSelector();
-
-            if (!walletProvider) {
-                console.log('[WALLET] Wallet selection cancelled');
-                return;
-            }
-
+            if (!walletProvider) return;
             selectedWalletProvider = walletProvider;
         }
 
@@ -504,27 +427,16 @@ export async function addTokenToWallet(tokenType) {
             image: 'https://cryptologos.cc/logos/tether-usdt-logo.png'
         };
 
-        console.log(`[WALLET] Adding ${tokenType} to wallet...`);
-
         const wasAdded = await walletProvider.request({
             method: 'wallet_watchAsset',
-            params: {
-                type: 'ERC20',
-                options: tokenConfig
-            }
+            params: { type: 'ERC20', options: tokenConfig }
         });
 
-        if (wasAdded) {
-            showNotification(`✅ ${tokenType} успішно додано до гаманця!`, 'success');
-        } else {
-            showNotification('⚠️ Додавання токену відхилено', 'warning');
-        }
-
+        showNotification(wasAdded ? `${tokenType} додано до гаманця!` : 'Додавання відхилено', wasAdded ? 'success' : 'warning');
     } catch (error) {
-        console.error(`[WALLET] Error adding ${tokenType}:`, error);
-        showNotification(`❌ Помилка додавання ${tokenType}: ${error.message}`, 'error');
+        console.error(error);
+        showNotification(`Помилка додавання ${tokenType}`, 'error');
     }
 }
 
-// Export for global access
 export { selectedWalletProvider, userAddress, provider, signer };
